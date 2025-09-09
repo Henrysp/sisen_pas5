@@ -1,0 +1,126 @@
+<section>
+    <div class="allTitles" fxLayout="row">
+      <span class="brownCircle"></span>
+      <span class="greyLine"></span> Datos del ciudadano
+    </div>
+
+  <form #myform="ngForm" [formGroup]="formPerson" (ngSubmit)="onSubmit($event)">
+<!--      <div mat-dialog-content>-->
+          <section>
+              <div class="generalBox">
+                  <div class="controlBox inputColor">
+                      <div fxLayout="row wrap">
+                          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Tipo de documento</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                <input matInput class="form-control" formControlName="fm_tipoDoc"/>
+                              </mat-form-field>
+                          </div>
+                          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Número de documento*</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                  <input matInput type="numeric" class="form-control" formControlName="fm_numerodoc" [class.control-invalid]="formInvalid('fm_numerodoc')"
+                                         minlength="8" maxlength="8" name="fm_numerodoc" placeholder="Número de Documento"
+                                         (keypress)="formatNumero($event, 'fm_numerodoc')"
+                                         (input)="existeDni()"
+                                         (keydown.enter)="preventDefault($event)" />
+                                  <mat-error *ngIf="formPerson.controls.fm_numerodoc.invalid">{{
+                                    eShowError("fm_numerodoc", formPerson.controls.fm_numerodoc.errors)
+                                  }}</mat-error>
+                              </mat-form-field>
+                          </div>
+                        </div>
+                        <div fxLayout="row wrap">
+                          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor"> Apellido paterno</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                  <input type="text" class="form-control" id="fm_apellidoPaterno" formControlName="fm_apellidoPaterno" minlength="2" maxlength="100"
+                                         [class.control-invalid]="formInvalid('fm_apellidoPaterno')" matInput placeholder="Apellido Paterno"
+                                         (input)="onInputFormat($event,'uppercase','fm_apellidoPaterno')"
+                                         (keydown.enter)="preventDefault($event)"/>
+                                <mat-error *ngIf="formPerson.controls.fm_apellidoPaterno.invalid">{{
+                                    eShowError("fm_apellidoPaterno", formPerson.controls.fm_apellidoPaterno.errors)
+                                  }}</mat-error>
+                              </mat-form-field>
+                          </div>
+                          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor"> Apellido materno</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                  <input type="text" class="form-control" id="fm_apellidoMaterno" formControlName="fm_apellidoMaterno" minlength="2" maxlength="100"
+                                         [class.control-invalid]="formInvalid('fm_apellidoMaterno')" matInput placeholder="Apellido Materno"
+                                         (input)="onInputFormat($event,'uppercase','fm_apellidoMaterno')"
+                                         (keydown.enter)="preventDefault($event)"/>
+                                <mat-error *ngIf="formPerson.controls.fm_apellidoMaterno.invalid">{{
+                                    eShowError("fm_apellidoMaterno", formPerson.controls.fm_apellidoMaterno.errors)
+                                  }}</mat-error>
+                              </mat-form-field>
+                          </div>
+                        </div>
+                        <div fxLayout="row wrap">
+                          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                            <div class="labelsColor">Nombres*</div>
+                            <mat-form-field appearance="outline" style="width: 100%">
+                                <input type="text" class="form-control" id="fm_nombres" formControlName="fm_nombres" minlength="2" maxlength="100"
+                                       [class.control-invalid]="formInvalid('fm_nombres')" matInput placeholder="Nombres"
+                                       (input)="onInputFormat($event,'uppercase','fm_nombres')"
+                                       (keydown.enter)="preventDefault($event)"/>
+                              <mat-error *ngIf="formPerson.controls.fm_nombres.invalid">{{
+                                  eShowError("fm_nombres", formPerson.controls.fm_nombres.errors)
+                                }}</mat-error>
+                            </mat-form-field>
+                          </div>
+                      </div>
+                      <div fxLayout="row wrap">
+                        <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                            <div class="labelsColor"> Fecha de nacimiento*</div>
+                            <mat-form-field appearance="outline" style="width: 100%">
+                                <input type="date"
+                                  class="form-control"
+                                  matInput
+                                  formControlName="fm_fchNacimiento"
+                                  [class.control-invalid]="formInvalid('fm_fchNacimiento')"
+                                  [min]="dateMin"
+                                  [max]="dateMax"
+                                  onkeydown="return false"
+                                />
+                                <mat-error *ngIf="formPerson.controls.fm_fchNacimiento.invalid">{{
+                                  eShowError("fm_fchNacimiento", formPerson.controls.fm_fchNacimiento.errors)
+                                }}</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                            <div class="labelsColor"> Dígito de verificación*</div>
+                            <mat-form-field appearance="outline" style="width: 100%">
+                                <input type="text" value="0" class="form-control" formControlName="fm_digitVerifica" minlength="1" maxlength="1" [class.control-invalid]="formInvalid('fm_digitVerifica')"
+                                       matInput placeholder=""  (keypress)="formatNumero($event, 'fm_digitVerifica')" (keydown.enter)="preventDefault($event)"/>
+                              <mat-error *ngIf="formPerson.controls.fm_digitVerifica.invalid">{{
+                                  eShowError("fm_digitVerifica", formPerson.controls.fm_digitVerifica.errors)
+                                }}</mat-error>
+                            </mat-form-field>
+                        </div>
+                      </div>
+                    <span class="labelsColor">*Campos requeridos</span>
+
+                    <br />
+
+                      <mat-dialog-actions>
+                        <div fxFlex="50" class="newNotif" fxLayout="row" fxLayoutAlign="center center">
+                          <button class="btnBrown" mat-button (click)="cancelar()">CANCELAR</button>
+<!--                          &nbsp;&nbsp;&nbsp;&nbsp;-->
+                          <button
+                            type="submit"
+                            class="btnBlue"
+                            mat-button
+                            [disabled]="formPerson.invalid"
+                            (click)="preSubmit()"
+                          >
+                            ACEPTAR
+                          </button>
+                        </div>
+                      </mat-dialog-actions>
+                  </div>
+              </div>
+      </section>
+<!--    </div>-->
+  </form>
+  </section>

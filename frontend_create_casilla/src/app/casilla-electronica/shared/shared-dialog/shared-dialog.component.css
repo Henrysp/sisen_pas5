@@ -1,0 +1,119 @@
+.cuadro{
+    width: 44px;
+    height: 44px;
+    margin: 5px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.center{
+    text-align: center;
+}
+.btnCancel{
+
+  /* width: 10px;
+  padding: 0px;
+  margin: 0px;
+  font-size: 18px;
+  background-color: #ED1A3A;
+  color: white; */
+
+
+  background-color: #ED1A3A;
+  color: white;
+  width: 33px;
+  height: 33px !important;
+  font-size: 23px;
+  border: 1px solid #ED1A3A;
+  border-radius: 6px;
+  text-align: center;
+}
+.btnValidar{
+  border: 1px solid #7e7e7e;
+}
+.btnReenviar{
+  border: 1px solid #7e7e7e;
+  bottom: -35px;
+}
+input {
+    text-align: center;
+  }
+  ::-webkit-input-placeholder {
+    text-align: center;
+  }
+  :-moz-placeholder {
+    text-align: center;
+  }
+
+
+  .headerdialog{
+    text-align: end;
+  }
+  .title{
+    text-align: center;
+    color: #0073CF;
+    font-family: 'Poppins';
+    width: 100%;
+    height: 39px;
+    font-size: 26px !important;
+  }
+
+  .info-style{
+    text-align: center;
+    padding-left: 100px;
+    padding-right: 100px;
+    font-family: 'Poppins';
+    font-style: normal;
+  }
+
+  .dialog{
+    width: 355px !important;
+    height: 48px !important;
+  }
+
+  a.disabled {
+    /* Make the disabled links grayish*/
+    color: gray;
+    /* And disable the pointer events */
+    pointer-events: none;
+  }
+
+  .hrefstyle {
+    text-decoration: underline;
+    color: #0073CF;
+    cursor: pointer;
+  }
+
+  
+@media only screen and (min-width: 360px) and (max-width: 768px) {
+  .info-style{
+    padding: unset;
+    margin-top: 20px;
+  }
+  .cuadro{
+    width: 30px;
+    height: 30px;
+    margin: 3px;
+  }
+}
+
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+ 
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  border-top-color: #000000;
+  animation: spinner .8s linear infinite;
+}

@@ -1,0 +1,34 @@
+::ng-deep .mat-horizontal-stepper-header{
+    pointer-events: none !important;
+}
+
+
+.footerVersion{
+    color: rgb(23, 91, 165); 
+    font-size: 12px; 
+    display: flex; 
+    align-items: center; 
+    font-family: Roboto, 'Helvetica Neue', sans-serif; 
+    font-weight: 500;
+    margin: 20px;
+    position: absolute; 
+    bottom: 0px;
+}
+
+
+@media only screen and (min-width: 360px) and (max-width: 768px) {
+    .mat-stepper-label-position-bottom .mat-horizontal-stepper-header .mat-step-label {
+        display: none;
+    }
+}
+
+
+@media only screen and  (max-width: 575px) {
+
+
+    ::ng-deep  .mat-step-label {
+        display: none !important;
+    }
+}
+
+

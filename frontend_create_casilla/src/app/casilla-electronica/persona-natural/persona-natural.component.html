@@ -1,0 +1,200 @@
+<form [formGroup]="formGroup" (submit)="$event.preventDefault()">
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue"> Tipo de documento *</label>
+    </div>
+    <div class="col-sm">
+      <select class="form-select" formControlName="tipoDocumento" [disabled]="buscando" (change)="tipoDocumentoCambiado()"
+      [ngClass]="{ 'is-invalid': (f.tipoDocumento!.touched || f.tipoDocumento!.dirty) && f.tipoDocumento.errors}"
+      required>
+        <option *ngFor="let item of tipoDocumentoList" [value]="item.codigo">{{item.nombre}}</option>
+      </select>
+    </div>
+    <div class="col-sm">
+      <label class="label-blue">N° de documento *</label>
+    </div>
+
+      <div class="input-group mb-3 col-sm">
+        <!--<input type="text" class="form-control" formControlName="numeroDocumento"  [ngClass]="{ 'is-invalid': (f.numeroDocumento!.touched || f.numeroDocumento!.dirty) && f.numeroDocumento.errors }" type="text" (change)="invalidarDocumento()"  (keypress)="validateInputKey($event)" (keydown.enter)="validarDocumento()" [maxlength] ="maxlength"  required>-->
+        <input type="text" inputmode="numeric" class="form-control" formControlName="numeroDocumento"  [ngClass]="{ 'is-invalid': (f.numeroDocumento!.touched || f.numeroDocumento!.dirty) && f.numeroDocumento.errors }" type="text" (change)="invalidarDocumento()" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');" (keydown.enter)="validarDocumento()" [maxlength] ="maxlength" [minlength]="maxlength" required>
+        <!--<input type="text" formControlName="numeroDocumento" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..?)\../g, '$1');">-->
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2" *ngIf="(getNumeroDoc().length == 8 && !numeroDniValido && esTipoDocumentoDni)" (click)="validarDocumento()"  [class.spinner]="loading" [disabled]="loading">Consultar</button>
+      </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue"> Apellido paterno</label>
+    </div>
+    <div class="col-sm">
+      <input id="apellidoPaterno" type="text" class="form-control" style="text-transform: uppercase;" formControlName="apellidoPaterno"
+             [ngClass]="{ 'is-invalid': (f.apellidoPaterno!.touched || f.apellidoPaterno!.dirty) && f.apellidoPaterno.errors }"
+             autocomplete="off" minlength="2" maxlength="100" ng-trim="true"
+             (keypress)="quitarDobleEspacio('apellidoPaterno', $event);validarEntrada('apellidoPaterno', formGroup, 'apellidoPaterno', $event)"
+             (blur)="apellidos();validarEntrada('apellidoPaterno', formGroup, 'apellidoPaterno')">
+    </div>
+    <div class="col-sm">
+      <label class="label-blue">Apellido materno</label>
+    </div>
+      <div class="input-group mb-3 col-sm">
+        <input id="apellidoMaterno" type="text" class="form-control" style="text-transform: uppercase;" formControlName="apellidoMaterno" [ngClass]="{ 'is-invalid': (f.apellidoMaterno!.touched || f.apellidoMaterno!.dirty) && f.apellidoMaterno.errors }"
+               autocomplete="off" minlength="2" maxlength="100" ng-trim="true"
+               (keypress)="quitarDobleEspacio('apellidoMaterno', $event);validarEntrada('apellidoMaterno', formGroup, 'apellidoMaterno', $event)"
+               (blur)="apellidos();validarEntrada('apellidoMaterno', formGroup, 'apellidoMaterno')">
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Nombres *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input id="nombres" type="text" class="form-control" style="text-transform: uppercase;" formControlName="nombres"
+             [ngClass]="{ 'is-invalid': (f.nombres!.touched || f.nombres!.dirty) && f.nombres.errors }"
+             autocomplete="off" minlength="2" maxlength="100" ng-trim="true"
+             (keypress)="quitarDobleEspacio('nombres', $event);validarEntrada('nombres', formGroup, 'nombres', $event)"
+             (blur)="validarEntrada('nombres', formGroup, 'nombres')">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue"> Fecha de nacimiento *</label>
+    </div>
+    <div class=" input-group mb-3 col-sm">
+      <!-- <input type="text" class="form-control" placeholder="dd-mm-yyyy"   [maxDate]="maxdate"  name="dp" formControlName="fechaNacimento" [ngClass]="{ 'is-invalid': f.fechaNacimento.errors }" ngbDatepicker #d="ngbDatepicker" readonly>
+        <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button> -->
+
+          <input class="form-control" placeholder="dd/mm/aaaa" [ngClass]="{ 'is-invalid': (f.fechaNacimento!.touched || f.fechaNacimento!.dirty) && f.fechaNacimento.errors }" [min]="mindate" [max]="todaydate" [matDatepicker]="picker" formControlName="fechaNacimento" readonly>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+
+    </div>
+    <div class="col-sm" *ngIf="esTipoDocumentoDni">
+      <label class="label-blue">Dígito de verificación *</label>
+    </div>
+
+    <div class="input-group mb-3 col-sm" *ngIf="esTipoDocumentoDni">
+      <input type="text" inputmode="numeric"  class="form-control" formControlName="digitoVerificacion" [ngClass]="{ 'is-invalid': (f.digitoVerificacion!.touched || f.digitoVerificacion!.dirty) && f.digitoVerificacion.errors }" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');" maxlength="1" autocomplete="off">
+      <!-- <div class="input-group-append">
+        <button class="tooltip" data-text="Es el número separado con un guión después de tu número de DNI." class="tooltip left" >
+          <span class="glyphicon glyphicon-info-sign"></span>
+        </button>
+      </div> -->
+      <button class="btn btn-outline-secondary" type="button" placement="start" ngbTooltip="Es el número separado con un guión después de tu número de DNI." >
+        <i class="fa fa-info"></i>
+    </button>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue"> Correo electrónico *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="email" class="form-control" placeholder="example@mail.com" maxlength="50" formControlName="correoElectronico" [ngClass]="{ 'is-invalid': (f.correoElectronico!.touched || f.correoElectronico!.dirty) && f.correoElectronico.errors }" autocomplete="off" oninput="this.value = this.value.toLowerCase()">
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="validarCorreoElectronico()" [disabled]="ActiveButton()  || oneClick">Validar</button>
+    </div>
+    <div class="col-sm">
+      <label class="label-blue">Número de celular *</label>
+    </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" inputmode="numeric" class="form-control" formControlName="numeroCelular" [ngClass]="{ 'is-invalid': (f.numeroCelular!.touched || f.numeroCelular!.dirty) && f.numeroCelular.errors }" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');" (keypress)="validarCelular($event)"  minlength="9" maxlength="9" autocomplete="off" >
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="validarNumeroCelular()" [disabled]="ActiveButtonSMS()  || oneClick">Validar</button>
+      </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Número de teléfono fijo (opcional)</label>
+    </div>
+      <div class="input-group mb-3 col-sm"> <!-- oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');"-->
+        <input type="text" inputmode="numeric" class="form-control" formControlName="numeroTelefono" [ngClass]="{ 'is-invalid': (f.numeroTelefono!.touched || f.numeroTelefono!.dirty) && f.numeroTelefono.errors }" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');" (keypress)="validarsoloTelefonoFijo($event)"  minlength="6" maxlength="10" autocomplete="off" >
+      </div>
+    <div class="col-sm">
+      <label class="label-blue"> Departamento *</label>
+    </div>
+    <div class="col-sm">
+      <select class="form-select" id="departamento" name="departamento" formControlName="departamento" [ngClass]="{ 'is-invalid': (f.departamento!.touched || f.departamento!.dirty) && f.departamento.errors }" (change)="cambiarProvincia()">
+        <option  ngValue="">SELECCIONE DEPARTAMENTO</option>
+        <option *ngFor="let item of departamentoList" [ngValue]="item">{{item.nodep}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Provincia *</label>
+    </div>
+
+      <div class="input-group mb-3 col-sm">
+        <select class="form-select"id="provincia" name="provincia" formControlName="provincia" [ngClass]="{ 'is-invalid': (f.provincia!.touched || f.provincia!.dirty) && f.provincia.errors }" (change)="cambiarDistrito()">
+          <option  ngValue="">SELECCIONE PROVINCIA</option>
+          <option *ngFor="let item of provinciaList" [ngValue]="item">{{item.noprv}}</option>
+        </select>
+      </div>
+    <div class="col-sm">
+      <label class="label-blue"> Distrito *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <select class="form-select" id="distrito" name="distrito" formControlName="distrito" [ngClass]="{ 'is-invalid': (f.distrito!.touched || f.distrito!.dirty) && f.distrito.errors }">
+        <option  ngValue="">SELECCIONE DISTRITO</option>
+        <option  *ngFor="let item of distritoList" [ngValue]="item">{{item.nodis}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Dirección *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input id="domicilioID" type="text" class="form-control" maxlength="100" minlength="5" formControlName="domicilioFisico"
+             [ngClass]="{ 'is-invalid': (f.domicilioFisico!.touched || f.domicilioFisico!.dirty) && f.domicilioFisico.errors }"
+             (blur)="validarEntrada('domicilioID', formGroup, 'domicilioFisico')"
+             placeholder="Jirón/Av./Calle"
+             autocomplete="off">
+    </div>
+  </div>
+  <div class="row" style="">
+    <div class="col-sm-4">
+      <label class="label-blue-oneline">¿Es usted candidato a un proceso electoral?<br>(marcar según corresponda) *</label>
+
+    </div>
+    <div class="col-sm-3">
+      <div class="row container-form-radio">
+
+        <div class="col-sm-4">
+
+          <label >
+            <input type="radio" value="Sí" name="statusCandidateElectoralProcess"    class="chkBox" formControlName="statusCandidateElectoralProcess" (change)="changeStatusCandidateProcessElectoral($event, true)" [ngClass]="{ 'is-invalid': (f.statusCandidateElectoralProcess!.touched || f.statusCandidateElectoralProcess!.dirty) && f.statusCandidateElectoralProcess.errors }"  >
+            <span class="etiqueta">
+              Sí
+            </span>
+          </label>
+
+        </div>
+        <div class="col-sm-5">
+
+          <label >
+          <input type="radio" value="No" name="statusCandidateElectoralProcess"    class="chkBox" formControlName="statusCandidateElectoralProcess" (change)="changeStatusCandidateProcessElectoral($event, false)" [ngClass]="{ 'is-invalid': (f.statusCandidateElectoralProcess!.touched || f.statusCandidateElectoralProcess!.dirty) && f.statusCandidateElectoralProcess.errors }"  >
+            <span class="etiqueta">
+              No
+            </span>
+          </label>
+
+        </div>
+      </div>
+    </div>
+    <div *ngIf="esCandidatoElectoral"  class="input-group mb-2 col-sm">
+      <select class="form-select"id="listElectoralProcess" name="listElectoralProcess" formControlName="listElectoralProcess" [ngClass]="{ 'is-invalid': (f.listElectoralProcess!.touched || f.listElectoralProcess!.dirty) && f.listElectoralProcess.errors }" #selectElementListElectoralProcess >
+        <option  ngValue="">SELECCIONE EL PROCESO ELECTORAL</option>
+        <option *ngFor="let item of electoralProcessList" [ngValue]="item">{{item.name}}</option>
+      </select>
+    </div>
+  </div>
+  <br>
+</form>

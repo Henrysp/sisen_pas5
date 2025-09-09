@@ -1,0 +1,31 @@
+<!-- <h1 mat-dialog-title>{{data.cabecera}}</h1> -->
+<label class="title interlineado" for=""><strong>{{data.cabecera}}</strong> </label>
+<mat-dialog-content>
+        <div class="form-group " *ngFor="let message of data.messages">
+                <label  class="info-style " [innerHTML]="message"></label>
+        </div>
+<!-- <p *ngFor="let message of data.messages">{{message}}</p> -->
+</mat-dialog-content>
+<mat-dialog-actions >
+  <!-- <button mat-flat-button class="btnAceptar"
+          (click)="cancelar()"  *ngIf="data.btnCancel"
+  >CANCELAR</button>
+
+  <button mat-flat-button class="btnAceptar"
+          (click)="aceptar()"
+  >ACEPTAR</button> -->
+
+
+  <div class="container">
+        <div class="row" style="text-align: center;" >
+    
+          <div class="col-sm mb-3" *ngIf="data.btnCancel">
+            <button class="btn-back" type="button"  (click)="cancelar()">CANCELAR</button>
+          </div>
+          <div class="col-sm">
+            <button class="btn-valid" type="button" (click)="aceptar()">ACEPTAR</button>
+          </div>
+        </div>
+      </div>
+</mat-dialog-actions>
+

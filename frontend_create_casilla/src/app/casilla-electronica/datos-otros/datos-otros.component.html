@@ -1,0 +1,461 @@
+<form [formGroup]="formGroup" (submit)="$event.preventDefault()">
+  <br>
+    <app-alert type="success">Los datos ingresados serán validados con el ROP (Registro de Organizaciones Políticas).<br>Recuerda que este registro permitirá que los funcionarios puedan acceder a la casilla electrónica principal, en caso sea aprobada.</app-alert>
+  <br>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Cargo</label>
+    </div>
+    <div class="col-sm">
+      <select class="form-select" formControlName="cargoTesorero">
+        <option *ngFor="let item of cargoList" [ngValue]="item">{{item.value}}</option>
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue">Tipo de documento *</label>
+    </div>
+    <div class=" col-sm">
+      <select class="form-select" formControlName="tipoDocumentoTesorero" (change)="tipoDocumento($event, 'documentoTesorero')"
+      [ngClass]="{ 'is-invalid': (f.tipoDocumentoTesorero!.touched || f.tipoDocumentoTesorero!.dirty) && f.tipoDocumentoTesorero.errors}">
+        <option *ngFor="let item of tipoDocumentoList" [value]="item.codigo">{{item.nombre}}</option>
+      </select>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">N° de documento *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');" class="form-control" formControlName="documentoTesorero"
+             [ngClass]="{ 'is-invalid': (f.documentoTesorero!.touched || f.documentoTesorero!.dirty) && f.documentoTesorero.errors }"
+             (keyup)="activarBoton('documentoTesorero', 'tipoDocumentoTesorero')"
+             (keydown.enter)="validarDocumento('documentoTesorero', 'tipoDocumentoTesorero')"
+             [maxlength] ="maxlengtht" [minlength]="maxlengtht">
+      <button class="btn btn-outline-secondary" type="button" *ngIf="btnTesorero" (click)="validarDocumento('documentoTesorero', 'tipoDocumentoTesorero')" [class.spinner]="loading" [disabled]="loading">Consultar</button>
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue"> Apellido paterno</label>
+    </div>
+    <div class="col-sm">
+      <input type="text" class="form-control" formControlName="apellidoPaternoTesorero" autocomplete="off" maxlength="100" minlength="2"
+             style="text-transform: uppercase;"
+             (keypress)="validarEntrada('apellidoPaternoTesorero', formGroup, 'apellidoPaternoTesorero', $event)"
+             [ngClass]="{ 'is-invalid': (f.apellidoPaternoTesorero!.touched || f.apellidoPaternoTesorero!.dirty) && f.apellidoPaternoTesorero.errors }">
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Apellido materno</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" formControlName="apellidoMaternoTesorero" autocomplete="off" maxlength="100" minlength="2"
+             style="text-transform: uppercase;"
+             (keypress)="validarEntrada('apellidoMaternoTesorero', formGroup, 'apellidoMaternoTesorero', $event)"
+             [ngClass]="{ 'is-invalid': (f.apellidoMaternoTesorero!.touched || f.apellidoMaternoTesorero!.dirty) && f.apellidoMaternoTesorero.errors }">
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue">Nombres *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" formControlName="nombresTesorero" autocomplete="off" maxlength="100" minlength="2"
+             style="text-transform: uppercase;"
+             (keypress)="validarEntrada('nombresTesorero', formGroup, 'nombresTesorero', $event)"
+             [ngClass]="{ 'is-invalid': (f.nombresTesorero!.touched || f.nombresTesorero!.dirty) && f.nombresTesorero.errors }">
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Correo electrónico *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" maxlength="50" formControlName="emailTesorero" (blur)="validarEmail('emailTesorero', 'emailConfirmacionTesorero')" (focus)="limpiarCampos('emailConfirmacionTesorero')"
+             [ngClass]="{ 'is-invalid': (f.emailTesorero!.touched || f.emailTesorero!.dirty) && f.emailTesorero.errors }" autocomplete="off" oninput="this.value = this.value.toLowerCase()">
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue" style="width: auto;">Repita correo electrónico *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" maxlength="50" formControlName="emailConfirmacionTesorero" (blur)="validarConfirmar('emailTesorero', 'emailConfirmacionTesorero')"
+             [ngClass]="{ 'is-invalid': (f.emailConfirmacionTesorero!.touched || f.emailConfirmacionTesorero!.dirty) && f.emailConfirmacionTesorero.errors }" autocomplete="off" oninput="this.value = this.value.toLowerCase()">
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Número de celular *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" formControlName="celularTesorero" (keypress)="validaCelular($event, 'celularTesorero')"  (blur)="validarCelular('celularTesorero', 'celularConfirmacionTesorero')"  (focus)="limpiarCampos('celularConfirmacionTesorero')" autocomplete="off" [maxlength] ="9" [minlength]="9"
+             [ngClass]="{ 'is-invalid': (f.celularTesorero!.touched || f.celularTesorero!.dirty) && f.celularTesorero.errors }">
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue" style="width: auto;">Repita número de celular *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" formControlName="celularConfirmacionTesorero" (keypress)="validaCelular($event, 'celularConfirmacionTesorero')"  (blur)="validarConfirmar('celularTesorero', 'celularConfirmacionTesorero')" autocomplete="off" [maxlength] ="9" [minlength]="9"
+             [ngClass]="{ 'is-invalid': (f.celularConfirmacionTesorero!.touched || f.celularConfirmacionTesorero!.dirty) && f.celularConfirmacionTesorero.errors }">
+    </div>
+  </div>
+  <!--<br>
+    <app-alert type="success">Los datos ingresados serán validados con el ROP<br>Recuerda que este registro permitirá que los funcionarios puedan acceder a la casilla electrónica principal, en caso sea aprobada.</app-alert>
+  <br>-->
+  <br>
+  <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="right">
+    <button type="button" class="btn btn-danger custom" (click)="agregarRepresentanteLegalOP()" *ngIf="!representanteLegalOP">Agregar Representante Legal OP</button>
+    <button type="button" class="btn btn-danger custom" (click)="agregarRepresentanteLegalOP()" *ngIf="representanteLegalOP">Remover Representante Legal OP</button>
+  </div>
+  <br>
+  <div *ngIf="representanteLegalOP">
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Cargo</label>
+      </div>
+      <div class="col-sm">
+        <select class="form-select" formControlName="cargoRepre">
+          <option *ngFor="let item of cargoList" [ngValue]="item">{{item.value}}</option>
+        </select>
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue">Tipo de documento *</label>
+      </div>
+      <div class=" col-sm">
+        <select class="form-select" formControlName="tipoDocumentoRepre" (change)="tipoDocumento($event, 'documentoRepre')"
+        [ngClass]="{ 'is-invalid': (f.tipoDocumentoRepre!.touched || f.tipoDocumentoRepre!.dirty) && f.tipoDocumentoRepre.errors}">
+          <option *ngFor="let item of tipoDocumentoList" [value]="item.codigo">{{item.nombre}}</option>
+        </select>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">N° de documento *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" formControlName="documentoRepre"
+               [ngClass]="{ 'is-invalid': (f.documentoRepre!.touched || f.documentoRepre!.dirty) && f.documentoRepre.errors }"
+               (keyup)="activarBoton('documentoRepre', 'tipoDocumentoRepre')"
+               (keydown.enter)="validarDocumento('documentoRepre', 'tipoDocumentoRepre')"
+               [maxlength] ="maxlengthr" [minlength]="maxlengthr">
+        <button class="btn btn-outline-secondary" type="button" *ngIf="btnRepresentante" (click)="validarDocumento('documentoRepre', 'tipoDocumentoRepre')" [class.spinner]="loading" [disabled]="loading">Consultar</button>
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue"> Apellido paterno</label>
+      </div>
+      <div class="col-sm">
+        <input type="text" class="form-control" formControlName="apellidoPaternoRepre" autocomplete="off" maxlength="100" minlength="2"
+               style="text-transform: uppercase;"
+               (keypress)="validarEntrada('apellidoPaternoRepre', formGroup, 'apellidoPaternoRepre', $event)"
+               [ngClass]="{ 'is-invalid': (f.apellidoPaternoRepre!.touched || f.apellidoPaternoRepre!.dirty) && f.apellidoPaternoRepre.errors }"
+        >
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Apellido materno</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" formControlName="apellidoMaternoRepre"  autocomplete="off" maxlength="100" minlength="2"
+               style="text-transform: uppercase;"
+               (keypress)="validarEntrada('apellidoMaternoRepre', formGroup, 'apellidoMaternoRepre', $event)"
+               [ngClass]="{ 'is-invalid': (f.apellidoMaternoRepre!.touched || f.apellidoMaternoRepre!.dirty) && f.apellidoMaternoRepre.errors }"
+        >
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue">Nombres *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" formControlName="nombresRepre" autocomplete="off" maxlength="100" minlength="2"
+               style="text-transform: uppercase;"
+               (keypress)="validarEntrada('nombresRepre', formGroup, 'nombresRepre', $event)"
+               [ngClass]="{ 'is-invalid': (f.nombresRepre!.touched || f.nombresRepre!.dirty) && f.nombresRepre.errors }"
+        >
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Correo electrónico *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" maxlength="50" formControlName="emailRepre" (blur)="validarEmail('emailRepre', 'emailConfirmacionRepre')"
+               (focus)="limpiarCampos('emailConfirmacionRepre')"
+               [ngClass]="{ 'is-invalid': (f.emailRepre!.touched || f.emailRepre!.dirty) && f.emailRepre.errors }" autocomplete="off"
+               oninput="this.value = this.value.toLowerCase()">
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue" style="width: auto;">Repita correo electrónico *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" maxlength="50" formControlName="emailConfirmacionRepre" (blur)="validarConfirmar('emailRepre', 'emailConfirmacionRepre')"
+               [ngClass]="{ 'is-invalid': (f.emailConfirmacionRepre!.touched || f.emailConfirmacionRepre!.dirty) && f.emailConfirmacionRepre.errors }" autocomplete="off"
+               oninput="this.value = this.value.toLowerCase()">
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Número de celular *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '');" formControlName="celularRepre" (keypress)="validaCelular($event, 'celularRepre')"
+               (blur)="validarCelular('celularRepre', 'celularConfirmacionRepre')" (focus)="limpiarCampos('celularConfirmacionRepre')" autocomplete="off"
+               [maxlength] ="9" [minlength]="9"
+               [ngClass]="{ 'is-invalid': (f.celularRepre!.touched || f.celularRepre!.dirty) && f.celularRepre.errors }">
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue" style="width: auto;">Repita número de celular *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '');" formControlName="celularConfirmacionRepre"
+               (keypress)="validaCelular($event, 'celularConfirmacionRepre')"  (blur)="validarConfirmar('celularRepre', 'celularConfirmacionRepre')" autocomplete="off"
+               [maxlength] ="9" [minlength]="9"
+               [ngClass]="{ 'is-invalid': (f.celularConfirmacionRepre!.touched || f.celularConfirmacionRepre!.dirty) && f.celularConfirmacionRepre.errors }">
+      </div>
+    </div>
+    <br>
+  </div>
+  <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="right">
+    <button type="button" class="btn btn-danger custom" (click)="agregarPresidente()" *ngIf="!presidente">Agregar Presidente</button>
+    <button type="button" class="btn btn-danger custom" (click)="agregarPresidente()" *ngIf="presidente">Remover Presidente</button>
+  </div>
+  <!--<br>
+    <app-alert type="success" *ngIf="presidente">Los datos ingresados serán validados con el ROP<br>Recuerda que este registro permitirá que los funcionarios puedan acceder a la casilla electrónica principal, en caso sea aprobada.</app-alert>
+  <br>-->
+  <br>
+  <div class="row" *ngIf="presidente">
+    <div class="col-sm-2">
+      <label class="label-blue">Cargo</label>
+    </div>
+    <div class="col-sm">
+      <select class="form-select" formControlName="cargoPresi">
+        <option *ngFor="let item of cargoList" [ngValue]="item">{{item.value}}</option>
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue">Tipo de documento *</label>
+    </div>
+    <div class=" col-sm">
+      <select class="form-select" formControlName="tipoDocumentoPresi" (change)="tipoDocumento($event,'documentoPresi')"
+              [ngClass]="{ 'is-invalid': (f.tipoDocumentoPresi!.touched || f.tipoDocumentoPresi!.dirty) && f.tipoDocumentoPresi.errors}">
+        <option *ngFor="let item of tipoDocumentoList" [value]="item.codigo">{{item.nombre}}</option>
+      </select>
+    </div>
+  </div>
+  <br *ngIf="presidente">
+  <div class="row" *ngIf="presidente">
+    <div class="col-sm-2">
+      <label class="label-blue">N° de documento *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" formControlName="documentoPresi"
+             [ngClass]="{ 'is-invalid': (f.documentoPresi!.touched || f.documentoPresi!.dirty) && f.documentoPresi.errors }"
+             (keyup)="activarBoton('documentoPresi', 'tipoDocumentoPresi')"
+             (keydown.enter)="validarDocumento('documentoPresi', 'tipoDocumentoPresi')"
+             [maxlength] ="maxlengthp" [minlength]="maxlengthp">
+      <button class="btn btn-outline-secondary" type="button" *ngIf="btnPresidente" (click)="validarDocumento('documentoPresi', 'tipoDocumentoPresi')" [class.spinner]="loading" [disabled]="loading">Consultar</button>
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue"> Apellido paterno</label>
+    </div>
+    <div class="col-sm">
+      <input type="text" class="form-control" formControlName="apellidoPaternoPresi"  autocomplete="off" maxlength="100" minlength="2"
+             style="text-transform: uppercase;"
+             (keypress)="validarEntrada('apellidoPaternoPresi', formGroup, 'apellidoPaternoPresi', $event)"
+             [ngClass]="{ 'is-invalid': (f.apellidoPaternoPresi!.touched || f.apellidoPaternoPresi!.dirty) && f.apellidoPaternoPresi.errors }">
+    </div>
+  </div>
+  <br *ngIf="presidente">
+  <div class="row" *ngIf="presidente">
+    <div class="col-sm-2">
+      <label class="label-blue">Apellido materno</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" formControlName="apellidoMaternoPresi"  autocomplete="off" maxlength="100" minlength="2"
+             style="text-transform: uppercase;"
+             (keypress)="validarEntrada('apellidoMaternoPresi', formGroup, 'apellidoMaternoPresi', $event)"
+             [ngClass]="{ 'is-invalid': (f.apellidoMaternoPresi!.touched || f.apellidoMaternoPresi!.dirty) && f.apellidoMaternoPresi.errors }">
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue">Nombres *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" formControlName="nombresPresi" autocomplete="off" maxlength="100" minlength="2"
+             style="text-transform: uppercase;"
+             (keypress)="validarEntrada('nombresPresi', formGroup, 'nombresPresi', $event)"
+             [ngClass]="{ 'is-invalid': (f.nombresPresi!.touched || f.nombresPresi!.dirty) && f.nombresPresi.errors }">
+    </div>
+  </div>
+  <br *ngIf="presidente">
+  <div class="row" *ngIf="presidente">
+    <div class="col-sm-2">
+      <label class="label-blue">Correo electrónico *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" maxlength="50" formControlName="emailPresi" (blur)="validarEmail('emailPresi', 'emailConfirmacionPresi')"
+             (focus)="limpiarCampos('emailConfirmacionPresi')" autocomplete="off"
+             [ngClass]="{ 'is-invalid': (f.emailPresi!.touched || f.emailPresi!.dirty) && f.emailPresi.errors }"
+             oninput="this.value = this.value.toLowerCase()">
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue" style="width: auto;">Repita correo electrónico *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" maxlength="50" formControlName="emailConfirmacionPresi" (blur)="validarConfirmar('emailPresi', 'emailConfirmacionPresi')" autocomplete="off"
+             [ngClass]="{ 'is-invalid': (f.emailConfirmacionPresi!.touched || f.emailConfirmacionPresi!.dirty) && f.emailConfirmacionPresi.errors }"
+             oninput="this.value = this.value.toLowerCase()">
+    </div>
+  </div>
+  <br *ngIf="presidente">
+  <div class="row" *ngIf="presidente">
+    <div class="col-sm-2">
+      <label class="label-blue">Número de celular *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '');" formControlName="celularPresi" (keypress)="validaCelular($event, 'celularPresi')"
+             (blur)="validarCelular('celularPresi', 'celularConfirmacionPresi')" (focus)="limpiarCampos('celularConfirmacionPresi')" autocomplete="off"
+             [maxlength] ="9" [minlength]="9"
+             [ngClass]="{ 'is-invalid': (f.celularPresi!.touched || f.celularPresi!.dirty) && f.celularPresi.errors }">
+    </div>
+    <div class="col-sm-2">
+      <label class="label-blue" style="width: auto;">Repita número de celular *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '');" formControlName="celularConfirmacionPresi"
+             (keypress)="validaCelular($event, 'celularConfirmacionPresi')"  (blur)="validarConfirmar('celularPresi', 'celularConfirmacionPresi')"
+             autocomplete="off" [maxlength] ="9" [minlength]="9"
+             [ngClass]="{ 'is-invalid': (f.celularConfirmacionPresi!.touched || f.celularConfirmacionPresi!.dirty) && f.celularConfirmacionPresi.errors }">
+    </div>
+  </div>
+  <br *ngIf="presidente">
+<!--  Aqui comienza Perfil OP-->
+  <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="right">
+    <button type="button" class="btn btn-danger custom" (click)="agregarPerfilOP()" *ngIf="!perfil_OP">Agregar Presidente del OEC</button>
+    <button type="button" class="btn btn-danger custom" (click)="agregarPerfilOP()" *ngIf="perfil_OP">Remover Presidente del OEC</button>
+  </div>
+  <div *ngIf="perfil_OP">
+    <br>
+    <app-alert type="success">Nota: El término "Presidente del OEC" hace referencia al "Presidente del órgano electoral central".</app-alert>
+    <br>
+  </div>
+  <div *ngIf="perfil_OP">
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Cargo</label>
+      </div>
+      <div class="col-sm">
+        <select class="form-select" formControlName="cargoOP">
+          <option *ngFor="let item of cargoList" [ngValue]="item">{{item.value}}</option>
+        </select>
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue">Tipo de documento *</label>
+      </div>
+      <div class=" col-sm">
+        <select class="form-select" formControlName="tipoDocumentoOP" (change)="tipoDocumento($event, 'documentoOP')"
+                [ngClass]="{ 'is-invalid': (f.tipoDocumentoOP!.touched || f.tipoDocumentoOP!.dirty) && f.tipoDocumentoOP.errors}">
+          <option *ngFor="let item of tipoDocumentoList" [value]="item.codigo">{{item.nombre}}</option>
+        </select>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">N° de documento *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" formControlName="documentoOP"
+               [ngClass]="{ 'is-invalid': (f.documentoOP!.touched || f.documentoOP!.dirty) && f.documentoOP.errors }"
+               (keyup)="activarBoton('documentoOP', 'tipoDocumentoOP')" (keydown.enter)="validarDocumento('documentoOP', 'tipoDocumentoOP')"
+               [maxlength] ="maxlengtho" [minlength]="maxlengtho">
+        <button class="btn btn-outline-secondary" type="button" *ngIf="btnOP" (click)="validarDocumento('documentoOP', 'tipoDocumentoOP')" [class.spinner]="loading" [disabled]="loading">Consultar</button>
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue"> Apellido paterno</label>
+      </div>
+      <div class="col-sm">
+        <input type="text" class="form-control" formControlName="apellidoPaternoOP" autocomplete="off" maxlength="100" minlength="2"
+               style="text-transform: uppercase;"
+               (keypress)="validarEntrada('apellidoPaternoOP', formGroup, 'apellidoPaternoOP', $event)"
+               [ngClass]="{ 'is-invalid': (f.apellidoPaternoOP!.touched || f.apellidoPaternoOP!.dirty) && f.apellidoPaternoOP.errors }">
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Apellido materno</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" formControlName="apellidoMaternoOP"  autocomplete="off" maxlength="100" minlength="2"
+               style="text-transform: uppercase;"
+               (keypress)="validarEntrada('apellidoMaternoOP', formGroup, 'apellidoMaternoOP', $event)"
+               [ngClass]="{ 'is-invalid': (f.apellidoMaternoOP!.touched || f.apellidoMaternoOP!.dirty) && f.apellidoMaternoOP.errors }">
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue">Nombres *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" formControlName="nombresOP" autocomplete="off" maxlength="100" minlength="2"
+               style="text-transform: uppercase;"
+               (keypress)="validarEntrada('nombresOP', formGroup, 'nombresOP', $event)"
+               [ngClass]="{ 'is-invalid': (f.nombresOP!.touched || f.nombresOP!.dirty) && f.nombresOP.errors }">
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Correo electrónico *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" maxlength="50" formControlName="emailOP" (blur)="validarEmail('emailOP', 'emailConfirmacionOP')"
+               (focus)="limpiarCampos('emailConfirmacionOP')"
+               [ngClass]="{ 'is-invalid': (f.emailOP!.touched || f.emailOP!.dirty) && f.emailOP.errors }"
+               autocomplete="off" oninput="this.value = this.value.toLowerCase()">
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue" style="width: auto;">Repita correo electrónico *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" maxlength="50" formControlName="emailConfirmacionOP" (blur)="validarConfirmar('emailOP', 'emailConfirmacionOP')"
+               [ngClass]="{ 'is-invalid': (f.emailConfirmacionOP!.touched || f.emailConfirmacionOP!.dirty) && f.emailConfirmacionOP.errors }" autocomplete="off"
+               oninput="this.value = this.value.toLowerCase()">
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-2">
+        <label class="label-blue">Número de celular *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '');" formControlName="celularOP" (keypress)="validaCelular($event, 'celularOP')"
+               (blur)="validarCelular('celularOP', 'celularConfirmacionOP')" (focus)="limpiarCampos('celularConfirmacionOP')" autocomplete="off"
+               [maxlength] ="9" [minlength]="9"
+               [ngClass]="{ 'is-invalid': (f.celularOP!.touched || f.celularOP!.dirty) && f.celularOP.errors }">
+      </div>
+      <div class="col-sm-2">
+        <label class="label-blue" style="width: auto;">Repita número de celular *</label>
+      </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '');" formControlName="celularConfirmacionOP"
+               (keypress)="validaCelular($event, 'celularConfirmacionOP')"  (blur)="validarConfirmar('celularOP', 'celularConfirmacionOP')" autocomplete="off"
+               [maxlength] ="9" [minlength]="9"
+               [ngClass]="{ 'is-invalid': (f.celularConfirmacionOP!.touched || f.celularConfirmacionOP!.dirty) && f.celularConfirmacionOP.errors }">
+      </div>
+    </div>
+    <br>
+  </div>
+  <br>
+  <app-alert type="info">
+    <p class="camposObligatorios">*Campo obligatorio
+      <br/>Verifica tus datos antes de hacer clic en el botón CONTINUAR.
+    </p>
+  </app-alert>
+  <br>
+  <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center">
+    <button mat-flat-button type="button" color="primary" (click)="regresar()">REGRESAR</button>
+    <button mat-flat-button type="button" color="warn" [disabled]="!formGroup.valid"  (click)="siguientePaso()">CONTINUAR</button>
+  </div>
+</form>

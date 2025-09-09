@@ -1,0 +1,113 @@
+<div class="main-div">
+  <div>
+    <div class="logoOnpe">
+      <img src="../../../assets/img/PantallasCS3_Onpe.png" alt="" />
+    </div>
+  </div>
+  <div class="center" style="z-index: 100;">
+    <div class="logoSistema">
+      <img src="../../../assets/img/loginLogo70.png" alt="" />
+    </div>
+    <div class="centerTitle">INGRESO</div>
+    <form
+      #myform="ngForm"
+      [formGroup]="Formulario"
+      class="example-form"
+      autocomplete="off"
+      (ngSubmit)="loginInit()"
+    >
+      <mat-form-field class="example-full-width bigInputColor" appearance="outline" style="width: 100%" >
+        <mat-select name="fm_profile" formControlName="fm_profile" placeholder="Seleccione perfil" (selectionChange)="profileChange($event)" [class.control-invalid]="formInvalid('fm_usuario')">
+          <mat-option *ngFor="let item of lstProfile" [value]="item.profile">
+            {{item.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="Formulario.controls.fm_profile.invalid">{{
+            eShowError("fm_profile", Formulario.controls.fm_profile.errors)
+          }}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width bigInputColor" appearance="outline">
+        <span matPrefix class="material-icons">account_box</span>
+        <input
+          matInput
+          placeholder="{{ placeHolder }}"
+          (keypress)="validar_campo($event)"
+          type="text"
+          class="form-control"
+          formControlName="fm_usuario"
+          [class.control-invalid]="formInvalid('fm_usuario')"
+          [maxlength]="getMaxLengthNumeroDocumento"
+          [minlength]="getMin"
+          required
+          (paste)="$event.preventDefault()"
+          oninput="this.value = this.value.replace(/[^A-Za-zñÑáéíóúÁÉÍÓÚ]/g, '').replace(/(\..?)\../g, '$1').toUpperCase();"
+        />
+        <mat-error *ngIf="Formulario.controls.fm_usuario.invalid">{{
+            eShowError("fm_usuario", Formulario.controls.fm_usuario.errors)
+          }}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width bigInputColor" appearance="outline">
+        <span matPrefix class="material-icons">lock</span>
+        <input
+          mat-icon="lock"
+          matInput
+          placeholder="Contraseña"
+          [type]="hide ? 'password' : 'text'"
+          maxlength="20"
+          class="form-control"
+          formControlName="fm_pass"
+          [class.control-invalid]="formInvalid('fm_pass')"
+          [readonly]="load"
+          required
+        />
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-error *ngIf="Formulario.controls.fm_pass.invalid">{{
+            eShowError("fm_pass", Formulario.controls.fm_pass.errors)
+          }}</mat-error>
+      </mat-form-field>
+      <br>
+      <br>
+      <span class="mensajeLogin">{{ mensaje }}</span>
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <button
+          type="submit"
+          mat-raised-button
+          fxFlex="50"
+          class="btnBlue"
+          [class.spinner]="load"
+          [disabled]="load || myform.invalid"
+        >
+          Ingresar
+        </button>
+      </div>
+      <br>
+      <a class="linkContent" href="#" (click)="onloadGuia()">
+        Reglamento SISEN
+      </a>
+    </form>
+  </div>
+  <div class="dirFooter">
+    Jr. Washington 1894, Lima 01<br />
+    informes@onpe.gob.pe - Fono ONPE: 417 0630 opción 1<br />
+    Horario de atención: Lunes a Sábado de 08:00 h – 20:00 h
+  </div>
+  <div style="text-align: center;">
+    <div id="chrome" class="compartir">
+      <span class="loginRadio labelsColor">Navegadores recomendados: </span>
+      <img class="float-image" border="0" src="../../../assets/img/chrome.png" width="30px" height="30px">
+      <span class="loginRadio labelsColor">Google Chrome </span>
+    </div>
+    <div id="firefox" class="compartir">
+      <img class="float-image" border="0" src="../../../assets/img/firefox.png" width="30px" height="30px">
+      <span class="loginRadio labelsColor"> Mozilla Firefox </span>
+      <img class="float-image" alt="" src="../../../assets/img/edge.png" width="30px" height="30px">
+      <span class="loginRadio labelsColor"> Microsoft Edge </span>
+    </div>
+
+    <div style="height: 20px; min-height: 20px; max-height: 20px; padding: 7px; bottom: 0; left: 10px; position: fixed;" aria-hidden="false">
+      <div flex="50" style="color: rgb(23, 91, 165); font-size: 12px; display: flex; align-items: center; font-family: Roboto, 'Helvetica Neue', sans-serif; font-weight: 500;">
+        {{version}}
+      </div>
+    </div>
+  </div>
+</div>

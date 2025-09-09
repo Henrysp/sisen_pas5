@@ -1,0 +1,25 @@
+.long-text-card{
+  color: #949494;
+  background-color: #f1f1f1;
+  overflow-y: scroll !important;
+}
+
+p,li {
+  text-align: justify;
+  margin-bottom: 14px;
+}
+
+.terminos ,h1{
+  color: #003770;
+  font-family: 'Poppins';
+  word-wrap: break-all !important;
+width: auto;
+}
+
+::ng-deep .mat-checkbox-layout {
+    white-space: normal !important;
+}
+
+::ng-deep .mat-checkbox-inner-container {
+    margin-top: 3px !important;
+}

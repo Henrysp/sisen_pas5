@@ -1,0 +1,434 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>Nuevo representante
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+        <form #myform="ngForm" [formGroup]="Formulario">
+          <ng-container *ngIf="loading; then mostrarLoading; else ocultarLoading"></ng-container>
+          <ng-template #mostrarLoading>
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <div class="icon-loading"></div>
+            </div>
+          </ng-template>
+          <ng-template #ocultarLoading>
+          <div mat-dialog-content>
+            <section>
+                <div class="generalBox">
+                  <div class="controlBox inputColor">
+                    <div fxLayout="row wrap">
+                      <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Tipo de documento</div>
+                        <mat-form-field appearance="outline" style="width: 100%">
+                          <mat-select disabled placeholder="Seleccione" name="typeDoc" formControlName="fm_optiontipo" (selectionChange)="changeTypeDocument($event)">
+                            <mat-option *ngFor="let doc of typeDocument" [value]="doc.id">
+                                {{ doc.value }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Número de documento</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                          <input type="tel" disabled class="form-control" formControlName="fm_numerodoc" [maxlength]="maxlengthNumDoc" matInput placeholder="{{ placeHolder }}" name="doc" />
+                        </mat-form-field>
+                      </div>
+                      <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="Formulario.get('fm_optiontipo').value =='ruc'">
+                        <div class="labelsColor">Razón social </div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                          <input type="text" disabled class="form-control" formControlName="fm_organization_name" matInput placeholder="Razón social" />
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </ng-template>
+          </form>
+      <ng-container *ngIf="!loading">
+          <form #myform="ngForm" [formGroup]="FormRepresentative" (keydown.enter)="$event.preventDefault()">
+            <div mat-dialog-content>
+              <section>
+                  <div class="generalBox">
+                      <div class="controlBox inputColor">
+                          <h4 class="subtitle-h4"><strong>Datos del representante:</strong></h4>
+                          <div fxLayout="row wrap">
+<!--                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">-->
+<!--                              <div class="labelsColor">Tipo de documento adjunto*</div>-->
+<!--                              <mat-form-field appearance="outline" style="width: 100%">-->
+<!--                                  <mat-select-->
+<!--                                  placeholder="Seleccione"-->
+<!--                                  formControlName="fm_tipoDocumentoAdjunto"-->
+<!--                                  (selectionChange)="eChangeDocumentoAttach($event)"-->
+<!--                                  > &lt;!&ndash; name="typeDoc" &ndash;&gt;-->
+<!--                                  <mat-option *ngFor="let doc of tipoDocumentoAdjunto" [value]="doc">-->
+<!--                                      {{ doc.value }}-->
+<!--                                  </mat-option>-->
+<!--                                  </mat-select>-->
+<!--                                  <mat-error *ngIf="FormRepresentative.controls.fm_tipoDocumentoAdjunto.invalid">-->
+<!--                                      {{ eShowError("fm_tipoDocumentoAdjunto", FormRepresentative.controls.fm_tipoDocumentoAdjunto.errors)}}-->
+<!--                                  </mat-error>-->
+<!--                              </mat-form-field>-->
+<!--                            </div>-->
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <!--<div class="labelsColor">Especifique</div>
+                              <mat-form-field class="" appearance="outline" style="width: 100%">
+                                <input
+                                  id="fm_especifique"
+                                  type="text"
+                                  class="form-control"
+                                  formControlName="fm_especifique"
+                                  [class.control-invalid]="formInvalid('fm_especifique')"
+
+                                  [attr.disabled]="inputDisabled ? '' : null"
+                                  matInput
+                                  placeholder="Especifique"
+                                  name="espe"
+                                  (keypress)="quitarDobleEspacio('fm_especifique', fm_especifique, $event)"
+                                />
+                                <mat-error *ngIf="FormRepresentative.controls.fm_especifique.invalid">{{
+                                  eShowError("fm_especifique", FormRepresentative.controls.fm_especifique.errors)
+                                }}</mat-error>
+                              </mat-form-field>-->
+                            </div>
+                            <div fxFlex="100" class="padd_4">
+                              <div class="labelsColor">
+                                {{lblFeaturesFile}}
+                              </div>
+                              <file-upload
+                                [(ngModel)]="uploadedFilesRep"
+                                formControlName="filesRep"
+                                [multiple]="true"
+                                [animation]="true"
+                                discard="true" accept=".pdf,.jpg,.jpeg,.png,.bmp"
+                                (drop)="validatorFile('filesRep')"
+                                (change)="validatorFile('filesRep')"
+                              >
+                                <ng-template
+                                  let-isFileDragDropAvailable="isFileDragDropAvailable"
+                                  #placeholder
+                                >
+                                  <file-upload-drop-zone>
+                                    <ng-container
+                                      *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable"
+                                    >
+                                      {{lblAddFiles}}
+                                    </ng-container>
+                                    <ng-template #isNotDragDropAvailable> </ng-template>
+                                  </file-upload-drop-zone>
+                                </ng-template>
+
+                                <ng-template
+                                  let-i="index"
+                                  let-file="file"
+                                  let-control="control"
+                                  #item
+                                >
+                                  <file-upload-list-item
+                                    [index]="i"
+                                    class="item-test"
+                                    [file]="file"
+                                    [control]="control"
+                                    >Eliminar</file-upload-list-item
+                                  >
+                                </ng-template>
+                              </file-upload>
+
+                              <p *ngIf="errmaxLengthName" class="text-file-valid">{{lblErrorMaxLengthName}}</p>
+                              <p *ngIf="errduplicate" class="text-file-valid">Archivo con nombre duplicado</p>
+                              <p *ngIf="errorOnlyFile" class="text-file-valid">{{lblErrorOnlyFile}}</p>
+                              <p *ngIf="errminSizeFile" class="text-file-valid">El tamaño del archivo mínimo es 1B</p>
+                              <p *ngIf="errmaxSizeFile" class="text-file-valid">{{lblErrorMaxSizeFile}}</p>
+                              <p *ngIf="errmaxFiles" class="text-file-valid">{{lblErrorMaxFiles}}</p>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Cargo*</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                <mat-select
+                                  placeholder="Seleccione"
+                                  formControlName="fm_cargo"
+                                  disabled>
+                                  <mat-option *ngIf="user?.orgPol=== '1'" [value]="cargos[1]">
+                                    {{ cargos[1].value }}
+                                  </mat-option>
+                                  <mat-option *ngIf="!user?.orgPol || user?.orgPol === '0'" [value]="cargos[0]">
+                                    {{ cargos[0].value }}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="FormRepresentative.controls.fm_cargo.invalid">{{
+                                    eShowError("fm_cargo", FormRepresentative.controls.fm_cargo.errors)
+                                  }}</mat-error>
+                              </mat-form-field>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="user?.orgPol !== '1'">
+                              <div class="labelsColor">Asiento registral*</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                <input type="text" disabled class="form-control" formControlName="fm_asiento_registral"
+                                       matInput placeholder="Asiento registral"
+                                       [minlength]="3" [maxlength]="50" />
+                                <mat-error *ngIf="FormRepresentative.controls.fm_asiento_registral.invalid">
+                                  {{ eShowError("fm_asiento_registral", FormRepresentative.controls.fm_asiento_registral.errors) }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+                            <div fxFlex="50" class="padd_4" *ngIf="user?.orgPol === '1'">
+                                <div class="labelsColor">¿Es Personero Legal Alterno? *</div>
+                                <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 10px; ; padding: 0 100px">
+                                  <mat-checkbox
+                                    (change)="toggleAlterno($event, true)"
+                                    [checked]="FormRepresentative.get('alterno')?.value"
+                                    color="primary"
+                                    class="margin-right-8">Sí</mat-checkbox>
+                                  <mat-checkbox
+                                    (change)="toggleAlterno($event, false)"
+                                    [checked]="FormRepresentative.get('alterno')?.value === false"
+                                    color="primary">No</mat-checkbox>
+                                </div>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="buildHide('fm_optiontipo_rep')">
+                              <div class="labelsColor">Tipo de documento*</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                <mat-select placeholder="Seleccione" formControlName="fm_optiontipo_rep" (selectionChange)="eChangeDocumentoRep($event)">
+                                  <mat-option *ngFor="let doc of typeDocument2" [value]="doc.id">
+                                    {{ doc.value }}
+                                  </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="FormRepresentative.controls.fm_optiontipo_rep.invalid">
+                                  {{ eShowError("fm_optiontipo_rep", FormRepresentative.controls.fm_optiontipo_rep.errors) }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="buildHide('fm_numerodoc_rep')">
+                              <div class="labelsColor">Número de documento*</div>
+                              <mat-form-field class="" appearance="outline" style="width: 100%">
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  formControlName="fm_numerodoc_rep"
+                                  [maxlength]="maxlengthNumDocRep"
+                                  [minlength]="minlengthNumDocRep"
+                                  matInput
+                                  placeholder="Ingrese el número de Documento"
+                                  (keypress)="validar_campo($event, 'fm_numerodoc_rep')"
+                                  (input)="buscarCE()"
+                                  [readonly]="FormRepresentative.controls.fm_optiontipo_rep.value == null"
+                                  (paste)="onPaste2($event,'fm_optiontipo_rep','fm_numerodoc_rep')"
+                                  name="doc"
+                                />
+                                <mat-error *ngIf="FormRepresentative.controls.fm_numerodoc_rep.invalid">{{
+                                  eShowError("fm_numerodoc_rep", FormRepresentative.controls.fm_numerodoc_rep.errors)
+                                }}</mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">{{lblApPat}}</div>
+                              <mat-form-field class="" appearance="outline" style="width: 100%">
+                                <input
+                                  id="appaterno"
+                                  type="text"
+                                  class="input_text"
+                                  formControlName="apPaterno"
+                                  matInput
+                                  placeholder="Ingrese apellido paterno"
+                                  [maxlength]="100"
+                                  [readonly]="existData"
+                                  (keypress)="soloExpLetras('appaterno', apPaterno, $event)"
+                                  autocomplete="off"
+                                />
+                                <mat-error *ngIf="apPaterno.invalid && (apPaterno.dirty || apPaterno.touched)">
+                                  {{ eShowError("fm_appaterno", apPaterno.errors) }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">{{lblApMat}}</div>
+                              <mat-form-field class="" appearance="outline" style="width: 100%">
+                                <input
+                                  id="apmaterno"
+                                  type="text"
+                                  class="input_text"
+                                  formControlName="apMaterno"
+                                  matInput
+                                  placeholder="Ingrese apellido materno"
+                                  [maxlength]="100"
+                                  [readonly]="existData"
+                                  (keypress)="soloExpLetras('apmaterno', apMaterno, $event)"
+                                  autocomplete="off"
+                                />
+                                <mat-error *ngIf="apMaterno.invalid && (apMaterno.dirty || apMaterno.touched)">
+                                  {{ eShowError("fm_apmaterno", apMaterno.errors) }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Nombres*</div>
+                              <mat-form-field class="" appearance="outline" style="width: 100%">
+                                <input
+                                  id="nombres"
+                                  type="text"
+                                  class="input_text"
+                                  formControlName="nombres"
+                                  matInput
+                                  placeholder="Ingrese nombres"
+                                  [maxlength]="100"
+                                  [readonly]="existData"
+                                  (keypress)="soloExpLetras('nombres', nombres, $event)"
+                                  autocomplete="off"
+                                />
+                                <mat-error *ngIf="nombres.invalid && (nombres.dirty || nombres.touched)">
+                                  {{ eShowError("fm_nombres", nombres.errors) }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Correo electrónico*</div>
+                              <mat-form-field
+                                class=""
+                                disabled="true"
+                                appearance="outline"
+                                style="width: 100%"
+                              >
+                                <input
+                                  id="fm_correo"
+                                  type="text"
+                                  class="lowercase"
+                                  formControlName="fm_correo"
+                                  [class.control-invalid]="formInvalid('fm_correo')"
+                                  name="text"
+                                  [attr.disabled]="inputDisabled ? '' : null"
+                                  matInput
+                                  placeholder="Ingrese correo electrónico"
+                                  [maxlength]="50"
+                                  (keypress)="quitarDobleEspacio('fm_correo', fm_correo, $event)"
+                                  oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                                />
+                                <mat-error *ngIf="FormRepresentative.controls.fm_correo.invalid">
+                                  {{ eShowError("fm_correo", FormRepresentative.controls.fm_correo.errors) }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Número de celular*</div>
+                              <mat-form-field class="" appearance="outline" style="width: 100%">
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  formControlName="fm_celular"
+                                  [class.control-invalid]="formInvalid('fm_celular')"
+                                  [maxlength]="9"
+                                  [minlength]="9"
+                                  (keypress)="validar_campo($event, 'fm_celular')"
+                                  matInput
+                                  placeholder="Ingrese número de celular"
+                                  name="cellphone"
+                                />
+                                <mat-error *ngIf="FormRepresentative.controls.fm_celular.invalid">{{
+                                    eShowError("fm_celular", FormRepresentative.controls.fm_celular.errors)
+                                  }}</mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Número de teléfono fijo</div>
+                              <div fxLayout="row wrap">
+                                  <div fxFlex="100" fxFlex.md="100" fxFlex.sm="50" fxFlex.xs="50" class="padd_4">
+                                      <mat-form-field appearance="outline" style="width: 100%">
+                                          <input type="text" class="form-control" formControlName="fm_phone" [maxlength]="10" [minlength]="6" [class.control-invalid]="formInvalid('fm_phone')" (keypress)="validar_campo_phone($event, 'fm_phone')" matInput placeholder="Número de teléfono" name="phone" />
+                                          <mat-error *ngIf="FormRepresentative.controls.fm_phone.invalid">{{
+                                            eShowError("fm_phone", FormRepresentative.controls.fm_phone.errors)
+                                          }}</mat-error>
+                                      </mat-form-field>
+                                  </div>
+                              </div>
+                            </div>
+
+                            <!--<div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4"><h4 class="subtitle-h4"><strong>Domicilio:</strong></h4></div>-->
+
+                            <!--<div fxLayout="row wrap">-->
+                            <!--<div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Departamento*</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                <mat-select placeholder="Seleccione" name="fm_departamentoList" formControlName="fm_departamentoList" (selectionChange)="cambiarProvincia()">
+                                  <mat-option *ngFor="let item of departamentoList" [value]="item">{{ item.nodep }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="FormRepresentative.controls.fm_departamentoList.invalid">{{eShowError("fm_departamentoList", FormRepresentative.controls.fm_departamentoList.errors)}}</mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Provincia*</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                <mat-select placeholder="Seleccione" name="fm_provinciaList" formControlName="fm_provinciaList" (selectionChange)="cambiarDistrito()">
+                                  <mat-option *ngFor="let item of provinciaList" [value]="item">{{ item.noprv }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="FormRepresentative.controls.fm_provinciaList.invalid">{{eShowError("fm_provinciaList", FormRepresentative.controls.fm_provinciaList.errors)}}</mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Distrito*</div>
+                              <mat-form-field appearance="outline" style="width: 100%">
+                                <mat-select placeholder="Seleccione" name="fm_distritoList" formControlName="fm_distritoList" (selectionChange)="cambiarCargo()">
+                                  <mat-option *ngFor="let item of distritoList" [value]="item">{{ item.nodis }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="FormRepresentative.controls.fm_distritoList.invalid">{{eShowError("fm_distritoList", FormRepresentative.controls.fm_distritoList.errors)}}</mat-error>
+                              </mat-form-field>
+                            </div>
+
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                              <div class="labelsColor">Domicilio*</div>
+                              <mat-form-field class="" appearance="outline" style="width: 100%">
+                                <input
+                                  id="fm_direccion"
+                                  type="text"
+                                  class="form-control"
+                                  formControlName="fm_direccion"
+                                  [class.control-invalid]="formInvalid('fm_direccion')"
+                                  [minlength]="5"
+                                  [maxlength]="100"
+                                  [attr.disabled]="inputDisabled ? '' : null"
+                                  matInput
+                                  placeholder="Ingrese dirección"
+                                  name="address"
+                                  (keypress)="quitarDobleEspacio('fm_direccion', fm_direccion, $event)"
+                                />
+                                <mat-error *ngIf="FormRepresentative.controls.fm_direccion.invalid">{{
+                                  eShowError("fm_direccion", FormRepresentative.controls.fm_direccion.errors)
+                                }}</mat-error>
+                              </mat-form-field>
+                            </div>-->
+
+                            <br>
+                        <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                          <mat-dialog-actions class="footer-button">
+                              <!-- <button type="submit" class="btnBlue" mat-button [disabled]="myform.invalid || inputDisabled" (click)="saveEdit()">
+                                Actualizar
+                              </button> -->
+                              <mat-progress-bar *ngIf="load" mode="indeterminate"></mat-progress-bar>
+                              <!--<button mat-flat-button color="primary" (click)="saveEdit()">Crear</button>-->
+                          </mat-dialog-actions>
+
+                          <div class="row">
+                            <button type="submit" mat-button [disabled]="!(FormRepresentative.valid && FormRepresentative.dirty)" (click)="saveEdit()" class="btnBlue0">Crear</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button mat-button (click)="cancelar()" class="btnBrown0">Cancelar</button>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              </section>
+            </div>
+          </form>
+</ng-container>
+      <br />
+    </div>
+  </div>
+</section>

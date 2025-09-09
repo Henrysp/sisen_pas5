@@ -1,0 +1,100 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("../node_modules/bootstrap/dist/css/bootstrap.min.css");
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.principal {
+  background-color: red;
+  margin-left: 200px;
+  margin-right: 200px;
+}
+
+@media only screen and (max-width: 900px) {
+    .principal {
+      background-color: red;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-valid , .btn-back{
+        width: 100% !important;
+    }
+
+    
+  }
+
+
+  .label-blue{
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    /* or 143% */
+
+    display: flex;
+    align-items: center;
+
+    /* Azul */
+
+    color: #0073CF;
+    width: 176px;
+    height: 41px;
+    left: 207px;
+    top: 385px;
+  }
+
+  /*.btn-valid{
+    background-color: #DF0A14;
+    color: white;
+    width: 170px ;
+    height: 48px !important;
+    font-size: 16px;
+    border: 1px solid #DF0A14;
+  }*/
+
+  .btn-back{
+    color: white;
+    line-height: 36px;
+    background: #0A7DCF;
+    border: none;
+    padding: 0 16px;
+    border-radius: 4px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+
+  button:disabled,
+.btn-valid{
+    color: white;
+    line-height: 36px;
+    background-color: #f44336;
+    border: none;
+    padding: 0 16px;
+    border-radius: 4px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+.btn-regresar{
+    color: white;
+    line-height: 36px;
+    background-color: #3f51b5;
+    border: none;
+    padding: 0 16px;
+    border-radius: 4px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }

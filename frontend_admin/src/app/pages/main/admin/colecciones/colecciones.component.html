@@ -1,0 +1,79 @@
+<section>
+    <div fxLayout="row" class="allTitles">
+        <span class="brownCircle"></span>
+        <span class="greyLine"></span>
+        Colecciones
+    </div>
+    <div class="generalBox">
+        <!--
+        <div class="controlBox inputColor">
+            <form class="example-form" fxLayout="row wrap">
+                <div fxFlex="25" class="marg_r10" fxFlex.sm="25" fxFlex.xs="25">
+                    <div fxFlex.sm="100" fxFlex.xs="100">
+                        <div class="labelsColor">Tipo de colección</div>
+                        <mat-form-field appearance="outline" style="width: 100%">
+                            <mat-select>
+                                <mat-option *ngFor="let food of foods" [value]="food.value">
+                                    {{food.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <mat-form-field class="collFilter">
+                        <mat-label>Desde</mat-label>
+                        <input matInput [matDatepicker]="picker">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <mat-form-field class="collFilter">
+                        <mat-label>Hasta</mat-label>
+                        <input matInput [matDatepicker]="picker">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <button type="submit" class="btnBlue2" mat-button>
+                        FILTRAR COLECCIONES
+                    </button>
+                </div>
+            </form>
+        </div>
+        -->
+        <!-- <div fxLayout="row" fxLayoutAlign="end center" class="linksBox">
+            <a href="#" class="downLink" fxLayout="row">
+                <span class="material-icons">file_download</span> 
+                Descargar todo
+            </a>
+        </div> -->
+        <div fxLayout="row wrap" class="collectionsBox" fxLayoutAlign="center start">
+            <button fxLayout="row" class="collBtn" *ngFor="let item of collections" fxFlex="30" mat-stroked-button  (click)="exportCollection(item.name, item.label)" >
+                <div class="icoColl" fxLayout="row" fxLayoutAlign="center center">
+                    <span class="material-icons icoJekyll">download</span>
+                    <span class="material-icons icoHyde">insert_drive_file</span>
+                </div>
+                <div fxFlex class="collInf">
+                    <div class="collTitle">
+                        {{item.label}}
+                    </div>
+                    <!-- <div class="collDate">
+                        Última modificación: dd/mm/aaaa hh:mm:ss
+                    </div> -->
+                    <div class="collRegis">
+                        Total de registros: {{item.count}}
+                    </div>
+                    <div class="collFile">
+                        Tipo de archivo: CSV
+                    </div>
+                </div>
+            </button>
+           
+        
+        </div>
+    </div>
+</section>

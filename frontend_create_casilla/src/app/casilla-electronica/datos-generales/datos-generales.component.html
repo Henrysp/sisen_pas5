@@ -1,0 +1,38 @@
+<form [formGroup]="formGroup" (submit)="$event.preventDefault()" >
+  <!-- <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="100">
+      <mat-label>Condición</mat-label>
+      <mat-select formControlName="condicion" (selectionChange)="update()" [disabled]="true" >
+        <mat-option *ngFor="let item of condicionList; let i = index" [value]="item" >{{item.nombre}}</mat-option>
+      </mat-select>
+
+    </mat-form-field>
+
+
+
+  </div> -->
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Condición</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <select  class="form-select" formControlName="condicion" (change)="update()"  >
+        <option *ngFor="let item of condicionList; let i = index" [value]="item.codigo">{{item.nombre.toUpperCase()}}</option>
+      </select>
+    </div>
+  </div>
+
+  <app-persona-natural *ngIf="esPersonaNatural" (emitDocumentType)="valueDocumentType($event)"></app-persona-natural>
+  <app-persona-juridica *ngIf="esPersonaJuridica"></app-persona-juridica>
+  <app-alert type="info">
+    <p class="camposObligatorios">*Campo obligatorio
+      <br/>Verifica tus datos antes de hacer clic en el botón {{  (esPersonaNatural && formGroup.value.documentType === 'DNI') ? 'VALIDAR' : 'CONTINUAR' }}.
+    </p>
+  </app-alert>
+  <br/>
+  <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center">
+    <button mat-flat-button type="button" color="warn" [disabled]="validateForms()" (click)="continuar()">{{  (esPersonaNatural && formGroup.value.documentType === 'DNI') ? 'VALIDAR' : 'CONTINUAR' }}</button>
+    <!--<button #myButton type="button" class="btn-valid" [disabled]="validateForms()" (click)="continuar()">VALIDAR</button>-->
+  </div>
+</form>

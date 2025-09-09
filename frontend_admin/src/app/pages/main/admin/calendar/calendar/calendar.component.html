@@ -1,0 +1,114 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>Calendario
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form class="example-form" fxLayout="row wrap">
+        <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+          <div class="labelsColor">Buscar</div>
+          <mat-form-field class="" appearance="outline" style="width: 100%">
+            <!--<mat-icon matSuffix>search</mat-icon>-->
+            <input type="tel" matInput placeholder="Buscar" [maxlength]="100" name="txtSearch"  [(ngModel)]="textSearch" />
+          </mat-form-field>
+        </div>
+        <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+          <div class="labelsColor">Estado</div>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <mat-select [(ngModel)]="txtestado" name="txtestado">
+              <mat-option *ngFor="let est of listEstados" [value]="est.value">{{est.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100" >
+          <div class="labelsColor">Fecha inicio</div>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <input type="date" matInput placeholder="dd/MM/YYY"  name="txtfechaini" [(ngModel)]="txtfechaini" (keydown)="keyoff($event)" />
+          </mat-form-field>
+        </div>
+        <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100" >
+          <div class="labelsColor">Fecha fin</div>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <input type="date" matInput placeholder="dd/MM/YYY" name="txtfechafin" [(ngModel)]="txtfechafin" [min]="txtfechaini" (keydown)="keyoff($event)" />
+          </mat-form-field>
+        </div>
+        <div class="marg_r10" fxFlex fxFlex.sm="40" fxFlex.xs="40" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10">
+          <div class="labelsColor hidden_">.</div>
+          <button
+            style="width: 100%; line-height: 31px; margin-top: 4px;"
+            type="submit"
+            class="btnBlue"
+            mat-button
+            (click)="searchByQuery()"
+          >
+            Buscar
+          </button>
+        </div>
+        <div class="marg_r10" fxFlex fxFlex.sm="40" fxFlex.xs="40" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10">
+          <div class="labelsColor hidden_">.</div>
+          <button
+            style="width: 100%; line-height: 30px; margin-top: 4px;"
+            type="submit"
+
+            mat-raised-button
+            (click)="cleanSearch()"
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <button mat-fab color="" (click)="new()" aria-label="Agregar Calendario">
+          <span class="btn_add">+</span>
+        </button>
+      </form>
+    </div>
+    <div class="listBoxGeneral" *ngIf="calendars && calendars['data']?.length > 0; else noData">
+      <mat-selection-list [multiple]="false">
+        <mat-list-option *ngFor="let calendar of calendars['data']" >
+          <div fxLayout="row" fxFlex>
+            <div class="listPhotoBox" fxLayout="column" fxLayoutAlign="center center">
+              <div [ngClass]="getColor(calendar.title)" fxLayout="row" fxLayoutAlign="center center">
+                {{ calendar.title | slice: 0:1 }}
+              </div>
+            </div>
+            <div class="listSubject" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+
+              <div>
+                <p class="title">
+                  {{ calendar.title }}
+                  <span>{{ calendar.description }}</span>
+                </p>
+              </div>
+              <div style="display: flex;min-width: 350px;">
+                <div style="min-width: 213px;">
+                  <p class="periodo" *ngIf="calendar.range === '0' ">
+                    <b style="color:#777;">Fecha: </b>{{calendar.date_begin  | date :'dd/MM/yyyy'  : '+500' }}
+                  </p>
+                  <p class="periodo" *ngIf="calendar.range === '1' ">
+                    <b style="color:#777;">Periodo: </b> {{calendar.date_begin  | date :'dd/MM/yyyy'  : '+500'}} - {{calendar.date_end  | date :'dd/MM/yyyy'}}
+                  </p>
+                </div>
+                <div style="margin-left: 20px;min-width: 128px;">
+                  <button mat-stroked-button (click)="edit(calendar)"><span class="material-icons">edit</span></button>
+                  <button mat-stroked-button (click)="view(calendar)"><span class="material-icons">visibility</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+      <mat-paginator style="margin-right: 30px;" [length]="calendars['total']" [pageIndex]="calendars['page']-1" [pageSize]="calendars['size']" [pageSizeOptions]="[5, 10, 25, 100]" (page)="pageChangeEvent($event)">
+      </mat-paginator>
+    </div>
+    <ng-template #noData>
+      <div class="labelsColor" style="text-align: center; font-size: 15px;">
+        <br>
+        <strong>No se encontraron registros.</strong>
+      </div>
+    </ng-template>
+    <div fxLayout="row" *ngIf="!listReadyCheck" fxLayoutAlign="center center">
+      <div class="icon-loading"></div>
+    </div>
+  </div>
+</section>

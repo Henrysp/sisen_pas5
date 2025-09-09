@@ -1,0 +1,363 @@
+.brownCircle{
+    width: 8px;
+    height: 8px;
+    background: #BD6C15;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 6px 10px 10px 26px;
+}
+.greyLine{
+    width: 60px;
+    height: 1px;
+    background: #D1D1D1;
+    margin: 9px 10px 0 0;
+}
+.allTitles{
+    color: #BD6C15;
+    font-size: 30px;
+    font-weight: normal;
+    margin-top: 40px;
+}
+.generalBox{
+    border-left: #D1D1D1 solid 1px;
+    margin: 8px 30px 0 30px;
+    padding: 15px 15px 0 15px;
+}
+
+.formNotif{
+    max-width: 50%;
+    margin: 0 auto;
+}
+.newNotif{
+    margin: 16px 0 0;
+}
+.newNotif .btnGreen{
+    max-width: 200px;
+}
+.newNotif .btnBlue{
+    max-width: 160px;
+    margin: 0 8px;
+}
+.newNotif .btnBrown{
+    max-width: 160px;
+    margin: 0 8px;
+}
+
+.topLine{
+    border-bottom: #D1D1D1 solid 1px;
+    margin-bottom: 15px;
+}
+.topLine a{
+    color: #1D3572;
+    text-decoration: none;
+}
+.topLine a .material-icons{
+    color: #1D3572;
+    font-size: 14px;
+    margin-left: 10px;
+}
+.limit50{
+    max-width: 50%;
+    margin: 0 auto;
+    text-align: right;
+}
+
+/*************/
+.listBoxGeneral .mat-list-base .mat-list-item, .listBoxGeneral .mat-list-base .mat-list-option{
+    border-top: #EFEDE8 solid 1px;
+    border-bottom: #EFEDE8 solid 1px;
+    height: 80px;
+}
+.listBoxGeneral .mat-list-base .mat-list-item .mat-list-item-content-reverse, .listBoxGeneral .mat-list-base .mat-list-option .mat-list-item-content-reverse{
+    height: 80px;
+}
+.listPhotoBox{
+    width: 40px;
+}
+.listSubject>div{
+    padding-left: 10px;
+}
+.listCtrls{
+    width: 120px;
+}
+.listCircle{
+    width: 32px;
+    height: 32px;
+    background: grey;
+    text-align: center;
+    color: #FFFFFF;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+}
+/**** Random Colors (Ini) ****/
+.rdmColor_1{
+    background: #00C2FF; /* A - B - C */
+}
+.rdmColor_2{
+    background: #9FCE20; /* D - E - F */
+}
+.rdmColor_3{
+    background: #DA4997; /* G - H - I */
+}
+.rdmColor_4{
+    background: #FF9900; /* J - K - L */
+}
+.rdmColor_5{
+    background: #A120CE; /* M - N - Ñ */
+}
+.rdmColor_6{
+    background: #f3ef0a; /* O - P - Q */
+}
+.rdmColor_7{
+    background: #4D49BE; /* R - T - U */
+}
+.rdmColor_8{
+    background: #3E6991; /* V - W - X */
+}
+.rdmColor_9{
+    background: #AF9335; /* Y - Z */
+}
+/**************/
+.lSubject{
+    color: #1D3572;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 23px;
+    margin: 0;
+    text-align: left;
+}
+.lGerencia{
+    color: #1D3572;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+    margin: 0;
+    text-align: left;
+}
+.lDetalleDate{
+    color: #707070;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+    margin: 0;
+    text-align: left;
+}
+.listBtnBox{
+    padding: 0 8px;
+    text-align: center;
+    color: #1D3572;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+}
+.listBtnBox .color_0{
+    color: #1D3572;
+}
+.listBtnBox .color_1{
+    color: #23DF05;
+}
+.listBtnBox .color_2{
+    color: #C4C4C4;
+}
+.dobleGreyLine{
+    border-top: #EFEDE8 solid 1px;
+    border-bottom: #EFEDE8 solid 1px;
+    height: 34px;
+    max-width: 50%;
+    margin: 0 auto 15px;
+}
+.dobleGrey{
+    height: 34px;
+    max-width: 50%;
+    margin: 0 auto 15px;
+}
+.dobleGreyLine a{
+    text-decoration: none;
+    color: #22C3E7;
+}
+.dobleGreyLine a .material-icons {
+    color: #00C2FF;
+    top: 0px;
+}
+.detailHead{
+    min-height: 80px;
+    max-width: 50%;
+}
+.detailHead .listPhotoBox{
+    width: 40px;
+    position: relative;
+    margin-left: -50px;
+}
+
+.blueSeed{
+    background: #1D3572;
+    text-align: right;
+    padding: 5px 0 4px;
+    margin: 0 auto 15px;
+    max-width: 50%;
+}
+.blueSeed img{
+    width: 34px;
+    height: auto;
+    margin-right: 8px;
+}
+.topLine1{
+    border-bottom: #D1D1D1 solid 1px;
+    margin-top: 15px;
+    margin: 0 auto 15px;
+    max-width: 50%;
+}
+.printLine{
+    max-width: 50%;
+    cursor: pointer;
+}
+.greyBoxIndicator{
+    background: #E6E6E6;
+    color: #1D3572;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    height: 80px;
+    margin: 0 auto;
+    max-width: 50%;
+
+}
+.greyBoxIndicator .color_1 .material-icons{
+    color: #23DF05;
+    z-index: 99;
+}
+.greyBoxIndicator .color_2 .material-icons{
+    color: #C4C4C4;
+    z-index: 99;
+}
+.greyBoxTitle{
+    margin-left: 8px;
+    color: #233559;
+    font-weight: 500;
+}
+/*********/
+
+.listBtnBox2{
+    width: 200px;
+    max-width: 200px;
+    min-width: 200px;
+    padding: 0;
+    text-align: center;
+    color: #1D3572;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+}
+.listBtnBox2 .posDos{
+    position: relative;
+}
+.listBtnBox2 .posUno{
+    position: relative;
+}
+.listBtnBox2 .posDos::before{
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 1px;
+    background: #C4C4C4;
+    top: 15px;
+    left: 0px;
+}
+.listBtnBox2 .posUno::after{
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 1px;
+    background: #C4C4C4;
+    top: 15px;
+    right: 0px;
+}
+
+.microInfo{
+    font-size: 11px;
+    font-weight: 500;
+    color: #707070;
+}
+
+
+@media (max-width: 1680px){
+    .formNotif, .detailHead, .dobleGreyLine, .blueSeed, .topLine1, .greyBoxIndicator, .printLine{
+        max-width: 60%;
+    }
+}
+@media (max-width: 1480px){
+    .formNotif, .detailHead, .dobleGreyLine, .blueSeed, .topLine1, .greyBoxIndicator, .printLine{
+        max-width: 80%;
+    }
+}
+@media (max-width: 1280px){
+    .formNotif, .detailHead, .dobleGreyLine, .blueSeed, .topLine1, .greyBoxIndicator, .printLine{
+        max-width: 90%;
+    }
+}
+@media (max-width: 960px){
+    .detailHead{
+        max-width: 90%;
+    }
+    .generalBox{
+        border-left: none;
+        margin: 8px 0px 0 0px;
+        padding: 15px 15px 15px 15px;
+    }
+    .allTitles{
+        font-size: 18px;
+        margin-top: 30px;
+    }
+    .greyLine{
+        width: 20px;
+    }
+    .centerTitle {
+        font-size: 16px;
+        margin: 10px 0 35px 0;
+    }
+}
+@media (max-width: 600px){
+    .detailHead{
+        max-width: 70%;
+    }
+    .listCtrls{
+        width: 240px;
+    }
+
+    .listBtnBox2{
+        width: 100px;
+        max-width: 100px;
+        min-width: 90px;
+        font-size: 12px;
+        line-height: 14px;
+    }
+    .microInfo{
+        font-size: 10px;
+    }
+}
+
+
+@media print{
+    body *{
+        visibility:   hidden;
+    }
+    .print-container , .print-container *{
+        visibility: visible;
+    }
+
+}
+
+.parrafo_texto {
+  word-break: break-all !important;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  white-space: normal;
+}

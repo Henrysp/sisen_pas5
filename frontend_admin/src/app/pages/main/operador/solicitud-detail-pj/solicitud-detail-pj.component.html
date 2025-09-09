@@ -1,0 +1,933 @@
+<section>
+  <ng-container *ngIf="load; then mostrarLoading; else ocultarLoading"></ng-container>
+  <ng-template #mostrarLoading>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <div class="icon-loading"></div>
+    </div>
+  </ng-template>
+  <ng-template #ocultarLoading>
+    <div class="allTitles" fxLayout="row">
+      <span class="brownCircle"></span>
+      <span class="greyLine"></span>
+      <ng-template [ngIf]="data.type_user !== 'J'" [ngIfElse]="pj">Usuarios</ng-template>
+      <ng-template #pj>Persona Jurídica</ng-template>
+    </div>
+    <div class="generalBox">
+      <mat-progress-bar *ngIf="loadDownload" mode="indeterminate"></mat-progress-bar>
+
+      <div class="controlBox inputColor">
+        <div class="centerTitle">Casilla Electrónica</div>
+        <form>
+          <mat-card class="card">
+            <mat-card-subtitle>
+            </mat-card-subtitle>
+            <!-- content -->
+            <mat-card-content>
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <!-- Column-2 Row-1-->
+                  <div fxLayout="column" fxFlex="60" fxFlexFill fxLayoutAlign="space-between strech"
+                       style="padding-left: 20px;">
+                    <div fxLayout="row" fxFlex="20px" fxLayoutAlign="center center"></div>
+                    <div *ngIf="data.type_user !== 'J'; else juridico" fxLayout="row" fxFlex="220px">
+                      <ol>
+                        <li>Persona Natural</li>
+                        <li>Tipo de documento: <b>{{data.doc_type | uppercase}}</b></li>
+                        <li>Número de documento: <b>{{data.doc}}</b></li>
+                        <li>Apellidos y Nombres: <b>{{data.lastname | lowercase }} {{data.second_lastname | lowercase }}
+                          ,  {{data.name | lowercase}} </b></li>
+                        <li>Correo electrónico: <b>{{data.email}}</b></li>
+                        <li>Número de celular: <b>{{data.cellphone}}</b></li>
+                        <li>Número de teléfono fijo: <b>{{data.phone}}</b></li>
+                        <li>Departamento / Provincia / Distrito: <b>{{data.ubigeo}}</b></li>
+                        <li>Dirección: <b>{{data.address}}</b></li>
+                      </ol>
+                    </div>
+
+                    <ng-template #juridico>
+                      <div>
+                        <b>Fecha de registro de solicitud de casilla: </b>{{data.created_at}}<br/>
+                        <b>Fecha de evaluación: </b>{{data.evaluated_at}}<br/>
+                        <b>Estado de evaluación: </b>{{data.status}}<br/>
+                        <b>Evaluador/Registrador: </b>{{data.evaluator_user_names || '-'}}<br/>
+                        <div *ngIf="data.status !== 'DESAPROBADO'">
+                          <b>Actualizó su contraseña: </b>{{ data.updated_password ? 'Sí' : 'No' }}<br/>
+                        </div>
+                        <b>Organización Política: </b>{{ data.orgPol === '1' ? 'Sí' : 'No' }}<br/>
+                        <br>
+                        <b>DATOS DE LA ENTIDAD</b>
+                        <p style="margin-top:10px;">
+                          Condición: <b>Persona jurídica</b><br/>
+                          Tipo de documento: <b>{{data.doc_type_des | uppercase}}</b><br/>
+                          <span *ngIf="data.doc_type === 'pr'">N° de partida registral: <b>{{data.doc}}</b></span>
+                          <span *ngIf="data.doc_type !== 'pr'">Número de documento: <b>{{data.doc}}</b></span><br/>
+                          Razón Social: <b>{{data.organization_name}}</b><br/>
+                          <span *ngIf="data.doc_type !== 'pr'">N° de partida registral: <b>{{data.startingNumber}}</b></span><br
+                          *ngIf="data.doc_type !== 'pr'"/>
+                          Asiento registral: <b>{{data.registrySeat}}</b><br/>
+                          Correo electrónico: <b>{{data.email}}</b><br/>
+                          Número de celular: <b>{{data.cellphone}}</b><br/>
+                          Número de telefóno fijo: <b>{{data.phone || 'No se registro información'}}</b><br/>
+                          Departamento / Provincia / Distrito: <b>{{data.ubigeo}}</b><br/>
+                          Dirección: <b>{{data.address}}</b><br/>
+                          Página Web: <b>{{data.paginaweb || 'No se registro información'}}</b><br/>
+                          Documentos Adjuntos de la persona jurídica:<br/>
+                        </p>
+                        <p *ngIf="!ofile_box1 && !ofile_box2"><b>No hay documentos adjuntos</b></p>
+                        <p>
+                          <span style="cursor:pointer;" *ngIf="ofile_box1" (click)="download(file_box1.path,file_box1.name)"> {{ file_box1.name }} <span matPrefix class="material-icons">download</span></span><br/>
+                          <span style="cursor:pointer;" *ngIf="ofile_box2" (click)="download(file_box2.path,file_box2.name)"> {{ file_box2.name }} <span matPrefix class="material-icons">download</span></span>
+                        </p>
+                        <span *ngIf="data.reason_disapproved.length > 0">Motivo de desaprobación:<br/></span>
+                        <span *ngIf="data.reason_disapproved.length > 0">
+                          <span *ngFor="let item of data.reason_disapproved"><b>{{'- ' + item}}</b><br></span>
+                        </span>
+                      </div>
+                      <br/>
+                      <div *ngFor="let representante of data.representantes">
+                        <div *ngIf="(representante.enabled) || data.status === 'DESAPROBADO'">
+                          <b>DATOS DEL REPRESENTANTE ACTUAL</b>
+                          <p style="margin-top:10px;">
+                            Cargo: <b>{{representante.position_name}}</b><br/>
+                            <span *ngIf="representante.isAlternate !== null && data.orgPol === '1'">¿Es Personero Legal Alterno?: <b>{{representante.isAlternate === true ? 'Sí' : 'No'}}</b><br/></span>
+                            <span *ngIf="representante.asientoRegistralRep">Asiento registral: <b>{{representante.asientoRegistralRep}}</b><br/></span>
+                            Tipo de documento: <b>{{representante.doc_type | uppercase}}</b><br/>
+                            Número de documento: <b>{{representante.doc}}</b><br/>
+                            Nombres y Apellidos: <b>{{representante.names}} {{representante.lastname}} {{representante.second_lastname}}</b><br/>
+                            Correo electrónico: <b>{{representante.email}}</b><br/>
+                            Número de celular: <b>{{representante.cellphone}}</b><br/>
+                            Número de telefóno fijo: <b>{{representante.phone || 'No se registro información'}}</b><br/>
+                            <span *ngIf="representante.document_name_attachment">Tipo documento adjunto: <b>{{representante.document_name_attachment}}</b><br/></span>
+                            <span *ngIf="ofile_document1 || ofile_document2 || ofile_document">Documentos adjuntos del representante: <br/></span>
+                          </p>
+                          <p *ngIf="!ofile_document1 && !ofile_document2 && !ofile_document"><b>No hay documentos adjuntos</b></p>
+                          <p *ngFor="let document of representante.file_document">
+                          <span style="cursor:pointer;font-size: 12px;"
+                                (click)="download(document.path,document.name)">{{ document.name }}
+                            <span matPrefix class="material-icons">download</span>
+                          </span><br/>
+                          </p>
+                        </div>
+                      </div>
+
+                    </ng-template>
+                    <div fxLayout="row" fxFlex="20px" fxLayoutAlign="center center"></div>
+                  </div>
+                  <!-- Column-2 Row-2-->
+                  <div fxLayout="row" fxFlex="40" fxFlexFill style="background-color: #ebebeb"
+                       fxLayoutAlign="space-around strech">
+                    <div fxLayoutAlign="center center">
+                      <img *ngIf="mostrarImagen" style="max-width:450px; max-height:450px" src="{{imageURlss}}" alt="">
+                    </div>
+
+                  </div>
+                </div>
+                <!--                              Se comento la visualización de PDF generado-->
+                <!--              <div fxLayout="row"  *ngIf="data.filesGenerated" fxLayoutAlign="left">-->
+                <!--                <p class="subtitle-h4"><strong>Solicitud de Asignación de Casilla Electrónica: </strong></p>-->
+                <!--                <div fxLayoutAlign="center" fxFlex="50">-->
+                <!--                  <a  (click)="download(data.filesGenerated[0].path,data.filesGenerated[0].fileName)"  mat-stroked-button>-->
+                <!--                    <mat-icon matSuffix class="grad45">attach_file</mat-icon>-->
+                <!--                    {{ data.filesGenerated[0].fileName }}-->
+                <!--                  </a>-->
+                <!--                </div>-->
+                <!--              </div>-->
+                <div *ngIf="data.officials && data.officials.length > 0 && data.type_user === 'J'">
+                  <p class="subtitle-h4"><strong>Datos de funcionarios actuales: </strong></p>
+                  <br>
+                  <table style="margin: 0 auto; width: 100%;" class="officials" border="0" cellspacing="2" cellpadding="2">
+                    <tr>
+                      <th>Cargo</th>
+                      <th *ngIf="data.status !== 'DESAPROBADO'">Estado</th>
+                      <th>Tipo Doc</th>
+                      <th>Nro Doc</th>
+                      <th>Nombres y Apellidos</th>
+                      <th>Correo</th>
+                      <th>Celular</th>
+                    </tr>
+                    <tr *ngFor="let item of data!.officials">
+                      <td>{{item.position_name}}</td>
+                      <td *ngIf="data.status !== 'DESAPROBADO'">
+                        <span *ngIf="data.status === 'DESHABILITADO'" class="material-icons" style="color: #4d4d4d"
+                              matTooltip="Casilla deshabilitada" matTooltipPosition="above">circle</span>
+                        <span *ngIf="data.status !== 'DESHABILITADO' && item.status === 'DESHABILITADO'" class="material-icons" style="color: #df1313"
+                              matTooltip="Funcionario deshabilitado" matTooltipPosition="above">report</span>
+                        <span *ngIf="data.status !== 'DESHABILITADO' && item.status !== 'DESHABILITADO'" class="material-icons" style="color:#23df05;"
+                              matTooltip="Funcionario habilitado" matTooltipPosition="above">check_circle</span>
+                      </td>
+                      <td>{{item.doc_type.toUpperCase()}}</td>
+                      <td>{{item.doc}}</td>
+                      <td>{{item.names}}, {{item.lastname}} {{item.second_lastname}}</td>
+                      <td>{{item.email}}</td>
+                      <td>{{item.cellphone}}</td>
+                    </tr>
+                  </table>
+                  <br>
+                </div>
+              </div>
+              <!--            <div *ngIf="data.representative && data.type_user == 'J' && data.status == 'APROBADO'">-->
+              <!--              <br>-->
+              <!--              <p class="subtitle-h4"><strong>Datos históricos de funcionarios:</strong></p>-->
+              <!--              <mat-tab-group>-->
+              <!--                <mat-tab label="Representante Legal" *ngIf="data.representative.Rep_Legal && data.representative.Rep_Legal.length > 0">-->
+              <!--                &lt;!&ndash; <mat-tab label="Representante Legal" *ngIf="data.representative.Tesorero_OP && data.representative.Tesorero_OP.length > 0"> &ndash;&gt;-->
+              <!--                  <table mat-table [dataSource]="data.representative.Rep_Legal" class="mat-elevation-z8">-->
+              <!--                    <ng-container matColumnDef="doc">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong> </th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="evaluator_user_names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_begin">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                        <span *ngIf="data.status !== 'DESAPROBADO'">{{ element.date_begin }}</span>  </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_end">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="foto">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Foto</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                      <span style="cursor:pointer;font-size: 12px;display: block; width: 40px;"-->
+              <!--                            *ngIf="element.file_photo !== null" (click)="download(element.file_photo.path,element.file_photo.name)">-->
+              <!--                      <span matPrefix class="material-icons">portrait</span></span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="sustento">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Sustento</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                      <span *ngFor="let document of consolidateDocuments(element.file_document,element.file_document1, element.file_document2)">-->
+              <!--                        <ng-container *ngIf="document.path && document.name">-->
+              <!--                        <span style="cursor:pointer; font-size: 12px; display: block;"-->
+              <!--                              (click)="download(document.path, document.name)"-->
+              <!--                              [matTooltip]="document.name">-->
+              <!--                          <span matPrefix class="material-icons">download</span></span>-->
+              <!--                        </ng-container>-->
+              <!--                        </span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+
+              <!--                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentative"></tr>-->
+              <!--                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentative;"></tr>-->
+              <!--                  </table>-->
+              <!--                </mat-tab>-->
+
+              <!--                <mat-tab label="Personero Legal Titular" *ngIf="data.representative.Pers_Legal_OP && data.representative.Pers_Legal_OP.length > 0">-->
+              <!--                  <table mat-table [dataSource]="data.representative.Pers_Legal_OP" class="mat-elevation-z8">-->
+              <!--                    <ng-container matColumnDef="doc">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong> </th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="evaluator_user_names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_begin">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                        <span *ngIf="data.status !== 'DESAPROBADO'">{{ element.date_begin }}</span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_end">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="foto">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Foto</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                        <span style="cursor:pointer;font-size: 12px;display: block; width: 40px;"-->
+              <!--                              *ngIf="element.file_photo !== null" (click)="download(element.file_photo.path,element.file_photo.name)">-->
+              <!--                      <span matPrefix class="material-icons">portrait</span></span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="sustento">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Sustento</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                      <span *ngFor="let document of consolidateDocuments(element.file_document,element.file_document1, element.file_document2)">-->
+              <!--                        <ng-container *ngIf="document.path && document.name">-->
+              <!--                        <span style="cursor:pointer; font-size: 12px; display: block;"-->
+              <!--                              (click)="download(document.path, document.name)"-->
+              <!--                              [matTooltip]="document.name">-->
+              <!--                          <span matPrefix class="material-icons">download</span></span>-->
+              <!--                        </ng-container>-->
+              <!--                        </span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+
+              <!--                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentative"></tr>-->
+              <!--                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentative;"></tr>-->
+              <!--                  </table>-->
+              <!--                </mat-tab>-->
+              <!--                <mat-tab label="Tesorero" *ngIf="data.representative.Tesorero_OP && data.representative.Tesorero_OP.length > 0">-->
+              <!--                  <table mat-table *ngIf="data.representative.Rep_Legal_OP && data.representative.Rep_Legal_OP.length > 0; else noDataTabTes" [dataSource]="data.representative.Tesorero_OP" class="mat-elevation-z8">-->
+              <!--                    <ng-container matColumnDef="doc">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="evaluator_user_names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_begin">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                        <span *ngIf="data.status !== 'DESAPROBADO'">{{ element.date_begin }}</span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_end">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentativeOP"></tr>-->
+              <!--                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentativeOP;"></tr>-->
+              <!--                  </table>-->
+              <!--                  <ng-template #noDataTabTes>-->
+              <!--                    <div style="text-align: center; font-size: 15px;">-->
+              <!--                      <br>-->
+              <!--                      <strong>No se registró información.</strong>-->
+              <!--                    </div>-->
+              <!--                  </ng-template>-->
+              <!--                </mat-tab>-->
+              <!--                 <mat-tab label="Representante Legal de OP" *ngIf="data.representative.Rep_Legal_OP && data.representative.Rep_Legal_OP.length > 0">-->
+              <!--                  <table *ngIf="data.representative.Rep_Legal_OP && data.representative.Rep_Legal_OP.length > 0; else noDataTabRepLegOP" mat-table [dataSource]="data.representative.Rep_Legal_OP" class="mat-elevation-z8">-->
+              <!--                    <ng-container matColumnDef="doc">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="evaluator_user_names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_begin">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                        <span *ngIf="data.status !== 'DESAPROBADO'">{{ element.date_begin }}</span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_end">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+              <!--                    </ng-container>-->
+
+              <!--                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentativeOP"></tr>-->
+              <!--                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentativeOP;"></tr>-->
+              <!--                  </table>-->
+              <!--                  <ng-template #noDataTabRepLegOP>-->
+              <!--                    <div style="text-align: center; font-size: 15px;">-->
+              <!--                      <br>-->
+              <!--                      <strong>No se registró información.</strong>-->
+              <!--                    </div>-->
+              <!--                  </ng-template>-->
+              <!--                </mat-tab>-->
+              <!--                <mat-tab label="Presidente" *ngIf="data.representative.Tesorero_OP && data.representative.Tesorero_OP.length > 0">-->
+              <!--                  <table *ngIf="data.representative.Presidente_OP && data.representative.Presidente_OP.length > 0; else noDataTab" mat-table [dataSource]="data.representative.Presidente_OP" class="mat-elevation-z8">-->
+              <!--                    <ng-container matColumnDef="doc">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="evaluator_user_names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_begin">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                        <span *ngIf="data.status !== 'DESAPROBADO'">{{ element.date_begin }}</span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_end">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+              <!--                    </ng-container>-->
+
+              <!--                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentativeOP"></tr>-->
+              <!--                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentativeOP;"></tr>-->
+              <!--                  </table>-->
+              <!--                  <ng-template #noDataTab>-->
+              <!--                    <div style="text-align: center; font-size: 15px;">-->
+              <!--                      <br>-->
+              <!--                      <strong>No se registró información.</strong>-->
+              <!--                    </div>-->
+              <!--                  </ng-template>-->
+              <!--                </mat-tab>-->
+              <!--                <mat-tab label="Presidente de OEC" *ngIf="data.representative.Tesorero_OP && data.representative.Tesorero_OP.length > 0">-->
+              <!--                  <table *ngIf="data.representative.PresidenteOEC_OP && data.representative.PresidenteOEC_OP.length > 0; else noDataTab" mat-table [dataSource]="data.representative.PresidenteOEC_OP" class="mat-elevation-z8">-->
+              <!--                    <ng-container matColumnDef="doc">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="evaluator_user_names">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_begin">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element">-->
+              <!--                        <span *ngIf="data.status !== 'DESAPROBADO'">{{ element.date_begin }}</span>-->
+              <!--                      </td>-->
+              <!--                    </ng-container>-->
+              <!--                    <ng-container matColumnDef="date_end">-->
+              <!--                      <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+              <!--                      <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+              <!--                    </ng-container>-->
+
+              <!--                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentativeOP"></tr>-->
+              <!--                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentativeOP;"></tr>-->
+              <!--                  </table>-->
+              <!--                  <ng-template #noDataTab>-->
+              <!--                    <div style="text-align: center; font-size: 15px;">-->
+              <!--                      <br>-->
+              <!--                      <strong>No se registró información.</strong>-->
+              <!--                    </div>-->
+              <!--                  </ng-template>-->
+              <!--                </mat-tab>-->
+              <!--              </mat-tab-group>-->
+              <!--            </div>-->
+              <!--            REFACTOR-->
+              <div *ngIf="data.representative && data.type_user == 'J' && data.status == 'APROBADO'">
+                <br>
+                <p class="subtitle-h4"><strong>Datos históricos de funcionarios:</strong></p>
+                <mat-tab-group>
+                  <mat-tab *ngFor="let role of getAvailableRoles()" [label]="role.label">
+                    <ng-container *ngIf="hasData(role.dataKey); else noDataTemplate">
+                      <table mat-table [dataSource]="data.representative[role.dataKey]" class="mat-elevation-z8">
+                        <ng-container matColumnDef="doc">
+                          <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>
+                          <td mat-cell *matCellDef="let element">{{element.doc}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="names">
+                          <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>
+                          <td mat-cell *matCellDef="let element">
+                            {{element.names}} {{element.lastname}} {{element.second_lastname}}
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="evaluator_user_names">
+                          <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>
+                          <td mat-cell *matCellDef="let element">{{element.evaluator_user_names}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="date_begin">
+                          <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>
+                          <td mat-cell *matCellDef="let element">
+                            <span *ngIf="data.status !== 'DESAPROBADO'">{{element.date_begin}}</span>
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="date_end">
+                          <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>
+                          <td mat-cell *matCellDef="let element">{{element.date_end}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="sustento">
+                          <th mat-header-cell *matHeaderCellDef><strong>Sustento</strong></th>
+                          <td mat-cell *matCellDef="let element">
+                            <ng-container *ngFor="let document of consolidateDocuments(element.file_document, element.file_document1, element.file_document2)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                        <ng-container *ngIf="showAdvancedColumns(role.dataKey)">
+                          <ng-container matColumnDef="foto">
+                            <th mat-header-cell *matHeaderCellDef><strong>Foto</strong></th>
+                            <td mat-cell *matCellDef="let element">
+                            <span style="cursor:pointer;font-size:12px;display:block;width:40px;"
+                                  *ngIf="element.file_photo !== null"
+                                  (click)="download(element.file_photo.path, element.file_photo.name)">
+                              <span matPrefix class="material-icons">portrait</span>
+                            </span>
+                            </td>
+                          </ng-container>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="getColumnDefs(role.dataKey)"></tr>
+                        <tr mat-row *matRowDef="let row; columns: getColumnDefs(role.dataKey);"></tr>
+                      </table>
+                    </ng-container>
+                    <ng-template #noDataTemplate>
+                      <div style="text-align:center;font-size:15px;">
+                        <br>
+                        <strong>No se registró información.</strong>
+                      </div>
+                    </ng-template>
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+              <!--            REFACTOR  -->
+              <br>
+              <!--            Cuadro Historico antiguo-->
+              <!--            <p>Datos históricos del Representante Legal o Personero Legal Titular</p>-->
+              <!--            <table mat-table [dataSource]="data.representantes" class="mat-elevation-z8">-->
+              <!--              <ng-container matColumnDef="dni">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> DNI/CE</th>-->
+              <!--                <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="nombre">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Nombres y Apellidos</th>-->
+              <!--                <td mat-cell *matCellDef="let element"><span-->
+              <!--                  style="text-transform: uppercase;">{{element.names | lowercase}} {{element.lastname | lowercase}} {{element.second_lastname | lowercase}}</span>-->
+              <!--                </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="fec_reg">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Fecha de Registro</th>-->
+              <!--                <td mat-cell *matCellDef="let element"> {{element.created_at}} </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="fec_eval">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Fecha de Evaluación</th>-->
+              <!--                <td mat-cell *matCellDef="let element"> {{element.evaluated_at}}  </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="evaluador">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Evaluador/Registrador</th>-->
+              <!--                <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="fec_ini">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Fecha Inicio</th>-->
+              <!--                <td mat-cell *matCellDef="let element">{{data.status === 'DESAPROBADO'? '': element.date_begin}} </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="fec_fin">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Fecha Fin</th>-->
+              <!--                <td mat-cell *matCellDef="let element"> {{element.date_end}} </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="foto">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Foto</th>-->
+              <!--                <td mat-cell *matCellDef="let element">-->
+              <!--                    <span style="cursor:pointer;font-size: 12px;display: block; width: 40px;"-->
+              <!--                          *ngIf="element.file_photo !== null" (click)="download(element.file_photo.path,element.file_photo.name)">-->
+              <!--                      <span matPrefix class="material-icons">portrait</span></span>-->
+              <!--                </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="sustento">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Sustento</th>-->
+              <!--                <td mat-cell *matCellDef="let element">-->
+              <!--                  <span style="cursor:pointer;font-size: 12px;display: block;line-height: 30px;"-->
+              <!--                        *ngFor="let document of element.file_document">{{ document.name }}</span>-->
+              <!--                </td>-->
+              <!--              </ng-container>-->
+
+              <!--              <ng-container matColumnDef="accion">-->
+              <!--                <th mat-header-cell *matHeaderCellDef> Acción</th>-->
+              <!--                <td mat-cell *matCellDef="let element">-->
+              <!--                    <span style="cursor:pointer;font-size: 12px;display: block;"-->
+              <!--                          *ngFor="let document of element.file_document"-->
+              <!--                          (click)="download(document.path,document.name)">-->
+              <!--                      <span matPrefix class="material-icons">download</span></span>-->
+              <!--                </td>-->
+              <!--                &lt;!&ndash;-->
+              <!--                <td mat-cell *matCellDef="let element">-->
+              <!--                  <span style="cursor:pointer;" *ngIf="ofile_document1" (click)="download(element.file_document1[0].path,element.file_document1[0].name)"><span matPrefix class="material-icons">download</span></span><br/>-->
+              <!--                  <span style="cursor:pointer;" *ngIf="ofile_document2" (click)="download(element.file_document2[0].path,element.file_document2[0].name)"><span matPrefix class="material-icons">download</span></span><br/>-->
+              <!--                  <span style="cursor:pointer;" *ngIf="ofile_document" (click)="download(element.file_document.path,element.file_document.name)"><span matPrefix class="material-icons">download</span></span>-->
+              <!--                </td>-->
+              <!--                &ndash;&gt;-->
+              <!--              </ng-container>-->
+
+              <!--              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>-->
+              <!--              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>-->
+              <!--            </table>-->
+
+              <div *ngIf="data.orgPol !== '1'">
+                <br>
+                <p class="subtitle-h4"><strong>Estado de la comunicación:</strong></p>
+                <div style="display: flex; justify-content: space-between;">
+                  <table style="margin: 0 auto; width: 40%;" class="table" border="0" cellspacing="2" cellpadding="2">
+                    <tr>
+                      <th colspan="2" class="labelsColor">Destinatario: PERSONA JURÍDICA</th>
+                    </tr>
+                    <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+                    <tr>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="data.email_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="data?.email_sent_at_rep === '' ? 'Enviado a: ' + this.data?.event_history1?.email?.sent_to + '\nEl correo electrónico coincide con el registrado en el representante.' : 'Enviado a: ' + this.data?.event_history1?.email?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>
+                        <mat-icon *ngIf="!data.email_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="data?.email_sent_at_rep === '' ? 'Enviado a: ' + this.data?.event_history1?.email?.sent_to + '\nEl correo electrónico coincide con el registrado en el representante.' : 'Enviado a: ' + this.data?.event_history1?.email?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click) = "resendEmailAndSms('email', data.email, false)">mail</mat-icon>
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="data.sms_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="data.sms_sent_at_rep === '' ? 'Enviado a: ' + this.data.event_history1?.sms?.sent_to + '\nEl número de celular coincide con el registrado en el representante.' : 'Enviado a: ' + this.data.event_history1?.sms?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>
+                        <mat-icon *ngIf="!data.sms_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="data.sms_sent_at_rep === '' ? 'Enviado a: ' + this.data.event_history1?.sms?.sent_to + '\nEl número de celular coincide con el registrado en el representante.' : 'Enviado a: ' + this.data.event_history1?.sms?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click) = "resendEmailAndSms('sms', data.cellphone, false)">textsms</mat-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">{{data.email_sent_at}}</td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">{{data.sms_sent_at}}</td>
+                    </tr>
+                  </table>
+                  <br>
+                  <table style="margin: 0 auto; width: 40%;" class="table" border="0" cellspacing="2" cellpadding="2">
+                    <tr>
+                      <th colspan="2" class="labelsColor" *ngIf="data.orgPol === undefined ">Destinatario: REPRESENTANTE</th>
+                      <th colspan="2" class="labelsColor" *ngIf="data.orgPol === '0' ">Destinatario: REPRESENTANTE LEGAL</th>
+                      <th colspan="2" class="labelsColor" *ngIf="data.orgPol === '1' ">Destinatario: PERSONERO LEGAL TITULAR</th>
+                    </tr>
+                    <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+                    <tr *ngIf="data.orgPol === '0' || data.orgPol === undefined ">
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="data.email_sent_at_rep ? data.email_sent_status_rep : data.email_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="data.email_sent_at_rep === '' ? 'Enviado a: ' + this.data.event_history1?.email_rep?.sent_to + '\nEl correo electrónico coincide con el registrado en la PJ.' : 'Enviado a: ' + this.data.event_history1?.email_rep?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>
+                        <mat-icon *ngIf="data.email_sent_at_rep ? !data.email_sent_status_rep : !data.email_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="data.email_sent_at_rep === '' ? 'Enviado a: ' + this.data.event_history1?.email_rep?.sent_to + '\nEl correo electrónico coincide con el registrado en la PJ.' : 'Enviado a: ' + this.data.event_history1?.email_rep?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click) = "resendEmailAndSms('email', data.representantes[0].email, true)">mail</mat-icon>
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="data.sms_sent_at_rep ? data.sms_sent_status_rep : data.sms_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="data.sms_sent_at_rep === '' ? 'Enviado a: ' + this.data.event_history1?.sms_rep?.sent_to + '\nEl número de celular coincide con el registrado en la PJ.' : 'Enviado a: ' + this.data.event_history1?.sms_rep?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>
+                        <mat-icon *ngIf="data.sms_sent_at_rep ? !data.sms_sent_status_rep : !data.sms_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="data.sms_sent_at_rep === '' ? 'Enviado a: ' + this.data.event_history1?.sms_rep?.sent_to + '\nEl número de celular coincide con el registrado en la PJ.' : 'Enviado a: ' + this.data.event_history1?.sms_rep?.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click) = "resendEmailAndSms('sms', data.representantes[0].cellphone, true)">textsms</mat-icon>
+                      </td>
+                    </tr>
+                    <tr *ngIf="data.orgPol === '1' ">
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to : ''"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>
+                        <mat-icon *ngIf="!data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.status || data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to : ''"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click) = "resendEmailAndSmsOP('email', data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0].sent_to, true,data.representative.Pers_Legal_OP[0].user_id)">mail</mat-icon>
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="data.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="data.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to : ''"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>
+                        <mat-icon *ngIf="!data.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.status || data.event_history?.SMS_SENT?.Pers_Legal_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="data.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to : ''"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click) = "resendEmailAndSmsOP('sms', data.event_history?.SMS_SENT?.Pers_Legal_OP[0].sent_to, true,data.representative.Pers_Legal_OP[0].user_id)">textsms</mat-icon>
+                      </td>
+                    </tr>
+                    <tr *ngIf="data.orgPol === '0' || data.orgPol === undefined ">
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">{{data.email_sent_at_rep ? data.email_sent_at_rep : data.email_sent_at}}</td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">{{data.sms_sent_at_rep ? data.sms_sent_at_rep : data.sms_sent_at}}</td>
+                    </tr>
+                    <tr *ngIf="data.orgPol === '1' ">
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        {{ data.event_history.EMAIL_SENT.Pers_Legal_OP.length > 0 ? data.event_history?.EMAIL_SENT?.Pers_Legal_OP[0].date : 'Sin información' }}
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        {{ data.event_history.EMAIL_SENT.Pers_Legal_OP.length > 0 ? data.event_history?.SMS_SENT?.Pers_Legal_OP[0].date : 'Sin información' }}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!--              aqui-->
+                <br>
+                <!--              <div style="display: flex; justify-content: space-between;" *ngIf="data.representative.Tesorero_OP && data.representative.Tesorero_OP.length > 0 && data.status == 'APROBADO'">-->
+                <!--              <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+                <!--                <tr>-->
+                <!--                  <th colspan="2" class="labelsColor">Destinatario: TESORERO</th>-->
+                <!--                </tr>-->
+                <!--                <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+                <!--                <tr>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    <mat-icon *ngIf="data.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.EMAIL_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+                <!--                    <mat-icon *ngIf="data.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.status === false || data.event_history?.EMAIL_SENT?.Tesorero_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.EMAIL_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                              (click)="resendEmailAndSmsOP('email', data.representative.Tesorero_OP[0].email, true, data.representative.Tesorero_OP[0].user_id)">mail</mat-icon>-->
+                <!--                  </td>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    <mat-icon *ngIf="data.event_history?.SMS_SENT?.Tesorero_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.SMS_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.SMS_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+                <!--                    <mat-icon *ngIf="data.event_history?.SMS_SENT?.Tesorero_OP[0]?.status === false || data.event_history?.SMS_SENT?.Tesorero_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.SMS_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.SMS_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                              (click)="resendEmailAndSmsOP('sms', data.representative.Tesorero_OP[0].cellphone,true, data.representative.Tesorero_OP[0].user_id)">textsms</mat-icon>-->
+                <!--                  </td>-->
+                <!--                </tr>-->
+                <!--                <tr>-->
+                <!--&lt;!&ndash;              <div>{{data.representative.Tesorero_OP[0].eventHistory[0].date|json}}</div>&ndash;&gt;-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    {{ data.event_history.EMAIL_SENT.Tesorero_OP.length > 0 ? data.event_history.EMAIL_SENT.Tesorero_OP[0].date : 'Sin información' }}-->
+                <!--                  </td>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    {{ data.event_history.SMS_SENT.Tesorero_OP.length > 0 ? data.event_history.SMS_SENT.Tesorero_OP[0].date : 'Sin información' }}-->
+                <!--                  </td>-->
+
+                <!--                </tr>-->
+                <!--              </table>-->
+                <!--              <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+                <!--                <tr>-->
+                <!--                  <th colspan="2" class="labelsColor">Destinatario: REPRESENTANTE LEGAL OP</th>-->
+                <!--                </tr>-->
+                <!--                <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+                <!--                <tr>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    <mat-icon *ngIf="data.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.EMAIL_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+                <!--                    <mat-icon *ngIf="data.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.status === false || data.event_history?.EMAIL_SENT?.Rep_Legal_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.EMAIL_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                              (click)="resendEmailAndSmsOP('email', data.representative.Rep_Legal_OP[0].email, true, data.representative.Rep_Legal_OP[0].user_id)">mail</mat-icon>-->
+                <!--                  </td>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    <mat-icon *ngIf="data.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.SMS_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+                <!--                    <mat-icon *ngIf="data.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.status === false || data.event_history?.SMS_SENT?.Rep_Legal_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.SMS_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                              (click)="resendEmailAndSmsOP('sms', data.representative.Rep_Legal_OP[0].cellphone,true, data.representative.Rep_Legal_OP[0].user_id)">textsms</mat-icon>-->
+                <!--                  </td>-->
+                <!--                </tr>-->
+                <!--                <tr>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    {{ data.event_history.EMAIL_SENT.Rep_Legal_OP.length > 0 ? data.event_history.EMAIL_SENT.Rep_Legal_OP[0].date : 'Sin información' }}-->
+                <!--                  </td>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    {{ data.event_history.SMS_SENT.Rep_Legal_OP.length > 0 ? data.event_history.SMS_SENT.Rep_Legal_OP[0].date : 'Sin información' }}-->
+                <!--                  </td>-->
+                <!--                </tr>-->
+                <!--              </table>-->
+                <!--              <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+                <!--                <tr>-->
+                <!--                  <th colspan="2" class="labelsColor">Destinatario: PRESIDENTE</th>-->
+                <!--                </tr>-->
+                <!--                <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+                <!--                <tr>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    <mat-icon *ngIf="data.event_history?.EMAIL_SENT?.Presidente_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.EMAIL_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.EMAIL_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+                <!--                    <mat-icon *ngIf="data.event_history?.EMAIL_SENT?.Presidente_OP[0]?.status === false || data.event_history?.EMAIL_SENT?.Presidente_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.EMAIL_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.EMAIL_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                              (click)="resendEmailAndSmsOP('email', data.representative.Presidente_OP[0].email, true, data.representative.Presidente_OP[0].user_id)">mail</mat-icon>-->
+                <!--                  </td>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    <mat-icon *ngIf="data.event_history?.SMS_SENT?.Presidente_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.SMS_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.SMS_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+                <!--                    <mat-icon *ngIf="data.event_history?.SMS_SENT?.Presidente_OP[0]?.status === false || data.event_history?.SMS_SENT?.Presidente_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                              [matTooltip]="data.event_history?.SMS_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data.event_history.SMS_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                              (click)="resendEmailAndSmsOP('sms', data.representative.Presidente_OP[0].cellphone,true, data.representative.Presidente_OP[0].user_id)">textsms</mat-icon>-->
+                <!--                  </td>-->
+                <!--                </tr>-->
+                <!--                <tr>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    {{ data.event_history.EMAIL_SENT.Presidente_OP.length > 0 ? data.event_history.EMAIL_SENT.Presidente_OP[0].date : 'Sin información' }}-->
+                <!--                  </td>-->
+                <!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                    {{ data.event_history.SMS_SENT.Presidente_OP.length > 0 ? data.event_history.SMS_SENT.Presidente_OP[0].date : 'Sin información' }}-->
+                <!--                  </td>-->
+                <!--                </tr>-->
+                <!--              </table>-->
+                <!--              </div>-->
+                <!--              aqui-->
+              </div>
+              <!--            REFACTOR-->
+              <div *ngIf="data.orgPol === '1'">
+                <br>
+                <p class="subtitle-h4"><strong>Estado de la comunicación:</strong></p>
+                <div class="notification-tables-container" style="display: flex; justify-content: space-between;" *ngIf="data.orgPol === '1'">
+                  <ng-container *ngFor="let cargo of filteredCargos">
+                    <table style="margin: 0 auto; width: 30%;" class="table notification-table" border="0" cellspacing="2" cellpadding="2">
+                      <thead>
+                      <tr>
+                        <th colspan="2" class="labelsColor">Destinatario: {{cargo.title}}</th>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                        <td style="text-align: center; background-color: #dfdfdf" width="50">
+                          <mat-icon
+                            [ngClass]="{
+                        'status-true': cargo.showButton && cargo.email?.status,
+                        'status-false': cargo.showButton && (cargo.email?.status === false || cargo.email === undefined),
+                        'not-exist': !cargo.showButton || !cargo.emailHistoryCheck
+                        }"
+                            [style.cursor]="(!cargo.showButton || !cargo.email) ? 'default' : 'pointer'"
+                            [matTooltip]="cargo.tooltipEMAIL ? cargo.tooltipEMAIL : (cargo.showButton && cargo.email?.sent_to) ? 'Enviado a: ' + cargo.email.sent_to : ''"
+                            matTooltipClass="multi-line-tooltip"
+                            matTooltipPosition="above"
+                            (click)="cargo.email?.status === false ? resendEmailAndSmsOP('email', cargo.email.sent_to, cargo.isRep, cargo.positionId) : null">
+                            mail
+                          </mat-icon>
+                        </td>
+                        <td style="text-align: center; background-color: #dfdfdf" width="50">
+                          <mat-icon
+                            [ngClass]="{
+                        'status-true': cargo.showButton && cargo.sms?.status,
+                        'status-false': cargo.showButton && (cargo.sms?.status === false || cargo.sms === undefined),
+                        'not-exist': !cargo.showButton || !cargo.smsHistoryCheck
+                        }"
+                            [style.cursor]="(!cargo.showButton || !cargo.sms) ? 'default' : 'pointer'"
+                            [matTooltip]="cargo.tooltipSMS ? cargo.tooltipSMS : (cargo.showButton && cargo.sms?.sent_to) ? 'Enviado a: ' + cargo.sms.sent_to : ''"
+                            matTooltipClass="multi-line-tooltip"
+                            matTooltipPosition="above"
+                            (click)="cargo.sms?.status === false ? resendEmailAndSmsOP('sms', cargo.sms?.sent_to, cargo.isRep, cargo.positionId) : null">
+                            textsms
+                          </mat-icon>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: center; background-color: #dfdfdf" width="50">
+                          {{ cargo.emailHistoryCheck ? cargo.email?.date : 'Sin información' }}
+                        </td>
+                        <td style="text-align: center; background-color: #dfdfdf" width="50">
+                          {{ cargo.smsHistoryCheck ? cargo.sms?.date : 'Sin información' }}
+                        </td>
+                      </tr>
+                      </tbody>
+                      <br>
+                    </table>
+                  </ng-container>
+                </div>
+              </div>
+              <!--            REFACTOR-->
+
+              <div *ngIf="data.contact_history">
+                <br>
+                <p class="subtitle-h4"><strong>Datos históricos de actualización de datos de contacto:</strong></p>
+                <mat-tab-group>
+                  <mat-tab label="Correo electrónico">
+                    <table mat-table [dataSource]="data.contact_history.email" class="mat-elevation-z8">
+                      <ng-container matColumnDef="contact">
+                        <th mat-header-cell *matHeaderCellDef> Correo electrónico</th>
+                        <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                      </ng-container>
+                      <ng-container matColumnDef="updated_at">
+                        <th mat-header-cell *matHeaderCellDef> Fecha de actualización</th>
+                        <td mat-cell *matCellDef="let element"> {{element.updated_at}} </td>
+                      </ng-container>
+                      <ng-container matColumnDef="doc">
+                        <th mat-header-cell *matHeaderCellDef> Documento</th>
+                        <td mat-cell *matCellDef="let element"> {{element.doc}} </td>
+                      </ng-container>
+                      <ng-container matColumnDef="updated_user">
+                        <th mat-header-cell *matHeaderCellDef> Responsable de la actualización</th>
+                        <td mat-cell *matCellDef="let element"> {{element.updated_user}}  </td>
+                      </ng-container>
+                      <ng-container matColumnDef="attachments">
+                        <th mat-header-cell *matHeaderCellDef> Sustento</th>
+                        <td mat-cell *matCellDef="let element">
+                          <ng-container *ngFor="let document of consolidateDocuments(element.attachments)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsHistory"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsHistory;"></tr>
+                    </table>
+                  </mat-tab>
+                  <mat-tab label="Número de celular">
+                    <table mat-table [dataSource]="data.contact_history.cellphone" class="mat-elevation-z8">
+                      <ng-container matColumnDef="contact">
+                        <th mat-header-cell *matHeaderCellDef> Celular</th>
+                        <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                      </ng-container>
+                      <ng-container matColumnDef="updated_at">
+                        <th mat-header-cell *matHeaderCellDef> Fecha de actualización</th>
+                        <td mat-cell *matCellDef="let element"> {{element.updated_at}} </td>
+                      </ng-container>
+                      <ng-container matColumnDef="doc">
+                        <th mat-header-cell *matHeaderCellDef> Documento</th>
+                        <td mat-cell *matCellDef="let element"> {{element.doc}} </td>
+                      </ng-container>
+                      <ng-container matColumnDef="updated_user">
+                        <th mat-header-cell *matHeaderCellDef> Responsable de la actualización</th>
+                        <td mat-cell *matCellDef="let element"> {{element.updated_user}}  </td>
+                      </ng-container>
+                      <ng-container matColumnDef="attachments">
+                        <th mat-header-cell *matHeaderCellDef> Sustento</th>
+                        <td mat-cell *matCellDef="let element">
+                          <ng-container *ngFor="let document of consolidateDocuments(element.attachments)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsHistory"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsHistory;"></tr>
+                    </table>
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+            </mat-card-content>
+
+          </mat-card>
+        </form>
+        <br/>
+        <button mat-button (click)="cancelar()" class="btnBrown0">Volver</button>
+        <br/><br/>
+      </div>
+    </div>
+  </ng-template>
+</section>

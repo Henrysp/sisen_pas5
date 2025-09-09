@@ -1,0 +1,119 @@
+.mat-form-field {
+    line-height: 1.7;
+}
+  
+.brownCircle {
+    width: 8px;
+    height: 8px;
+    background: #bd6c15;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 6px 10px 10px 26px;
+}
+
+.greyLine {
+    width: 60px;
+    height: 1px;
+    background: #d1d1d1;
+    margin: 9px 10px 0 0;
+}
+.allTitles {
+    color: #bd6c15;
+    font-size: 30px;
+    font-weight: normal;
+    margin-top: 40px;
+}
+.generalBox {
+    border-left: #d1d1d1 solid 1px;
+    margin: 8px 30px 0 30px;
+    padding: 15px 15px 0 15px;
+}
+
+
+.collectionsBox{
+    margin: 15px;
+    padding: 15px 0 0 15px;
+    border: rgba(0, 0, 0, 0.5) dashed 1px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+.collFilter{
+    margin-left: 4px;
+    margin-right: 4px;
+}
+.collInf{
+    text-align: left;
+}
+.icoColl{
+    width: 80px;
+}
+.icoColl span{
+    font-size: 50px;
+    line-height: 52px;
+}
+.collTitle{
+    font-size: 16px;
+    line-height: 18px;
+}
+.collDate{
+    font-size: 16px;
+    line-height: 18px;
+}
+.collRegis{
+    font-size: 16px;
+    line-height: 18px;
+}
+.collFile{
+    font-size: 16px;
+    line-height: 18px;
+}
+.collBtn .icoJekyll{
+    display: none;
+}
+.collBtn:hover .icoJekyll{
+    display: block;
+    color: #FFFFFF;
+}
+.collBtn .icoHyde{
+    display: block;
+    color: #000000;
+}
+.collBtn:hover .icoHyde{
+    display: none;
+}
+
+.collBtn .collTitle{
+    color: #3A5A83;
+}
+.collBtn:hover .collTitle{
+    color: #FFFFFF;
+}
+.collBtn .collDate{
+    color: #3A5A83;
+}
+.collBtn:hover .collDate{
+    color: #FFFFFF;
+}
+.collBtn .collRegis{
+    color: #3A5A83;
+}
+.collBtn:hover .collRegis{
+    color: #FFFFFF;
+}
+.collBtn .collFile{
+    color: #808080;
+}
+.collBtn:hover .collFile{
+    color: #FFFFFF;
+}
+.linksBox{
+    margin: 15px 15px -15px;
+}
+a.downLink{
+    width: auto;
+    text-decoration: none;
+    color: #3A5A83;
+}

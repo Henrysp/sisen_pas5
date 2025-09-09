@@ -1,0 +1,85 @@
+<section>
+    <div fxLayout="row" class="allTitles">
+        <span class="brownCircle"></span>
+        <span class="greyLine"></span>
+        Reportes
+    </div>
+    <div class="generalBox">
+        <!-- <div fxLayout="row" fxLayoutAlign="end center" class="linksBox">
+            <a href="#" class="downLink" fxLayout="row">
+                <span class="material-icons">file_download</span>
+                Descargar todo
+            </a>
+        </div> -->
+        <div fxLayout="row wrap" class="collectionsBox" fxLayoutAlign="center start">
+            <button fxLayout="row" class="collBtn" fxFlex="40" mat-stroked-button (click)="opFiltroReportes(tipoReporte.REPORTE_NOTIFICACIONES)" *ngIf="typeProfile !== 'consult'">
+                <div class="icoColl" fxLayout="row" fxLayoutAlign="center center">
+                    <span class="material-icons icoJekyll">download</span>
+                    <span class="material-icons icoHyde">insert_drive_file</span>
+                </div>
+                <div fxFlex class="collInf">
+                    <div class="collTitle">
+                        REPORTE DE NOTIFICACIONES
+                    </div>
+                    <!-- <div class="collDate">
+                        Última modificación: dd/mm/aaaa hh:mm:ss
+                    </div> -->
+                    <!-- <div class="collRegis">
+                        Total de registros: 10654
+                    </div> -->
+                    <div class="collFile">
+                        Tipo de archivo: XLSX
+                    </div>
+                </div>
+            </button>
+            <button *ngIf="typeProfile == 'admin' || typeProfile == 'consult'" fxLayout="row" class="collBtn" fxFlex="40" mat-stroked-button (click)="opFiltroReportes(tipoReporte.REPORTE_CASILLAS)">
+                <div class="icoColl" fxLayout="row" fxLayoutAlign="center center">
+                    <span class="material-icons icoJekyll">download</span>
+                    <span class="material-icons icoHyde">insert_drive_file</span>
+                </div>
+                <div fxFlex class="collInf">
+                    <div class="collTitle">
+                        REPORTE DE CASILLAS
+                    </div>
+                    <!-- <div class="collDate">
+                        Última modificación: dd/mm/aaaa hh:mm:ss
+                    </div> -->
+                    <!-- <div class="collRegis">
+                        Total de registros: 10654
+                    </div> -->
+                    <div class="collFile">
+                        Tipo de archivo: XLSX
+                    </div>
+                </div>
+            </button>
+          <button *ngIf="typeProfile === 'admin'" fxLayout="row" class="collBtn" fxFlex="40" mat-stroked-button (click)="opFiltroReportes(tipoReporte.REPORTE_USUARIOS)">
+            <div class="icoColl" fxLayout="row" fxLayoutAlign="center center">
+              <span class="material-icons icoJekyll">download</span>
+              <span class="material-icons icoHyde">insert_drive_file</span>
+            </div>
+            <div fxFlex class="collInf">
+              <div class="collTitle">
+                REPORTE DE USUARIOS
+              </div>
+              <div class="collFile">
+                Tipo de archivo: XLSX
+              </div>
+            </div>
+          </button>
+          <button *ngIf="typeProfile === 'admin'" fxLayout="row" class="collBtn" fxFlex="40" mat-stroked-button (click)="opFiltroReportes(tipoReporte.REPORTE_USUARIOS_ALL)">
+            <div class="icoColl" fxLayout="row" fxLayoutAlign="center center">
+              <span class="material-icons icoJekyll">download</span>
+              <span class="material-icons icoHyde">insert_drive_file</span>
+            </div>
+            <div fxFlex class="collInf">
+              <div class="collTitle">
+                REPORTE DE USUARIOS HISTÓRICO
+              </div>
+              <div class="collFile">
+                Tipo de archivo: XLSX
+              </div>
+            </div>
+          </button>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,160 @@
+<div class="main-div">
+  <div>
+    <div class="logoOnpe">
+      <img src="../../../assets/img/PantallasCS3_Onpe.png" alt=""/>
+    </div>
+  </div>
+  <div class="center">
+    <div class="logoSistema">
+      <img src="../../../assets/img/loginLogo70.png" alt=""/>
+    </div>
+    <div class="centerTitle">INGRESO</div>
+    <form
+      #myform="ngForm"
+      [formGroup]="Formulario"
+      class="example-form"
+      autocomplete="off"
+      (ngSubmit)="loginInit()"
+    >
+      <mat-form-field class="example-full-width bigInputColor" appearance="outline" style="width: 100%">
+        <mat-select name="fm_condicion" formControlName="fm_condicion" (selectionChange)="cambiarCondicion()">
+          <mat-option *ngFor="let item of lstCondicion" [value]="item.codigo">
+            {{item.nombre}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="example-full-width bigInputColor" appearance="outline" style="width: 100%">
+        <mat-select name="fm_option" formControlName="fm_option" (selectionChange)="radioChange($event)">
+          <mat-option *ngFor="let item of lstPersona" [value]="item.codigo">
+            {{item.nombre}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-checkbox formControlName="fm_organizacion" (change)="cargo($event)" *ngIf="bPerJud">Soy Organización Política</mat-checkbox>
+      <mat-form-field class="example-full-width bigInputColor" appearance="outline" style="width: 100%" *ngIf="bCargo">
+        <mat-select name="fm_option" formControlName="fm_cargo">
+          <mat-option *ngFor="let cargo of lstCargo" [value]="cargo.id">
+            {{cargo.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        class="example-full-width bigInputColor"
+        appearance="outline"
+      >
+        <span matPrefix class="material-icons">account_box</span>
+        <input
+          matInput
+          autofocus
+          placeholder="{{ placeHolder }}"
+          (keypress)="validar_campo($event)"
+          type="text"
+          class="form-control"
+          formControlName="fm_usuario"
+          id="fm_usuario"
+          (input)="Formulario.get('fm_usuario')?.setValue($event.target.value.toUpperCase(), { emitEvent: false })"
+          [class.control-invalid]="formInvalid('fm_usuario')"
+          [maxlength]="getMaxLengthNumeroDocumento"
+          [minlength]="getMin"
+          required
+          [readonly]="load"
+          appOnlyNumber="integer"
+          autocomplete="false"
+        />
+        <mat-error *ngIf="Formulario.controls.fm_usuario.invalid">{{
+          eShowError("fm_usuario", Formulario.controls.fm_usuario.errors)
+          }}</mat-error>
+      </mat-form-field>
+      <!-- <div class="labelsColor">Password</div> -->
+      <mat-form-field
+        class="example-full-width bigInputColor"
+        appearance="outline"
+      >
+        <span matPrefix class="material-icons">lock</span>
+        <input
+          mat-icon="lock"
+          matInput
+          placeholder="Contraseña"
+          [type]="hide ? 'password' : 'text'"
+          id="fm_pass"
+          maxlength="30"
+          class="form-control"
+          formControlName="fm_pass"
+          [class.control-invalid]="formInvalid('fm_pass')"
+          [readonly]="load"
+          required
+        />
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-error *ngIf="Formulario.controls.fm_pass.invalid">{{
+            eShowError("fm_pass", Formulario.controls.fm_pass.errors)
+          }}</mat-error>
+      </mat-form-field>
+      <br/>
+      <!-- <div *ngIf="RequerdCaptcha">
+        <re-captcha
+          (resolved)="resolved($event)"
+          formControlName="recaptchaReactive"
+          [(ngModel)]="formModel.captcha"
+          siteKey="{{ sitekey }}"
+          [required]="RequerdCaptcha"
+        >
+        </re-captcha>
+      </div>
+      <br /> -->
+      <br>
+      <span class="mensajeLogin">{{ mensaje }}</span>
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <button
+          type="submit"
+          fxFlex="50"
+          class="btnBlue"
+          mat-raised-button
+          [class.spinner]="load"
+          [disabled]="load || myform.invalid"
+        >
+          Ingresar
+        </button>
+      </div>
+      <span class="mensajeOlvidar" (click)="forgetpass()">Olvidé mi contraseña</span>
+      <br>
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <a class="btnSolicitarCasilla" href="https://registrocasillaelectronica.onpe.gob.pe/">Solicitar Casilla
+          Electrónica</a>
+      </div>
+      <br>
+      <a class="linkContent" href="#" (click)="onloadGuia()">
+        Guía para solicitar Casilla Electrónica
+      </a>
+      <a class="linkContent" href="#" (click)="onloadReglamento()">
+        Reglamento SISEN
+      </a>
+      <a class="mensajeOlvidar" href="mailto:sisen@onpe.gob.pe">Registrar Incidente</a>
+    </form>
+    <br>
+  </div>
+  <div style="text-align: center" >
+    <div id="chrome" class="compartir">
+      <span class="loginRadio labelsColor">Navegadores recomendados: </span>
+      <img class="float-image" border="0" src="../../../assets/img/chrome.png" width="30px" height="30px">
+      <span class="loginRadio labelsColor">Google Chrome </span>
+    </div>
+    <div id="firefox" class="compartir">
+      <img class="float-image" border="0" src="../../../assets/img/firefox.png" width="30px" height="30px">
+      <span class="loginRadio labelsColor">Mozilla Firefox </span>
+      <img class="float-image" border="0" src="/assets/img/edge.png" width="30px" height="30px">
+      <span class="loginRadio labelsColor">Microsoft Edge </span>
+    </div>
+  <div style="height: 20px; min-height: 20px; max-height: 20px; padding: 7px; bottom: 0; left: 10px; position: fixed;"
+       aria-hidden="false">
+    <div flex="50"
+         style="color: rgb(23, 91, 165); font-size: 12px; display: flex; align-items: center; font-family: Roboto, 'Helvetica Neue', sans-serif; font-weight: 500;">
+      {{version}}
+    </div>
+  </div>
+  <!--  <div style="height: 20px; min-height: 20px; max-height: 20px; padding: 7px; margin:0 auto; bottom: 0; position: fixed;" aria-hidden="false">-->
+  <!--    <div flex="50" style="color: rgb(23, 91, 165); font-size: 12px; display: flex; align-items: center; font-family: Roboto, 'Helvetica Neue', sans-serif; font-weight: 500;">-->
+  <!--      <a class="mensajeOlvidar" href="mailto:sisen@onpe.gob.pe">Registrar Incidente</a>-->
+  <!--    </div>-->
+  <!--  </div>-->
+</div>
+</div>

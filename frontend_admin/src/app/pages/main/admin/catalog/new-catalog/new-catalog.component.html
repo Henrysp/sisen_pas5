@@ -1,0 +1,55 @@
+<h1 mat-dialog-title>{{lbl_insert}}</h1>
+<form #myform="ngForm" [formGroup]="form">
+    <div mat-dialog-content>
+        <div class="generalBox">
+            <div class="controlBox inputColor">
+                <div class="formNotif" fxLayout="row wrap">
+                    <div fxFlex="100" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <!--<div class="labelsColor">Tipo* </div>
+                        <mat-form-field appearance="outline" style="width: 100%">
+                            <mat-select placeholder="Seleccione" formControlName="type">
+                                <mat-option *ngFor="let item of types" [value]="item">
+                                    {{ item}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.controls.type.invalid">{{
+                                eShowError("type", form.controls.type.errors)
+                                }}</mat-error>
+                        </mat-form-field>-->
+                        <div class="labelsColor">Código* </div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <textarea id="code" type="text" class="form-control" formControlName="code" maxlength="100" matInput
+                                #textcode placeholder="Ingrese Código" [matTextareaAutosize]="true" style="text-transform: uppercase"
+                                (keypress)="quitarDobleEspacio('code', code, $event)"></textarea>
+                            <mat-hint align="end">{{ textcode.value.length }} / 100</mat-hint>
+                            <mat-error *ngIf="form.controls.code.invalid">{{
+                                eShowError("code", form.controls.code.errors)
+                                }}</mat-error>
+                        </mat-form-field>
+                        <div class="labelsColor">Nombre* </div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <textarea id="value" #value1 type="text" class="form-control" formControlName="value" maxlength="100" matInput style="text-transform: uppercase"
+                                #textname placeholder="Ingrese Nombre" [matTextareaAutosize]="true"></textarea>
+                            <mat-hint align="end">{{ textname.value.length }} / 100</mat-hint>
+                            <mat-error *ngIf="form.controls.value.invalid">{{
+                                eShowError("value", form.controls.value.errors)
+                                }}</mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="labelsColor">*Campos requeridos</span>
+    </div>
+    <mat-dialog-actions>
+        <div fxFlex="100" class="newNotif" fxLayout="row" fxLayoutAlign="center center">
+          <button class="btnBrown" mat-button (click)="cancel()">
+            CANCELAR
+          </button>
+          <button type="submit" class="btnBlue" mat-button [disabled]="!(myform.valid && myform.dirty)"
+          (click)="submit()">
+          ACEPTAR
+          </button> <!-- [disabled]="(myform.invalid || isLoading)" -->
+        </div>
+    </mat-dialog-actions>
+</form>

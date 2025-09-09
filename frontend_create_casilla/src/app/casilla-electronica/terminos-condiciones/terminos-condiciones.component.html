@@ -1,0 +1,53 @@
+<form [formGroup]="formGroup" (submit)="$event.preventDefault()">
+  <!-- <mat-card class="long-text-card"  [style.overflow]="'auto'" [style.height.px]="'250'"> -->
+  <div  class="terminos">
+    <h1 style="text-align: center; font-size: 16px; font-weight: bold;">TÉRMINOS Y CONDICIONES PARA EL USO DE CASILLA ELECTRÓNICA DE LA ONPE</h1>
+    <p>Conste por el presente la aceptación expresa y voluntaria de suscrito respecto a la aceptación de términos y condiciones para el uso de la casilla electrónica de la Oficina Nacional de Procesos Electorales – ONPE, quien manifiesta conocer su contenido, aceptando expresamente la totalidad de las condiciones que a continuación se detallan:</p>
+    <ol>
+      <li>El Sistema de Notificaciones Electrónicas SISEN-ONPE es un sistema informático que permite realizar la transmisión y almacenamiento de actos administrativos, actuaciones administrativas y otras comunicaciones que deban ser notificados por la ONPE hacia los usuarios del sistema.</li>
+      <li>Solamente se asigna una casilla electrónica por persona natural o persona jurídica.</li>
+      <li>El suscrito toma conocimiento que, de encontrarse conforme la solicitud recibirá gratuitamente su código de Usuario y contraseña de acceso a la casilla electrónica los cuales son de carácter estrictamente personales.</li>
+      <li>El suscrito tiene conocimiento que para acceder a su casilla electrónica debe contar con un dispositivo informático conectado a Internet y configurado para acceder a los navegadores: Mozilla Firefox, Google Chrome y Microsoft Edge, en sus versiones actualizadas.</li>
+      <li>El suscrito se compromete a no ceder ni transferir bajo ninguna modalidad ni circunstancia, el uso de la contraseña de su casilla electrónica que la ONPE le asigne; siendo, en todo caso, único responsable del empleo que terceras personas pudieran darle.</li>
+      <li>El suscrito acepta que constituye exclusiva responsabilidad de su persona, omitir (por cualquier circunstancia) y revisar periódicamente su casilla electrónica a fin de tomar conocimiento oportuno de las notificaciones electrónicas remitidas por la ONPE.</li>
+      <li>El suscrito es responsable de conocer y dar cumplimiento a las disposiciones contenidas en el “Reglamento del Sistema de Notificaciones Electrónicas – SISEN-ONPE”, al cual podrá acceder a través de la plataforma del SISEN-ONPE <a target="_blank"  href="https://casillaelectronica.onpe.gob.pe/#/login" >https://casillaelectronica.onpe.gob.pe/#/login</a>.</li>
+      <li>El suscrito tiene conocimiento que, por cada acto de notificación, el SISEN-ONPE remite un mensaje de alerta informativa al correo electrónico y al teléfono celular registrado para tal fin, a través de los cuales se comunica el depósito de un acto administrativo o actuación administrativa en la casilla electrónica, de conformidad a lo establecido en la norma.</li>
+      <li>El suscrito tiene conocimiento que la acción de acceder al enlace contenido en el mensaje de alerta de notificación remitido a su correo electrónico y su teléfono celular, se constituye como acuse de recibo. <br/>En caso de haber transcurrido el plazo de cinco (05) días hábiles siguientes a la notificación efectuada y no haber accedido al mensaje de notificación (alerta) se tendrá por válidamente notificado, surtiendo los efectos legales del acto depositado a partir del primer día hábil siguiente.</li>
+      <li>El suscrito toma conocimiento que el cómputo de plazos expresados en días se inicia el día en que la notificación vía casilla electrónica adquiere eficacia, salvo que en el acto administrativo o actuación administraba notificada se señale una fecha posterior.</li>
+      <li>El suscrito brinda su consentimiento para el tratamiento de sus datos personales, según lo dispuesto por la Ley N.º 29733, Ley de Protección de Datos Personales y su Reglamento, aprobado por Decreto Supremo n.º 003-2013-JUS, los cuales serán empleados para todos los procedimientos y servicios realizados ante y por la ONPE.</li>
+    </ol>
+  </div>
+
+  <!-- </mat-card> -->
+  <br>
+
+  <hr>
+  <div fxLayout="column" fxLayoutGap="10px" class="terminos">
+    <div fxFlex="100" style="word-wrap: break-all;">
+      <mat-checkbox formControlName="terminosCondiciones">Estoy de acuerdo con los TÉRMINOS Y CONDICIONES y las POLÍTICAS DE PRIVACIDAD DE DATOS PERSONALES.
+      </mat-checkbox>
+    </div>
+    <!--<div fxFlex="100" style="word-wrap: break-all; width: 100% !important;">
+      <mat-checkbox formControlName="politicasDatos">Estoy de acuerdo con las POLÍTICAS DE PRIVACIDAD DE DATOS PERSONALES.</mat-checkbox>
+    </div>-->
+    <div fxFlex="100" style="word-wrap: break-all; width: 100% !important;">
+      <mat-checkbox formControlName="autorizacionNotificaciones">Autorización expresa para recibir la notificación de comunicaciones por correo electrónico.</mat-checkbox>
+    </div>
+  </div>
+  <br>
+  <!-- <div class="container">
+    <div class="row" style="text-align: center;" >
+      <div class="col-sm mb-3">
+        <button mat-flat-button type="button" color="primary" (click)="regresar()">REGRESAR</button>
+      </div>
+      <div class="col-sm">
+        <button mat-flat-button type="button" color="warn" [disabled]="validarForm()" (click)="continuar()">CONTINUAR</button>
+      </div>
+    </div>
+  </div> -->
+
+<div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center">
+  <button mat-flat-button type="button" color="primary" (click)="regresar()">REGRESAR</button>
+  <button mat-flat-button type="button" color="warn" [disabled]="validarForm()" (click)="continuar()">CONTINUAR</button>
+</div>
+</form>

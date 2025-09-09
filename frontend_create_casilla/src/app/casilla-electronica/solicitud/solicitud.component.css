@@ -1,0 +1,140 @@
+
+.wrapper {
+  display: unset;
+}
+.wrapper > div {
+  color: rgb(65, 65, 65);
+  background: rgb(240, 240, 240);
+  margin: .1em;
+  padding: .3em;
+  border-radius: 3px;
+  flex: 1;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-top: 40px;
+  border: 1px solid rgb(0 0 0 / 60%);
+  border-radius: 4px;
+  max-width: 500px;
+  max-height: 500px;
+}
+.img-custom-dimensions {
+  width: 300px;
+  height: 300px;
+}
+.labelList{
+  min-width: 320px;
+  max-width: 300px;
+}
+.detailList{
+  min-width: 230px;
+  max-width: 496px;
+}
+.h1Persona{
+  margin-left: 12px;
+  margin-top: 20px;
+font-size: 27px;
+}
+ol{
+  list-style-position: inside;
+  padding: 0;
+}
+ol li {
+  margin-bottom: 5px;
+}
+
+/* List */
+ul {
+  counter-reset: index;
+  padding: 0;
+  max-width: 300px;
+}
+
+/* List element */
+li {
+  counter-increment: index;
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  box-sizing: border-box;
+}
+
+/* Element counter */
+li::before {
+  content: counters(index, ".", decimal-leading-zero);
+  font-size: 1.5rem;
+  text-align: right;
+  font-weight: bold;
+  min-width: 50px;
+  padding-right: 12px;
+  font-variant-numeric: tabular-nums;
+  align-self: flex-start;
+
+  background-image: linear-gradient(to bottom, aquamarine, orangered);
+  background-attachment: fixed;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@-moz-document url-prefix() {
+  li::before {
+    background: none !important;
+    background-image: none !important;
+    background-attachment: initial !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    color: #ff6600 !important;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.1) !important;
+  }
+}
+/* Element separation */
+li + li {
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.documentos{
+  font-weight: bold;
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 52px;
+}
+table{
+  margin:0 auto;
+}
+table th{
+  text-align: center;
+  font-size: 16px;
+}
+
+table th,
+table td{
+  padding: 12px 25px;
+  width: auto;
+  border-bottom: 1px solid #ccc;
+}
+
+@use postcss-preset-env {
+  stage: 0;
+  autoprefixer: {
+    grid: true;
+  }
+  browsers: last 2 versions
+}
+
+@media only screen and (min-width: 360px) and (max-width: 768px) {
+  .center{
+    margin: 0;
+  }
+  .centrarVerticalmente2{
+    padding: 5px;
+  }
+}
+@media only screen and (min-width: 400px){
+
+  .wrapper {
+    display: contents;
+  }
+}

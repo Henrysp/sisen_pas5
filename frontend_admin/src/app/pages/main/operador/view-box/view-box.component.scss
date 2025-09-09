@@ -1,0 +1,104 @@
+// file-upload span {
+//   white-space: normal !important;
+// }
+.item-test span {
+    white-space: normal !important;
+}
+
+.input-nowrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
+}
+
+.brownCircle {
+    width: 8px;
+    height: 8px;
+    background: #bd6c15;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 6px 10px 10px 26px;
+}
+
+.greyLine {
+    width: 60px;
+    height: 1px;
+    background: #d1d1d1;
+    margin: 9px 10px 0 0;
+}
+
+.allTitles {
+    color: #bd6c15;
+    font-size: 30px;
+    font-weight: normal;
+    margin-top: 40px;
+}
+
+.generalBox {
+    border-left: #d1d1d1 solid 1px;
+    margin: 8px 30px 0 30px;
+    padding: 15px 15px 0 15px;
+}
+
+.formNotif {
+    max-width: 50%;
+    margin: 0 auto;
+}
+
+.newNotif {
+    margin: 16px 0 0;
+}
+
+.newNotif .btnGreen {
+    max-width: 200px;
+}
+
+.newNotif .btnBlue {
+    max-width: 160px;
+    margin: 0 8px;
+}
+
+.newNotif .btnBrown {
+    max-width: 160px;
+    margin: 0 8px;
+}
+
+@media (max-width: 1680px) {
+    .formNotif {
+        max-width: 60%;
+    }
+}
+
+@media (max-width: 1480px) {
+    .formNotif {
+        max-width: 80%;
+    }
+}
+
+@media (max-width: 1280px) {
+    .formNotif {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 960px) {
+    .generalBox {
+        border-left: none;
+        margin: 8px 0px 0 0px;
+        padding: 15px 15px 15px 15px;
+    }
+    .allTitles {
+        font-size: 18px;
+        margin-top: 30px;
+    }
+    .greyLine {
+        width: 20px;
+    }
+    .centerTitle {
+        font-size: 16px;
+        margin: 10px 0 35px 0;
+    }
+}

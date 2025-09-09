@@ -1,0 +1,13 @@
+.main{
+  /*todo: hardcoded width*/
+  width: 400px;
+}
+
+h1{
+  color: #12a6ee;
+  text-align: center;
+}
+
+p.link{
+  text-align: end;
+}

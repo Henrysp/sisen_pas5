@@ -1,0 +1,91 @@
+.chkBox{
+  height: 30px;
+  margin-left: 40px;
+  width: 30px;
+}
+.etiqueta{
+  float: right;
+  padding: 7px;
+}
+.append-button{
+    /*Malogra el icono x del modal position: absolute;*/
+    top: 0;
+    right: 0;
+  }
+  .example-button {
+    margin-top: 16px;
+  }
+
+  .example-tooltip-red {
+    background: #b71c1c;
+  }
+
+  .tooltip {
+    position:relative; /* making the .tooltip span a container for the tooltip text */
+     /*border-bottom:1px dashed #000; little indicater to indicate it's hoverable */
+     font-size: 9px;
+     font-weight: 100;
+  }
+  .tooltip:before {
+    content: attr(data-text); /* here's the magic */
+    position:absolute;
+
+    /* vertically center */
+    top:50%;
+    transform:translateY(50%);
+    height: 40px;
+    /* move to right */
+    left:-490px;
+    top:-70px;
+    margin-left:15px; /* and add a small left margin */
+    /* basic styles */
+    width:490px;
+    padding: 4px;;
+    border-radius:4px;
+    background:rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    text-align:center;
+    display:none; /* hide by default */
+  }
+  .tooltip:hover:before {
+    display:block;
+  }
+
+
+  @keyframes spinner {
+    to {transform: rotate(360deg);}
+  }
+
+  .spinner:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    border-top-color: #000000;
+    animation: spinner .8s linear infinite;
+  }
+
+  /* malogra la alineacion .mat-body p, .mat-body-1 p, .mat-typography .mat-body p, .mat-typography .mat-body-1 p, .mat-typography p {
+    margin: -22px 6px 12px 10px !important;
+  }*/
+
+
+.adicionalAlert{
+  /*height: 200px!important;*/
+  margin-top: -5px;
+}
+
+.camposObligatoriosFile{
+  font-size: 12px;
+  color: #000000;
+}
+.camposObligatorios{
+  color: rgb(232, 0, 0);
+}

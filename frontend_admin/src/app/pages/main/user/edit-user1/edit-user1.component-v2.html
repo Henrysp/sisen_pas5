@@ -1,0 +1,1467 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    <span *ngIf="!action"> Editar datos de</span>
+    <span *ngIf="action"> Datos de</span>
+    <span *ngIf="type === 'pn' else personajuridica">&nbsp;ciudadano</span>
+    <ng-template #personajuridica>&nbsp;la Persona Jurídica</ng-template>
+  </div>
+  <ng-container *ngIf="loading; then mostrarLoading; else ocultarLoading"></ng-container>
+  <ng-template #mostrarLoading>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <div class="icon-loading"></div>
+    </div>
+  </ng-template>
+  <ng-template #ocultarLoading>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form #myform="ngForm" [formGroup]="Formulario" (keydown.enter)="$event.preventDefault()">
+        <div fxLayout="row wrap">
+          <br>
+          <div *ngIf="action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><h4 class="subtitle-h3"
+                                                                                               style="font-size: 14px; line-height: 0.5;">
+            <strong>Fecha de registro de solicitud de casilla: </strong>{{user?.created_at}}</h4>
+          </div>
+          <div *ngIf="action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><h4 class="subtitle-h3"
+                                                                                               style="font-size: 14px; line-height: 0.5;">
+            <strong>Fecha de evaluación: </strong>{{user?.created_at}}</h4>
+          </div>
+          <div *ngIf="action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><h4 class="subtitle-h3"
+                                                                                               style="font-size: 14px; line-height: 0.5;">
+            <strong>Estado de evaluación: </strong>{{ user?.status === 'DESHABILITADO' ? 'DESHABILITADO/REGISTRO INTERNO' : 'APROBADO POR REGISTRO INTERNO' }}</h4>
+          </div>
+          <div *ngIf="action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><h4 class="subtitle-h3"
+                                                                                               style="font-size: 14px; line-height: 0.5;">
+            <strong>Evaluador/Registrador: </strong>{{user?.create_user ? user?.create_user : user?.update_user || '-'}}</h4>
+          </div>
+          <div *ngIf="action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><h4 class="subtitle-h3"
+                                                                                               style="font-size: 14px; line-height: 0.5;">
+            <strong>Actualizó su contraseña: </strong>{{ user?.updated_password ? 'Sí' : 'No' }}</h4>
+          </div>
+          <div *ngIf="action && type === 'pj'" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><h4 class="subtitle-h3"
+                                                                                                                style="font-size: 14px; line-height: 0.5;">
+            <strong>Organización Política: </strong>{{ user?.orgPol === '1' ? 'Sí' : 'No' }}</h4>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Tipo de documento</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select disabled placeholder="Seleccione" name="typeDoc" formControlName="fm_optiontipo"
+                          (selectionChange)="changeTypeDocument($event)">
+                <mat-option *ngFor="let doc of typeDocument" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor" *ngIf="Formulario.controls['fm_optiontipo'].value !== 'pr'">Número de documento
+            </div>
+            <div class="labelsColor" *ngIf="Formulario.controls['fm_optiontipo'].value === 'pr'">N° de Partida
+              Registral
+            </div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="tel" disabled class="form-control" formControlName="fm_numerodoc"
+                     [class.control-invalid]="formInvalid('fm_numerodoc')" [maxlength]="maxlengthNumDoc" matInput
+                     placeholder="{{ placeHolder }}" name="doc"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type === 'pj'">
+            <div class="labelsColor">Razón social</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_organization_name"
+                     [class.control-invalid]="formInvalid('fm_organization_name')" matInput placeholder="Razón social"/>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type !== 'pj'">
+            <div class="labelsColor">Nombres</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_nombres" maxlength="150"
+                     [class.control-invalid]="formInvalid('fm_nombres')" matInput placeholder="Nombres"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type !== 'pj'">
+            <div class="labelsColor"> Apellido Paterno</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_apellidoPaterno" maxlength="150"
+                     [class.control-invalid]="formInvalid('fm_apellidoPaterno')" matInput placeholder="Apellidos"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type !== 'pj'">
+            <div class="labelsColor"> Apellido Materno</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_apellidoMaterno" maxlength="150"
+                     [class.control-invalid]="formInvalid('fm_apellidoMaterno')" matInput placeholder="Apellidos"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4"
+               *ngIf="Formulario.controls['fm_optiontipo'].value === 'ruc'">
+            <div class="labelsColor">N° de partida registral*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_partida_registral" maxlength="20"
+                     matInput placeholder="N° de partida registral"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4"
+               *ngIf="Formulario.controls['fm_optiontipo'].value === 'pr' || Formulario.controls['fm_optiontipo'].value === 'ruc'">
+            <div class="labelsColor">Asiento registral*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_asiento_registral" maxlength="20"
+                     matInput placeholder="Asiento registral"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Correo electrónico*</div>
+            <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+              <input type="email" minlength="5" maxlength="50" class="lowercase" formControlName="fm_correo"
+                     [class.control-invalid]="formInvalid('fm_correo')" name="email"
+                     [attr.disabled]="inputDisabled ? '' : null" matInput placeholder="Ingrese correo electrónico"
+                     oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+              />
+              <mat-error
+                *ngIf="Formulario.controls.fm_correo.invalid">{{eShowError("fm_correo", Formulario.controls.fm_correo.errors)}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Número de celular*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <!--<input type="text" (keypress)="validarCelular($event)" disabled class="form-control" formControlName="fm_telefono" maxlength="9" minlength="9" [class.control-invalid]="formInvalid('fm_telefono')" matInput placeholder="Teléfono" />-->
+              <input type="text" (keypress)="validarCelular($event)" disabled class="form-control"
+                     formControlName="fm_telefono" maxlength="9" minlength="9" matInput placeholder="Número de celular"/>
+              <mat-error
+                *ngIf="Formulario.controls.fm_telefono.invalid">{{eShowError("fm_telefono", Formulario.controls.fm_telefono.errors)}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Número de teléfono fijo</div>
+            <!-- <div class="formNotif" fxLayout="row wrap"> -->
+            <!-- <div fxFlex="30" fxFlex.md="30" fxFlex.sm="50" fxFlex.xs="50" class="padd_4">
+                <mat-form-field appearance="outline" style="width: 100%">
+                    <mat-select placeholder="Seleccione" formControlName="fm_phone_code" (selectionChange)="changeCodePhone($event)">
+                        <mat-option *ngFor="let code of codePhone" [value]="code.code">
+                            {{code.code}} - {{ code.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div> -->
+            <!-- <div fxFlex="100" fxFlex.md="100" fxFlex.sm="50" fxFlex.xs="50" class="padd_4">
+
+            </div>
+        </div> -->
+            <mat-form-field appearance="outline" style="width: 100%">
+              <input type="text" class="form-control" formControlName="fm_phone" minlength="6" maxlength="10"
+                     [class.control-invalid]="formInvalid('fm_phone')" (keypress)="validar_campo($event)" matInput
+                     placeholder="Número de teléfono fijo"/>
+              <mat-error *ngIf="Formulario.controls.fm_phone.invalid">{{
+                  eShowError("fm_phone", Formulario.controls.fm_phone.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type === 'pj'">
+            <div class="labelsColor">Página web</div>
+            <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+              <input type="text" minlength="5" maxlength="50" class="form-control" formControlName="fm_paginaweb"
+                     [class.control-invalid]="formInvalid('fm_paginaweb')" name="paginaweb"
+                     [attr.disabled]="inputDisabled ? '' : null" matInput placeholder="Ingrese una página web"
+                     pattern="(https?:\/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+                     (input)="onInputFormat($event,'lowercase','fm_paginaweb')">
+              <mat-error *ngIf="Formulario.controls.fm_paginaweb.invalid">{{
+                  eShowError("fm_paginaweb", Formulario.controls.fm_paginaweb.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- <div class="generalBox"> -->
+          <!-- <div class="controlBox inputColor"> -->
+          <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+<!--            <h4 class="subtitle-h4">-->
+<!--            <strong>Domicilio:</strong></h4>-->
+          </div>
+          <!-- <div class="formNotif" fxLayout="row wrap"> -->
+          <div fxFlex="33" fxFlex.md="33" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Departamento</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select placeholder="Seleccione" name="dep" formControlName="fm_departamento"
+                          (selectionChange)="cambiarProvincia()">
+                <mat-option *ngFor="let item of departamentoList" [value]="item">{{item.nodep}} </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="33" fxFlex.md="33" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Provincia</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select placeholder="Seleccione" name="prov" formControlName="fm_provincia"
+                          (selectionChange)="cambiarDistrito()">
+                <mat-option *ngFor="let item of provinciaList" [value]="item">{{item.noprv}} </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+
+          <div fxFlex="33" fxFlex.md="33" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Distrito</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select placeholder="Seleccione" name="dis" formControlName="fm_distrito">
+                <mat-option *ngFor="let item of distritoList" [value]="item">{{item.nodis}} </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Dirección</div>
+            <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+              <input id="domicilioID" type="text"
+                     minlength="5" maxlength="100" class="form-control" formControlName="fm_direccion"
+                     [class.control-invalid]="formInvalid('fm_direccion')" name="email"
+                     [attr.disabled]="inputDisabled ? '' : null" matInput placeholder="Dirección"/>
+              <mat-error
+                *ngIf="Formulario.controls.fm_direccion.invalid">{{eShowError("fm_direccion", Formulario.controls.fm_direccion.errors)}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type !== 'pj'">
+            <div class="labelsColor"> ¿Es candidato a un proceso electoral?</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_candidate" maxlength="150"
+                     [class.control-invalid]="formInvalid('fm_candidate')" matInput placeholder="Es candidato"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type !== 'pj' && this.user.candidate">
+            <div class="labelsColor"> Proceso Electoral</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_electoralProcess" maxlength="150"
+                     [class.control-invalid]="formInvalid('fm_electoralProcess')" matInput placeholder="Proceso Electoral"/>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Observación</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="text" disabled class="form-control" formControlName="fm_observation" maxlength="150"
+                     [class.control-invalid]="formInvalid('fm_observation')" matInput placeholder="Observación"/>
+            </mat-form-field>
+          </div>
+          <ng-container *ngIf="action">
+          <div *ngIf="adjuntos && adjuntos.length > 0" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4"><h4 class="subtitle-h4">
+            <strong>Sustento:</strong></h4>
+          </div>
+          <div fxFlex="100" *ngFor="let adjunto of adjuntos">
+            <ng-container *ngIf="adjunto.blocked != null ? adjunto.blocked : false; else blocked">
+            </ng-container>
+            <ng-template #blocked>
+              <div fxFlex="100">
+                <button mat-stroked-button
+                        (click)="download(adjunto!.path,adjunto!.name)">
+                  <mat-icon matSuffix class="grad45">attach_file</mat-icon>
+                  {{ adjunto.name }}
+                </button>
+              </div>
+            </ng-template>
+            <br/>&nbsp;
+          </div>
+          </ng-container>
+          <ng-container>
+            <div *ngIf="type !== 'pj' && user?.email_sent_at && action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100"
+                 fxFlex.xs="100" class="padd_4">
+              <br>
+              <br>
+              <p class="subtitle-h4"><strong>Estado de la comunicación:</strong></p>
+              <table style="margin: 0 auto; width: 50%;" class="table" border="0" cellspacing="2" cellpadding="2">
+                <tr>
+                  <th colspan="2" class="labelsColor">Destinatario: {{user.lastname }} {{user.second_lastname }},  {{user.name}}</th>
+                </tr>
+                <tr class="labelsColor">
+                  <th>Depositado:</th>
+                  <th>Depositado:</th>
+                </tr>
+                <tr>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">
+                    <mat-icon *ngIf="user.email_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                              [matTooltip]="'Enviado a: ' + this.user.event_history.email.sent_to"
+                              matTooltipPosition="above">mail
+                    </mat-icon>
+                    <mat-icon *ngIf="!user.email_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                              [matTooltip]="'Enviado a: ' + this.user.event_history.email.sent_to"
+                              matTooltipPosition="above"
+                              (click)="resendEmailAndSms('email', user.email, false)">mail
+                    </mat-icon>
+                  </td>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">
+                    <mat-icon *ngIf="user.sms_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                              [matTooltip]="'Enviado a: ' + this.user.event_history.sms.sent_to"
+                              matTooltipPosition="above">textsms
+                    </mat-icon>
+                    <mat-icon *ngIf="!user.sms_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                              [matTooltip]="'Enviado a: ' + this.user.event_history.sms.sent_to"
+                              matTooltipPosition="above"
+                              (click)="resendEmailAndSms('sms', user.cellphone, false)">textsms
+                    </mat-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">{{user.email_sent_at}}</td>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">{{user.sms_sent_at}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div *ngIf="type !== 'pj' && user?.contact_history && action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100"
+                 fxFlex.xs="100" class="padd_4">
+              <br>
+              <br>
+              <p class="subtitle-h4"><strong>Datos históricos de actualización de datos de contacto:</strong></p>
+              <mat-tab-group>
+                <mat-tab label="Correo electrónico">
+                  <table mat-table [dataSource]="user.contact_history.email" class="mat-elevation-z8">
+                    <ng-container matColumnDef="contact">
+                      <th mat-header-cell *matHeaderCellDef> Correo electrónico</th>
+                      <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_at">
+                      <th mat-header-cell *matHeaderCellDef> Fecha de actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_at}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="doc">
+                      <th mat-header-cell *matHeaderCellDef> Documento</th>
+                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_user">
+                      <th mat-header-cell *matHeaderCellDef> Responsable de la actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_user}}  </td>
+                    </ng-container>
+                    <ng-container matColumnDef="attachments">
+                      <th mat-header-cell *matHeaderCellDef> Sustento</th>
+                      <td mat-cell *matCellDef="let element">
+                        <ng-container *ngFor="let document of consolidateDocuments(element.attachments)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistory"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistory;"></tr>
+                  </table>
+                </mat-tab>
+                <mat-tab label="Número de celular">
+                  <table mat-table [dataSource]="user.contact_history.cellphone" class="mat-elevation-z8">
+                    <ng-container matColumnDef="contact">
+                      <th mat-header-cell *matHeaderCellDef> Celular</th>
+                      <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_at">
+                      <th mat-header-cell *matHeaderCellDef> Fecha de actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_at}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="doc">
+                      <th mat-header-cell *matHeaderCellDef> Documento</th>
+                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_user">
+                      <th mat-header-cell *matHeaderCellDef> Responsable de la actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_user}}  </td>
+                    </ng-container>
+                    <ng-container matColumnDef="attachments">
+                      <th mat-header-cell *matHeaderCellDef> Sustento</th>
+                      <td mat-cell *matCellDef="let element">
+                        <ng-container *ngFor="let document of consolidateDocuments(element.attachments)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistory"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistory;"></tr>
+                  </table>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </ng-container>
+          <br/><br/>
+          <ng-container *ngIf="type === 'pj'">
+            <br>
+            <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="action">
+              <h4 class="subtitle-h4"><strong>Datos del representante:</strong></h4>
+            </div>
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="!action">
+              <h4 class="subtitle-h4"><strong>Datos del representante:</strong></h4>
+            </div>
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="!action">
+              <button mat-flat-button color="accent" *ngIf="type === 'pj'" (click)="newRepresentative('R')">Nuevo representante
+              </button>
+            </div>
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="user.representative.document_type_attachment">
+              <div class="labelsColor">Tipo de documento adjunto*</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <mat-select placeholder="Seleccione" formControlName="fm_tipoDocumentoAdjunto" disabled="true">
+                  <mat-option *ngFor="let doc of tipoDocumentoAdjunto" [value]="doc.id">
+                    {{ doc.value }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+<!--            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">-->
+<!--              <div class="labelsColor">&nbsp;</div>-->
+<!--              <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%"-->
+<!--                              *ngIf="user?.representative.document_type_attachment=='4'">-->
+<!--                <input type="text" disabled class="form-control" inputDisabled matInput-->
+<!--                       value="{{user?.representative.document_name_attachment}}"/>-->
+<!--              </mat-form-field>-->
+<!--            </div>-->
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div class="labelsColor">Cargo*</div>
+
+              <mat-form-field appearance="outline" style="width: 100%">
+                <mat-select
+                  placeholder="Seleccione"
+                  formControlName="fm_cargo"
+                  (selectionChange)="cambiarCargo()"
+                >
+                  <mat-option [value]="cargos[data2?.orgPol === '1' ? 1 : 0].id">
+                    {{ cargos[data2?.orgPol === '1' ? 1 : 0].value }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="Formulario.controls.fm_cargo.invalid">{{
+                    eShowError("fm_cargo", Formulario.controls.fm_cargo.errors)
+                  }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="user?.representative.asientoRegistralRep">
+              <div class="labelsColor">Asiento registral*</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <input type="text" disabled class="form-control" formControlName="fm_asiento_registral_rep"
+                       maxlength="20" matInput value="{{user?.representative.asientoRegistralRep}}"/>
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="user?.representative.isAlternate !== null && user.orgPol === '1'">
+              <div class="labelsColor">¿Es Personero Legal Alterno? *</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <input type="text" disabled class="form-control" formControlName="alterno"
+                       maxlength="20" matInput value="{{user?.representative.isAlternate}}"/>
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div class="labelsColor">Tipo de documento</div>
+              <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                <input type="text" style="text-transform: uppercase;" disabled class="form-control" inputDisabled
+                       matInput value="{{user?.representative.doc_type}}"/>
+              </mat-form-field>
+            </div>
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div class="labelsColor">Número de documento</div>
+              <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                <input type="text" disabled class="form-control" inputDisabled matInput
+                       value="{{user?.representative.doc}}"/>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div class="labelsColor">Nombres</div>
+              <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                <input type="text" disabled class="form-control" inputDisabled matInput
+                       value="{{user?.representative.names}}"/>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div class="labelsColor">Apellidos</div>
+              <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                <input type="text" disabled class="form-control" inputDisabled matInput
+                       value="{{user?.representative.lastname}} {{user?.representative.second_lastname}}"/>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div class="labelsColor">Correo electrónico*</div>
+              <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                <input type="email" minlength="5" maxlength="50" class="lowercase" formControlName="fm_correo_rep"
+                       [class.control-invalid]="formInvalid('fm_correo_rep')" name="email"
+                       [attr.disabled]="inputDisabled ? '' : null" matInput placeholder="Ingrese correo electrónico"
+                       oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                />
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div class="labelsColor">Número de celular*</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <input type="text" (keypress)="validarCelularRep($event)" disabled class="form-control"
+                       formControlName="fm_celular_rep" maxlength="9" minlength="9" matInput placeholder="Número de celular"/>
+                <mat-error
+                  *ngIf="Formulario.controls.fm_celular_rep.invalid">{{eShowError("fm_celular_rep", Formulario.controls.fm_celular_rep.errors)}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="type === 'pj'">
+              <div class="labelsColor">Número de teléfono fijo</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <input type="text" class="form-control" formControlName="fm_phone_rep" [minlength]="6" [maxlength]="10"
+                       [class.control-invalid]="formInvalid('fm_phone_rep')" (keypress)="validar_campo($event)" matInput
+                       placeholder="Número de teléfono fijo"/>
+                <!--<input type="text" class="form-control" formControlName="fm_phone_rep" [minlength]="6" [maxlength]="10" matInput placeholder="Número de teléfono" />-->
+                <mat-error *ngIf="Formulario.controls.fm_phone_rep.invalid">{{
+                    eShowError("fm_phone", Formulario.controls.fm_phone_rep.errors)
+                  }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <ng-container *ngIf="action">
+            <div *ngIf="adjuntosRep && adjuntosRep.length > 0" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <h4 class="subtitle-h4"><strong>Sustento:</strong></h4>
+            </div>
+            <div
+              fxFlex="100"
+              *ngFor="let adjunto of adjuntosRep">
+              <ng-container *ngIf="adjunto.blocked != null ? adjunto.blocked : false; else blocked">
+              </ng-container>
+              <ng-template #blocked>
+                <div fxFlex="100">
+                  <button mat-stroked-button
+                          (click)="download(adjunto!.path,adjunto!.name)">
+                    <mat-icon matSuffix class="grad45">attach_file</mat-icon>
+                    {{ adjunto.name }}
+                  </button>
+                </div>
+              </ng-template>
+            </div>
+            </ng-container>
+            <div *ngIf="data2.officials && data2.officials.length > 0 && data2.type_user === 'J' && action" fxFlex="100"
+                 fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <br>
+              <p class="subtitle-h4"><strong>Datos de funcionarios actuales:</strong></p>
+              <div style="display: flex; justify-content: space-between;">
+                <table style="margin: 0 auto; width: 95%;table-layout: fixed;" class="officials" border="0" cellspacing="2" cellpadding="2">
+                  <tr>
+                    <th class="col-cargo">Cargo</th>
+                    <th class="col-estado">Estado</th>
+                    <th class="col-estado">Tipo Doc</th>
+                    <th class="col-estado">Nro Doc</th>
+                    <th class="col-nombre">Nombres y Apellidos</th>
+                    <th class="col-nombre">Correo</th>
+                    <th class="col-nombre">Celular</th>
+                  </tr>
+                  <tr *ngFor="let item of data2.officials">
+                    <td>{{item.position_name}}</td>
+                    <td>
+                      <span *ngIf="data2.status === 'DESHABILITADO'" class="material-icons" style="color: #4d4d4d"
+                            matTooltip="Casilla deshabilitada" matTooltipPosition="above">circle</span>
+                      <span *ngIf="data2.status !== 'DESHABILITADO' && item.status === 'DESHABILITADO'" class="material-icons" style="color: #df1313"
+                            matTooltip="Funcionario deshabilitado" matTooltipPosition="above">report</span>
+                      <span *ngIf="data2.status !== 'DESHABILITADO' && item.status !== 'DESHABILITADO'" class="material-icons" style="color:#23df05;"
+                            matTooltip="Funcionario habilitado" matTooltipPosition="above">check_circle</span>
+                    </td>
+                    <td>{{item.doc_type | uppercase}}</td>
+                    <td>{{item.doc}}</td>
+                    <td>{{item.names}}, {{item.lastname}} {{item.second_lastname}}</td>
+                    <td>{{item.email}}</td>
+                    <td>{{item.cellphone}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <br/><br/>
+            <!--            <div *ngIf="data2.representative && data2.type_user == 'J' && action" fxFlex="100" fxFlex.md="100"-->
+            <!--                 fxFlex.sm="100" fxFlex.xs="100" class="padd_4">-->
+            <!--              <br>-->
+            <!--              <p class="subtitle-h4"><strong>Datos históricos de funcionarios:</strong></p>-->
+            <!--              <div>-->
+            <!--                <mat-tab-group>-->
+            <!--                  <mat-tab label="Representante Legal"-->
+            <!--                           *ngIf="data2.representative.Rep_Legal && data2.representative.Rep_Legal.length > 0">-->
+            <!--                    <table mat-table [dataSource]="data2.representative.Rep_Legal" class="mat-elevation-z8">-->
+            <!--                      <ng-container matColumnDef="doc">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+            <!--                        <td mat-cell-->
+            <!--                            *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="evaluator_user_names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_begin">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element">-->
+            <!--                          <span *ngIf="data2.status !== 'DESAPROBADO'">{{ element.date_begin }}</span></td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_end">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="sustento">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Sustento</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element">-->
+            <!--                            <span-->
+            <!--                              *ngFor="let document of consolidateDocuments(element.file_document,element.file_document1, element.file_document2)">-->
+            <!--                              <ng-container *ngIf="document.path && document.name">-->
+            <!--                              <span style="cursor:pointer; font-size: 12px; display: block;"-->
+            <!--                                    (click)="download(document.path, document.name)"-->
+            <!--                                    [matTooltip]="document.name">-->
+            <!--                                <span matPrefix class="material-icons">download</span></span>-->
+            <!--                              </ng-container>-->
+            <!--                              </span>-->
+            <!--                        </td>-->
+            <!--                      </ng-container>-->
+
+            <!--                      <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentative"></tr>-->
+            <!--                      <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentative;"></tr>-->
+            <!--                    </table>-->
+            <!--                  </mat-tab>-->
+
+            <!--                  <mat-tab label="Personero Legal Titular"-->
+            <!--                           *ngIf="data2.representative.Pers_Legal_OP && data2.representative.Pers_Legal_OP.length > 0">-->
+            <!--                    <table mat-table [dataSource]="data2.representative.Pers_Legal_OP" class="mat-elevation-z8">-->
+            <!--                      <ng-container matColumnDef="doc">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+            <!--                        <td mat-cell-->
+            <!--                            *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="evaluator_user_names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_begin">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element">-->
+            <!--                          <span *ngIf="data2.status !== 'DESAPROBADO'">{{ element.date_begin }}</span>-->
+            <!--                        </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_end">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="foto">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Foto</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element">-->
+            <!--                              <span style="cursor:pointer;font-size: 12px;display: block; width: 40px;"-->
+            <!--                                    *ngIf="element.file_photo !== null"-->
+            <!--                                    (click)="download(element.file_photo.path,element.file_photo.name)">-->
+            <!--                            <span matPrefix class="material-icons">portrait</span></span>-->
+            <!--                        </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="sustento">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Sustento</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element">-->
+            <!--                            <span-->
+            <!--                              *ngFor="let document of consolidateDocuments(element.file_document,element.file_document1, element.file_document2)">-->
+            <!--                              <ng-container *ngIf="document.path && document.name">-->
+            <!--                              <span style="cursor:pointer; font-size: 12px; display: block;"-->
+            <!--                                    (click)="download(document.path, document.name)"-->
+            <!--                                    [matTooltip]="document.name">-->
+            <!--                                <span matPrefix class="material-icons">download</span></span>-->
+            <!--                              </ng-container>-->
+            <!--                              </span>-->
+            <!--                        </td>-->
+            <!--                      </ng-container>-->
+
+            <!--                      <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentative"></tr>-->
+            <!--                      <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentative;"></tr>-->
+            <!--                    </table>-->
+            <!--                  </mat-tab>-->
+            <!--                  <mat-tab label="Tesorero"-->
+            <!--                           *ngIf="data2.representative.Tesorero_OP && data2.representative.Tesorero_OP.length > 0">-->
+            <!--                    <table mat-table [dataSource]="data2.representative.Tesorero_OP" class="mat-elevation-z8">-->
+            <!--                      <ng-container matColumnDef="doc">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+            <!--                        <td mat-cell-->
+            <!--                            *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="evaluator_user_names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_begin">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_begin}}  </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_end">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+            <!--                      </ng-container>-->
+
+            <!--                      <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentativeOP"></tr>-->
+            <!--                      <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentativeOP;"></tr>-->
+            <!--                    </table>-->
+            <!--                  </mat-tab>-->
+            <!--                  <mat-tab label="Representante Legal OP"-->
+            <!--                  *ngIf="data2.representative.Tesorero_OP && data2.representative.Tesorero_OP.length > 0"     >-->
+            <!--                    <table *ngIf="data2.representative.Rep_Legal_OP && data2.representative.Rep_Legal_OP.length > 0 else noDataTabRepresentanteLegalOP" mat-table [dataSource]="data2.representative.Rep_Legal_OP" class="mat-elevation-z8">-->
+            <!--                      <ng-container matColumnDef="doc">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+            <!--                        <td mat-cell-->
+            <!--                            *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="evaluator_user_names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_begin">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_begin}}  </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_end">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+            <!--                      </ng-container>-->
+
+            <!--                      <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentativeOP"></tr>-->
+            <!--                      <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentativeOP;"></tr>-->
+            <!--                    </table>-->
+            <!--                    <ng-template #noDataTabRepresentanteLegalOP>-->
+            <!--                      <div style="text-align: center; font-size: 15px;">-->
+            <!--                        <br>-->
+            <!--                        <strong>No se registró información.</strong>-->
+            <!--                      </div>-->
+            <!--                    </ng-template>-->
+            <!--                  </mat-tab>-->
+            <!--                  <mat-tab label="Presidente"-->
+            <!--                           *ngIf="data2.representative.Tesorero_OP && data2.representative.Tesorero_OP.length > 0">-->
+            <!--                    <table-->
+            <!--                      *ngIf="data2.representative.Presidente_OP && data2.representative.Presidente_OP.length > 0; else noDataTab"-->
+            <!--                      mat-table [dataSource]="data2.representative.Presidente_OP" class="mat-elevation-z8">-->
+            <!--                      <ng-container matColumnDef="doc">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.doc}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>-->
+            <!--                        <td mat-cell-->
+            <!--                            *matCellDef="let element"> {{element.names}} {{element.lastname}} {{element.second_lastname}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="evaluator_user_names">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.evaluator_user_names}} </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_begin">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_begin}}  </td>-->
+            <!--                      </ng-container>-->
+            <!--                      <ng-container matColumnDef="date_end">-->
+            <!--                        <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>-->
+            <!--                        <td mat-cell *matCellDef="let element"> {{element.date_end}}  </td>-->
+            <!--                      </ng-container>-->
+
+            <!--                      <tr mat-header-row *matHeaderRowDef="displayedColumnsHistoryRepresentativeOP"></tr>-->
+            <!--                      <tr mat-row *matRowDef="let row; columns: displayedColumnsHistoryRepresentativeOP;"></tr>-->
+            <!--                    </table>-->
+            <!--                    <ng-template #noDataTab>-->
+            <!--                      <div style="text-align: center; font-size: 15px;">-->
+            <!--                        <br>-->
+            <!--                        <strong>No se registró información.</strong>-->
+            <!--                      </div>-->
+            <!--                    </ng-template>-->
+            <!--                  </mat-tab>-->
+
+            <!--                </mat-tab-group>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!-- REFACTOR -->
+            <div *ngIf="data2.representative && data2.type_user == 'J' && action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <br>
+              <p class="subtitle-h4"><strong>Datos históricos de funcionarios:</strong></p>
+              <mat-tab-group>
+                <mat-tab *ngFor="let role of getAvailableRoles()" [label]="role.value">
+                  <ng-container *ngIf="hasData(role.dataKey); else noDataTemplate">
+                    <table mat-table [dataSource]="data2.representative[role.dataKey]" class="mat-elevation-z8">
+                      <ng-container matColumnDef="doc">
+                        <th mat-header-cell *matHeaderCellDef><strong>DNI/CE</strong></th>
+                        <td mat-cell *matCellDef="let element">{{element.doc}}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="names">
+                        <th mat-header-cell *matHeaderCellDef><strong>Nombres y Apellidos</strong></th>
+                        <td mat-cell *matCellDef="let element">
+                          {{element.names}} {{element.lastname}} {{element.second_lastname}}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="evaluator_user_names">
+                        <th mat-header-cell *matHeaderCellDef><strong>Evaluador/Registrador</strong></th>
+                        <td mat-cell *matCellDef="let element">{{element.evaluator_user_names}}</td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="date_begin">
+                        <th mat-header-cell *matHeaderCellDef><strong>Fecha de inicio</strong></th>
+                        <td mat-cell *matCellDef="let element">
+                          <span *ngIf="data2.status !== 'DESAPROBADO'">{{element.date_begin}}</span>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="date_end">
+                        <th mat-header-cell *matHeaderCellDef><strong>Fecha fin</strong></th>
+                        <td mat-cell *matCellDef="let element">{{element.date_end}}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="sustento">
+                        <th mat-header-cell *matHeaderCellDef><strong>Sustento</strong></th>
+                        <td mat-cell *matCellDef="let element">
+                          <ng-container *ngFor="let document of consolidateDocuments(element.file_document, element.file_document1, element.file_document2)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <ng-container *ngIf="showAdvancedColumns(role.dataKey)">
+                        <ng-container matColumnDef="foto">
+                          <th mat-header-cell *matHeaderCellDef><strong>Foto</strong></th>
+                          <td mat-cell *matCellDef="let element">
+                            <span style="cursor:pointer;font-size:12px;display:block;width:40px;"
+                                  *ngIf="element.file_photo !== null"
+                                  (click)="download(element.file_photo.path, element.file_photo.name)">
+                              <span matPrefix class="material-icons">portrait</span>
+                            </span>
+                          </td>
+                        </ng-container>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="getColumnDefs(role.dataKey)"></tr>
+                      <tr mat-row *matRowDef="let row; columns: getColumnDefs(role.dataKey);"></tr>
+                    </table>
+                  </ng-container>
+                  <ng-template #noDataTemplate>
+                    <div style="text-align:center;font-size:15px;">
+                      <br>
+                      <strong>No se registró información.</strong>
+                    </div>
+                  </ng-template>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+            <!-- REFACTOR -->
+            <div *ngIf="data2.type_user === 'J' && !action && data2.orgPol === '1'"  fxFlex="100"
+                 fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div fxLayout="row wrap" fxLayoutAlign="start start">
+                <div *ngIf="officials && officials.length > 0" fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <h4 class="subtitle-h4"><strong>Datos de otros funcionarios:</strong></h4>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <button mat-flat-button color="accent" *ngIf="type === 'pj'" (click)="newRepresentative('F')">Nuevo funcionario</button>
+                </div>
+              </div>
+              <div *ngFor="let official of officials" fxLayout="row wrap" fxLayoutAlign="start start">
+                <div fxFlex="100" class="centerTitle">{{'DATOS DEL ' + official.position_name.toUpperCase()}}</div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Cargo*</div>
+                  <mat-form-field appearance="outline" style="width: 100%">
+                    <mat-select formControlName="fm_cargo_{{official.position}}" disabled="true">
+                      <mat-option *ngFor="let cargo of cargosOP" [value]="cargo.id">
+                        {{ cargo.value }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Tipo de documento*</div>
+                  <mat-form-field appearance="outline" style="width: 100%">
+                    <mat-select formControlName="fm_tipoDocumento_{{official.position}}" disabled="true">
+                      <mat-option *ngFor="let typeDoc of typeDocument" [value]="typeDoc.id">
+                        {{ typeDoc.value }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Número de documento*</div>
+                  <mat-form-field class="form-control" disabled="true" appearance="outline" style="width: 100%">
+                    <input
+                      id="fm_documento_{{official.position}}"
+                      type="text"
+                      class="form-control"
+                      formControlName="fm_documento_{{official.position}}"
+                      name="text"
+                      matInput
+                      placeholder="Ingrese número de documento"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                      autocomplete="off"/>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Apellido paterno*</div>
+                  <mat-form-field class="form-control" disabled="true" appearance="outline" style="width: 100%">
+                    <input
+                      id="fm_apellidoPaterno_{{official.position}}"
+                      type="text"
+                      class="form-control"
+                      formControlName="fm_apellidoPaterno_{{official.position}}"
+                      name="text"
+                      matInput
+                      placeholder="Ingrese apellido paterno"
+                      autocomplete="off"/>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Apellido materno*</div>
+                  <mat-form-field class="form-control" disabled="true" appearance="outline" style="width: 100%">
+                    <input
+                      id="fm_apellidoMaterno_{{official.position}}"
+                      type="text"
+                      class="form-control"
+                      formControlName="fm_apellidoMaterno_{{official.position}}"
+                      name="text"
+                      matInput
+                      placeholder="Ingrese apellido materno"
+                      autocomplete="off"/>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Nombres*</div>
+                  <mat-form-field class="form-control" disabled="true" appearance="outline" style="width: 100%">
+                    <input
+                      id="fm_nombres_{{official.position}}"
+                      type="text"
+                      class="form-control"
+                      formControlName="fm_nombres_{{official.position}}"
+                      name="text"
+                      matInput
+                      placeholder="Ingrese nombres"
+                      autocomplete="off"/>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Correo electrónico*</div>
+                  <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                    <input
+                      id="fm_email_{{official.position}}"
+                      type="text"
+                      class="lowercase"
+                      formControlName="fm_email_{{official.position}}"
+                      name="text"
+                      matInput
+                      placeholder="Ingrese correo electrónico"
+                      [maxlength]="50"
+                      oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                      required
+                      autocomplete="off"
+                    />
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <div class="labelsColor">Número de celular*</div>
+                  <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                    <input
+                      id="fm_celular_{{official.position}}"
+                      type="text"
+                      class="form-control"
+                      formControlName="fm_celular_{{official.position}}"
+                      name="text"
+                      matInput
+                      required
+                      (keypress)="validarCelular($event)"
+                      placeholder="Ingrese número de celular"
+                      [maxlength]="9"
+                      [minlength]="9"
+                      autocomplete="off"
+                    />
+                    <mat-error *ngIf="Formulario.get('fm_celular_' + official.position)?.invalid">
+                      {{ eShowError('fm_celular_' + official.position, Formulario.get('fm_celular_' + official.position)?.errors) }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                  <button mat-flat-button color="warn" *ngIf="official.status !== 'DESHABILITADO'" (click)="disableUserCitizen(official)">Deshabilitar funcionario</button>
+                  <button mat-flat-button color="primary" *ngIf="official.status === 'DESHABILITADO'" (click)="EnableUserCitizen(official)">Habilitar funcionario</button>
+                </div>
+                <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"
+                     style="background: #CCCCCC; height: 5px; margin: 10px 0 25px">
+                </div>
+              </div>
+            </div>
+            <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <div *ngIf="user?.email_sent_at && action && data2.orgPol !== '1'">
+                <br>
+                <p class="subtitle-h4"><strong>Estado de la comunicación</strong></p>
+                <div style="display: flex; justify-content: space-between;">
+                  <table style="margin: 0 auto; width: 40%;" class="table" border="0" cellspacing="2" cellpadding="2">
+                    <tr>
+                      <th colspan="2" class="labelsColor">Destinatario: PERSONA JURÍDICA</th>
+                    </tr>
+                    <tr class="labelsColor">
+                      <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="user.email_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="user.email_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.email.sent_to + '\nEl correo electrónico coincide con el registrado en el representante.' : 'Enviado a: ' + this.user.event_history.email.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail
+                        </mat-icon>
+                        <mat-icon *ngIf="!user.email_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="user.email_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.email.sent_to + '\nEl correo electrónico coincide con el registrado en el representante.' : 'Enviado a: ' + this.user.event_history.email.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click)="resendEmailAndSms('email', user.email, false)">mail
+                        </mat-icon>
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="user.sms_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="user.sms_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.sms.sent_to + '\nEl número de celular coincide con el registrado en el representante.' : 'Enviado a: ' + this.user.event_history.sms.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms
+                        </mat-icon>
+                        <mat-icon *ngIf="!user.sms_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="user.sms_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.sms.sent_to + '\nEl número de celular coincide con el registrado en el representante.' : 'Enviado a: ' + this.user.event_history.sms.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click)="resendEmailAndSms('sms', user.cellphone, false)">textsms
+                        </mat-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">{{user.email_sent_at}}</td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">{{user.sms_sent_at}}</td>
+                    </tr>
+                  </table>
+                  <br>
+                  <table style="margin: 0 auto; width: 40%;" class="table" border="0" cellspacing="2" cellpadding="2">
+                    <tr>
+                      <th colspan="2" class="labelsColor" *ngIf="data2.orgPol === undefined ">Destinatario: REPRESENTANTE</th>
+                      <th colspan="2" class="labelsColor" *ngIf="data2.orgPol === '0' ">Destinatario: REPRESENTANTE LEGAL</th>
+                      <th colspan="2" class="labelsColor" *ngIf="data2.orgPol === '1' ">Destinatario: PERSONERO LEGAL TITULAR</th>
+                    </tr>
+                    <tr class="labelsColor">
+                      <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+                    </tr>
+                    <tr *ngIf="data2.orgPol === '0' || data2.orgPol === undefined ">
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="user.email_sent_at_rep ? user.email_sent_status_rep : user.email_sent_status"
+                                  class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="user.email_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.email_rep.sent_to + '\nEl correo electrónico coincide con el registrado en la PJ.' : 'Enviado a: ' + this.user.event_history.email_rep.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail
+                        </mat-icon>
+                        <mat-icon *ngIf="user.email_sent_at_rep ? !user.email_sent_status_rep : !user.email_sent_status"
+                                  class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="user.email_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.email_rep.sent_to + '\nEl correo electrónico coincide con el registrado en la PJ.' : 'Enviado a: ' + this.user.event_history.email_rep.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click)="resendEmailAndSms('email', data2.representantes[0].email, true)">mail
+                        </mat-icon>
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon *ngIf="user.sms_sent_at_rep ? user.sms_sent_status_rep : user.sms_sent_status"
+                                  class="mat-icon status-true" style="cursor:pointer;"
+                                  [matTooltip]="user.sms_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.sms_rep.sent_to + '\nEl número de celular coincide con el registrado en la PJ.' : 'Enviado a: ' + this.user.event_history.sms_rep.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms
+                        </mat-icon>
+                        <mat-icon *ngIf="user.sms_sent_at_rep ? !user.sms_sent_status_rep : !user.sms_sent_status"
+                                  class="mat-icon status-false" style="cursor:pointer;"
+                                  [matTooltip]="user.sms_sent_at_rep === '' ? 'Enviado a: ' + this.user.event_history.sms_rep.sent_to + '\nEl número de celular coincide con el registrado en la PJ.' : 'Enviado a: ' + this.user.event_history.sms_rep.sent_to"
+                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                                  (click)="resendEmailAndSms('sms', data2.representantes[0].cellphone, true)">textsms
+                        </mat-icon>
+                      </td>
+                    </tr>
+                    <!--                    <tr *ngIf="data2.orgPol === '1' ">-->
+                    <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                    <!--                        <mat-icon *ngIf="data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                    <!--                                  [matTooltip]="data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to : ''"-->
+                    <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+                    <!--                        <mat-icon *ngIf="!data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.status || data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                    <!--                                  [matTooltip]="data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0]?.sent_to : ''"-->
+                    <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                    <!--                                  (click) = "resendEmailAndSmsOP('email', data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0].sent_to, true,data2.representative.Pers_Legal_OP[0].user_id)">mail</mat-icon>-->
+                    <!--                      </td>-->
+                    <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                    <!--                        <mat-icon *ngIf="data2.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+                    <!--                                  [matTooltip]="data2.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to : ''"-->
+                    <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+                    <!--                        <mat-icon *ngIf="!data2.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.status || data2.event_history?.SMS_SENT?.Pers_Legal_OP[0] === undefined" class="mat-icon status-false" style="cursor:pointer;"-->
+                    <!--                                  [matTooltip]="data2.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history?.SMS_SENT?.Pers_Legal_OP[0]?.sent_to : ''"-->
+                    <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                    <!--                                  (click) = "resendEmailAndSmsOP('sms', data2.event_history?.SMS_SENT?.Pers_Legal_OP[0].sent_to, true,data2.representative.Pers_Legal_OP[0].user_id)">textsms</mat-icon>-->
+                    <!--                      </td>-->
+                    <!--                    </tr>-->
+                    <tr *ngIf="data2.orgPol === '0' || data2.orgPol === undefined ">
+                      <td style="text-align: center; background-color: #dfdfdf" width=" 50">{{user.email_sent_at_rep ? user.email_sent_at_rep : user.email_sent_at}}</td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">{{user.sms_sent_at_rep ? user.sms_sent_at_rep : user.sms_sent_at}}</td>
+                    </tr>
+                    <!--                    <tr *ngIf="data2.orgPol === '1' ">-->
+                    <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                    <!--                        {{ data2.event_history.EMAIL_SENT.Pers_Legal_OP.length > 0 ? data2.event_history?.EMAIL_SENT?.Pers_Legal_OP[0].date : 'Sin información' }}-->
+                    <!--                      </td>-->
+                    <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                    <!--                        {{ data2.event_history.EMAIL_SENT.Pers_Legal_OP.length > 0 ? data2.event_history?.SMS_SENT?.Pers_Legal_OP[0].date : 'Sin información' }}-->
+                    <!--                      </td>-->
+                    <!--                    </tr>-->
+                  </table>
+                </div>
+                <!--              aqui-->
+                <br>
+                <!--                <div style="display: flex; justify-content: space-between;"-->
+                <!--                     *ngIf="data2.representative.Tesorero_OP && data2.representative.Tesorero_OP.length > 0">-->
+                <!--                  <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+                <!--                    <tr>-->
+                <!--                      <th colspan="2" class="labelsColor">Destinatario: TESORERO</th>-->
+                <!--                    </tr>-->
+                <!--                    <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+                <!--                    <tr>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        <mat-icon *ngIf="data2.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.status"-->
+                <!--                                  class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                                  [matTooltip]="data2.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.EMAIL_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail-->
+                <!--                        </mat-icon>-->
+                <!--                        <mat-icon-->
+                <!--                          *ngIf="data2.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.status === false || data2.event_history?.EMAIL_SENT?.Tesorero_OP[0] === undefined"-->
+                <!--                          class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                          [matTooltip]="data2.event_history?.EMAIL_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.EMAIL_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                          matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                          (click)="resendEmailAndSmsOP('email', data2.representative.Tesorero_OP[0].email, true, data2.representative.Tesorero_OP[0].user_id)">mail-->
+                <!--                        </mat-icon>-->
+                <!--                      </td>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        <mat-icon *ngIf="data2.event_history?.SMS_SENT?.Tesorero_OP[0]?.status"-->
+                <!--                                  class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                                  [matTooltip]="data2.event_history?.SMS_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.SMS_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms-->
+                <!--                        </mat-icon>-->
+                <!--                        <mat-icon-->
+                <!--                          *ngIf="data2.event_history?.SMS_SENT?.Tesorero_OP[0]?.status === false || data2.event_history?.SMS_SENT?.Tesorero_OP[0] === undefined"-->
+                <!--                          class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                          [matTooltip]="data2.event_history?.SMS_SENT?.Tesorero_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.SMS_SENT.Tesorero_OP[0].sent_to : ''"-->
+                <!--                          matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                          (click)="resendEmailAndSmsOP('sms', data2.representative.Tesorero_OP[0].cellphone,true, data2.representative.Tesorero_OP[0].user_id)">-->
+                <!--                          textsms-->
+                <!--                        </mat-icon>-->
+                <!--                      </td>-->
+                <!--                    </tr>-->
+                <!--                    <tr>-->
+                <!--                      &lt;!&ndash;              <div>{{data2.representative.Tesorero_OP[0].eventHistory[0].date|json}}</div>&ndash;&gt;-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        {{ data2.event_history.EMAIL_SENT.Tesorero_OP.length > 0 ? data2.event_history.EMAIL_SENT.Tesorero_OP[0].date : 'Sin información' }}-->
+                <!--                      </td>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        {{ data2.event_history.SMS_SENT.Tesorero_OP.length > 0 ? data2.event_history.SMS_SENT.Tesorero_OP[0].date : 'Sin información' }}-->
+                <!--                      </td>-->
+                <!--                    </tr>-->
+                <!--                  </table>-->
+                <!--                  <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+                <!--                    <tr>-->
+                <!--                      <th colspan="2" class="labelsColor">Destinatario: REPRESENTANTE LEGAL</th>-->
+                <!--                    </tr>-->
+                <!--                    <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+                <!--                    <tr>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        <mat-icon *ngIf="data2.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.status"-->
+                <!--                                  class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                                  [matTooltip]="data2.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.EMAIL_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail-->
+                <!--                        </mat-icon>-->
+                <!--                        <mat-icon-->
+                <!--                          *ngIf="data2.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.status === false || data2.event_history?.EMAIL_SENT?.Rep_Legal_OP[0] === undefined"-->
+                <!--                          class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                          [matTooltip]="data2.event_history?.EMAIL_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.EMAIL_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                          matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                          (click)="resendEmailAndSmsOP('email', data2.representative.Rep_Legal_OP[0].email, true, data2.representative.Rep_Legal_OP[0].user_id)">-->
+                <!--                          mail-->
+                <!--                        </mat-icon>-->
+                <!--                      </td>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        <mat-icon *ngIf="data2.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.status"-->
+                <!--                                  class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                                  [matTooltip]="data2.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.SMS_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms-->
+                <!--                        </mat-icon>-->
+                <!--                        <mat-icon-->
+                <!--                          *ngIf="data2.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.status === false || data2.event_history?.SMS_SENT?.Rep_Legal_OP[0] === undefined"-->
+                <!--                          class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                          [matTooltip]="data2.event_history?.SMS_SENT?.Rep_Legal_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.SMS_SENT.Rep_Legal_OP[0].sent_to : ''"-->
+                <!--                          matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                          (click)="resendEmailAndSmsOP('sms', data2.representative.Rep_Legal_OP[0].cellphone,true, data2.representative.Rep_Legal_OP[0].user_id)">-->
+                <!--                          textsms-->
+                <!--                        </mat-icon>-->
+                <!--                      </td>-->
+                <!--                    </tr>-->
+                <!--                    <tr>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        {{ data2.event_history.EMAIL_SENT.Rep_Legal_OP.length > 0 ? data2.event_history.EMAIL_SENT.Rep_Legal_OP[0].date : 'Sin información' }}-->
+                <!--                      </td>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        {{ data2.event_history.SMS_SENT.Rep_Legal_OP.length > 0 ? data2.event_history.SMS_SENT.Rep_Legal_OP[0].date : 'Sin información' }}-->
+                <!--                      </td>-->
+                <!--                    </tr>-->
+                <!--                  </table>-->
+                <!--                  <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+                <!--                    <tr>-->
+                <!--                      <th colspan="2" class="labelsColor">Destinatario: PRESIDENTE</th>-->
+                <!--                    </tr>-->
+                <!--                    <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+                <!--                    <tr>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        <mat-icon *ngIf="data2.event_history?.EMAIL_SENT?.Presidente_OP[0]?.status"-->
+                <!--                                  class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                                  [matTooltip]="data2.event_history?.EMAIL_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.EMAIL_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail-->
+                <!--                        </mat-icon>-->
+                <!--                        <mat-icon-->
+                <!--                          *ngIf="data2.event_history?.EMAIL_SENT?.Presidente_OP[0]?.status === false || data2.event_history?.EMAIL_SENT?.Presidente_OP[0] === undefined"-->
+                <!--                          class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                          [matTooltip]="data2.event_history?.EMAIL_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.EMAIL_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                          matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                          (click)="resendEmailAndSmsOP('email', data2.representative.Presidente_OP[0].email, true, data2.representative.Presidente_OP[0].user_id)">-->
+                <!--                          mail-->
+                <!--                        </mat-icon>-->
+                <!--                      </td>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        <mat-icon *ngIf="data2.event_history?.SMS_SENT?.Presidente_OP[0]?.status"-->
+                <!--                                  class="mat-icon status-true" style="cursor:pointer;"-->
+                <!--                                  [matTooltip]="data2.event_history?.SMS_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.SMS_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                                  matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms-->
+                <!--                        </mat-icon>-->
+                <!--                        <mat-icon-->
+                <!--                          *ngIf="data2.event_history?.SMS_SENT?.Presidente_OP[0]?.status === false || data2.event_history?.SMS_SENT?.Presidente_OP[0] === undefined"-->
+                <!--                          class="mat-icon status-false" style="cursor:pointer;"-->
+                <!--                          [matTooltip]="data2.event_history?.SMS_SENT?.Presidente_OP[0]?.sent_to ? 'Enviado a: ' + data2.event_history.SMS_SENT.Presidente_OP[0].sent_to : ''"-->
+                <!--                          matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+                <!--                          (click)="resendEmailAndSmsOP('sms', data2.representative.Presidente_OP[0].cellphone,true, data2.representative.Presidente_OP[0].user_id)">-->
+                <!--                          textsms-->
+                <!--                        </mat-icon>-->
+                <!--                      </td>-->
+                <!--                    </tr>-->
+                <!--                    <tr>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        {{ data2.event_history.EMAIL_SENT.Presidente_OP.length > 0 ? data2.event_history.EMAIL_SENT.Presidente_OP[0].date : 'Sin información' }}-->
+                <!--                      </td>-->
+                <!--                      <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+                <!--                        {{ data2.event_history.SMS_SENT.Presidente_OP.length > 0 ? data2.event_history.SMS_SENT.Presidente_OP[0].date : 'Sin información' }}-->
+                <!--                      </td>-->
+                <!--                    </tr>-->
+                <!--                  </table>-->
+                <!--                </div>-->
+                <!--              aqui-->
+              </div>
+              <br>
+            </div>
+            <!--                REFACTOR-->
+            <div *ngIf="data2.orgPol === '1' && action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <br>
+              <p class="subtitle-h4"><strong>Estado de la comunicación:</strong></p>
+              <div class="notification-tables-container" style="display: flex; justify-content: space-between;" *ngIf="data2.orgPol === '1'">
+                <ng-container *ngFor="let cargo of cargoDisplayData">
+                  <table style="margin: 0 auto; width: 30%;" class="table notification-table" border="0" cellspacing="2" cellpadding="2">
+                    <thead>
+                    <tr>
+                      <th colspan="2" class="labelsColor">Destinatario: {{cargo.title}}</th>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon
+                          [ngClass]="{
+                        'status-true': cargo.showButton && cargo.email?.status,
+                        'status-false': cargo.showButton && (cargo.email?.status === false || cargo.email === undefined),
+                        'not-exist': !cargo.showButton || !cargo.emailHistoryCheck
+                        }"
+                          [style.cursor]="(!cargo.showButton || !cargo.email) ? 'default' : 'pointer'"
+                          [matTooltip]="cargo.tooltipEMAIL ? cargo.tooltipEMAIL : (cargo.showButton && cargo.email?.sent_to) ? 'Enviado a: ' + cargo.email.sent_to : ''"
+                          matTooltipClass="multi-line-tooltip"
+                          matTooltipPosition="above"
+                          (click)="cargo.email?.status === false ? resendEmailAndSmsOP('email', cargo.email.sent_to, cargo.isRep, cargo.positionId) : null">
+                          mail
+                        </mat-icon>
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        <mat-icon
+                          [ngClass]="{
+                        'status-true': cargo.showButton && cargo.sms?.status,
+                        'status-false': cargo.showButton && (cargo.sms?.status === false || cargo.sms === undefined),
+                        'not-exist': !cargo.showButton || !cargo.smsHistoryCheck
+                        }"
+                          [style.cursor]="(!cargo.showButton || !cargo.sms) ? 'default' : 'pointer'"
+                          [matTooltip]="cargo.tooltipSMS ? cargo.tooltipSMS : (cargo.showButton && cargo.sms?.sent_to) ? 'Enviado a: ' + cargo.sms.sent_to : ''"
+                          matTooltipClass="multi-line-tooltip"
+                          matTooltipPosition="above"
+                          (click)="cargo.sms?.status === false ? resendEmailAndSmsOP('sms', cargo.sms?.sent_to, cargo.isRep, cargo.positionId) : null">
+                          textsms
+                        </mat-icon>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        {{ cargo.emailHistoryCheck ? cargo.email?.date : 'Sin información' }}
+                      </td>
+                      <td style="text-align: center; background-color: #dfdfdf" width="50">
+                        {{ cargo.smsHistoryCheck ? cargo.sms?.date : 'Sin información' }}
+                      </td>
+                    </tr>
+                    </tbody>
+                    <br>
+                  </table>
+                </ng-container>
+              </div>
+            </div>
+            <!--            REFACTOR-->
+            <div *ngIf="user?.contact_history && action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+              <p class="subtitle-h4"><strong>Datos históricos de actualización de datos de contacto:</strong></p>
+              <mat-tab-group>
+                <mat-tab label="Correo electrónico">
+                  <table mat-table [dataSource]="user.contact_history.email" class="mat-elevation-z8">
+                    <ng-container matColumnDef="contact">
+                      <th mat-header-cell *matHeaderCellDef> Correo electrónico</th>
+                      <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_at">
+                      <th mat-header-cell *matHeaderCellDef> Fecha de actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_at}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="doc">
+                      <th mat-header-cell *matHeaderCellDef> Documento</th>
+                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_user">
+                      <th mat-header-cell *matHeaderCellDef> Responsable de la actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_user}}  </td>
+                    </ng-container>
+                    <ng-container matColumnDef="attachments">
+                      <th mat-header-cell *matHeaderCellDef> Sustento</th>
+                      <td mat-cell *matCellDef="let element">
+                        <ng-container *ngFor="let document of consolidateDocuments(element.attachments)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistory"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistory;"></tr>
+                  </table>
+                </mat-tab>
+                <mat-tab label="Número de celular">
+                  <table mat-table [dataSource]="user.contact_history.cellphone" class="mat-elevation-z8">
+                    <ng-container matColumnDef="contact">
+                      <th mat-header-cell *matHeaderCellDef> Celular</th>
+                      <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_at">
+                      <th mat-header-cell *matHeaderCellDef> Fecha de actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_at}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="doc">
+                      <th mat-header-cell *matHeaderCellDef> Documento</th>
+                      <td mat-cell *matCellDef="let element"> {{element.doc}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_user">
+                      <th mat-header-cell *matHeaderCellDef> Responsable de la actualización</th>
+                      <td mat-cell *matCellDef="let element"> {{element.updated_user}}  </td>
+                    </ng-container>
+                    <ng-container matColumnDef="attachments">
+                      <th mat-header-cell *matHeaderCellDef> Sustento</th>
+                      <td mat-cell *matCellDef="let element">
+                        <ng-container *ngFor="let document of consolidateDocuments(element.attachments)">
+                            <span *ngIf="document.path && document.name"
+                                  style="font-size:12px;display:block;">
+                              <span matPrefix class="material-icons"
+                                    style="cursor:pointer;"
+                                    [matTooltip]="document.name"
+                                    (click)="download(document.path, document.name)">
+                                download
+                              </span>
+                            </span>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsHistory"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsHistory;"></tr>
+                  </table>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </ng-container>
+          <div fxFlex="100" class="padd_4" *ngIf="!action && edit">
+            <div class="labelsColor">
+              {{'Para la edición de la casilla deberá:'}}<br>{{lblFeaturesFile}}
+            </div>
+            <file-upload
+              [(ngModel)]="uploadedFiles"
+              formControlName="filesEdit"
+              [multiple]="false"
+              [animation]="true"
+              discard="true"
+              accept=".pdf,.jpg,.jpeg,.png,.bmp"
+              (drop)="validatorFile('filesEdit')"
+              (change)="validatorFile('filesEdit')"
+            >
+              <ng-template
+                let-isFileDragDropAvailable="isFileDragDropAvailable"
+                #placeholder
+              >
+                <file-upload-drop-zone>
+                  <ng-container
+                    *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable"
+                  >
+                    {{lblAddFiles}}
+                  </ng-container>
+                  <ng-template #isNotDragDropAvailable> </ng-template>
+                </file-upload-drop-zone>
+              </ng-template>
+
+              <ng-template
+                let-i="index"
+                let-file="file"
+                let-control="control"
+                #item
+              >
+                <file-upload-list-item
+                  [index]="i"
+                  class="item-test"
+                  [file]="file"
+                  [control]="control"
+                >Eliminar</file-upload-list-item
+                >
+              </ng-template>
+            </file-upload>
+          </div>
+          <div class="row" *ngIf="action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><br/>
+            <button mat-button (click)="cancelar()" class="btnBrown0">Volver</button>
+          </div>
+          <div class="row" *ngIf="!action" fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100"><br/>
+            <button mat-button (click)="cancelar()" class="btnBrown0">Cancelar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button mat-flat-button class="btnBlue0" *ngIf="type === 'pj'"
+                    [disabled]="myform.pristine || myform.invalid" (click)="saveEdit()">Guardar
+            </button>
+            <button mat-flat-button class="btnBlue0" *ngIf="type === 'pn'"
+                    [disabled]="myform.pristine || myform.invalid" (click)="saveEditPN()">Guardar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <br/>
+  </div>
+  </ng-template>
+</section>

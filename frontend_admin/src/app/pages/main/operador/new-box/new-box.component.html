@@ -1,0 +1,2488 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Nueva casilla electrónica
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <!-- <div class="centerTitle">CANDIDATO A ELECCIÓN POPULAR</div> -->
+      <form
+        #myform="ngForm"
+        [formGroup]="Formulario"
+        (keydown.enter)="$event.preventDefault()"
+        autocomplete="on"
+      >
+        <div class="formNotif" fxLayout="row wrap">
+          <!-- SECCION NUEVA -->
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de expediente*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_nroExpediente"
+                type="text"
+                class="form-control"
+                formControlName="fm_nroExpediente"
+                [class.control-invalid]="formInvalid('fm_nroExpediente')"
+                [minlength]="9"
+                [maxlength]="30"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese número de expediente"
+                name="nroExpediente"
+                (keypress)="
+                  quitarDobleEspacio(
+                    'fm_nroExpediente',
+                    fm_nroExpediente,
+                    $event
+                  )
+                "
+                (blur)="busarExpediente('fm_nroExpediente')"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ -/]|-(?=.*---)/g, '');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_nroExpediente.invalid">{{
+                eShowError(
+                  "fm_nroExpediente",
+                  Formulario.controls.fm_nroExpediente.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Fecha de presentación*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_txtfechapres"
+                type="date"
+                class="form-control"
+                matInput
+                formControlName="fm_txtfechapres"
+                [max]="dateMax"
+                placeholder="dd/MM/YYY"
+                [class.control-invalid]="formInvalid('fm_txtfechapres')"
+                name="txtfechapres"
+                (keypress)="
+                  quitarDobleEspacio('fm_txtfechapres', fm_txtfechapres, $event)
+                "
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_txtfechapres.invalid">{{
+                eShowError(
+                  "fm_txtfechapres",
+                  Formulario.controls.fm_txtfechapres.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- SECCION CANDIDATO-->
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de documento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_optiontipo"
+                formControlName="fm_optiontipo"
+                (selectionChange)="eChangeDocumento($event)"
+              >
+                <mat-option *ngFor="let doc of typeDocument" [value]="doc.id">
+                  {{ doc.value.toUpperCase() }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_optiontipo.invalid">{{
+                eShowError(
+                  "fm_optiontipo",
+                  Formulario.controls.fm_optiontipo.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor" *ngIf="!isPR">
+              {{ buildLabel("fm_numerodoc") }}
+            </div>
+            <div class="labelsColor" *ngIf="isPR">N° de partida registral*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_numerodoc"
+                class="form-control"
+                type="text"
+                formControlName="fm_numerodoc"
+                (input)="onInputFormat($event,'uppercase','fm_numerodoc')"
+                [maxlength]="maxlengthNumDoc"
+                [minlength]="minlengthNumDoc"
+                matInput
+                [placeholder]="buildHolder('fm_numerodoc')"
+                (keypress)="validar_campo($event, 'fm_numerodoc')"
+                (keyup.enter)="buscarCE('u', 'enter')"
+                (blur)="buscarCE('u', '')"
+                (paste)="onPaste2($event,'fm_optiontipo','fm_numerodoc')"
+                [readonly]="Formulario.controls.fm_optiontipo.value == ''"
+                autocomplete="off"
+              />
+              <!--              <mat-icon *ngIf="isCE || isPR" style="cursor: pointer;" (click)="buscarCE('u')" matSuffix>search</mat-icon>-->
+              <mat-error *ngIf="Formulario.controls.fm_numerodoc.invalid">{{
+                eShowError(
+                  "fm_numerodoc",
+                  Formulario.controls.fm_numerodoc.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" class="padd_4" *ngIf="buildHide('fm_razon_social')">
+            <div class="labelsColor">Razón social *</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="input_text"
+                formControlName="fm_razon_social"
+                [class.control-invalid]="formInvalid('fm_razon_social')"
+                matInput
+                placeholder="Ingrese el nombre de la Organización"
+                name="fm_razon_social"
+                id="fm_razon_social"
+                [readonly]="existData"
+                maxlength="100"
+                (keypress)="soloExpLetras('fm_razon_social', fm_razon_social, $event)"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_razon_social.invalid">{{
+                eShowError(
+                  "fm_razon_social",
+                  Formulario.controls.fm_razon_social.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            fxFlex="50"
+            class="padd_4"
+            *ngIf="buildHide('fm_partida_registral')"
+          >
+            <div class="labelsColor" *ngIf="!isPR">
+              N° de partida registral*
+            </div>
+            <mat-form-field
+              class=""
+              appearance="outline"
+              style="width: 100%"
+              *ngIf="!isPR"
+            >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fm_partida_registral"
+                [class.control-invalid]="formInvalid('fm_partida_registral')"
+                [maxlength]="50"
+                [minlength]="3"
+                matInput
+                placeholder="Ingrese el N° de partida registral"
+                name="fm_partida_registral"
+                id="fm_partida_registral"
+                maxlength="50"
+                autocomplete="off"
+              />
+              <mat-error
+                *ngIf="Formulario.controls.fm_partida_registral.invalid"
+                >{{
+                  eShowError(
+                    "fm_partida_registral",
+                    Formulario.controls.fm_partida_registral.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+          <div
+            fxFlex="50"
+            class="padd_4"
+            *ngIf="buildHide('fm_asiento_registral')"
+          >
+            <div class="labelsColor">Asiento registral *</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fm_asiento_registral"
+                [class.control-invalid]="formInvalid('fm_asiento_registral')"
+                matInput
+                placeholder="Ingrese el asiento registral"
+                name="fm_asiento_registral"
+                id="fm_asiento_registral"
+                [maxlength]="50"
+                [minlength]="3"
+                autocomplete="off"
+              />
+              <mat-error
+                *ngIf="Formulario.controls.fm_asiento_registral.invalid"
+                >{{
+                  eShowError(
+                    "fm_asiento_registral",
+                    Formulario.controls.fm_asiento_registral.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_correo_pj')"
+          >
+            <div class="labelsColor">Correo electrónico*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_correo_pj"
+                type="text"
+                formControlName="fm_correo_pj"
+                [class.control-invalid]="formInvalid('fm_correo_pj')"
+                name="text"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese correo electrónico"
+                [maxlength]="50"
+                (input)="onInputFormat($event, 'lowercase', 'fm_correo_pj')"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_correo_pj.invalid">{{
+                eShowError(
+                  "fm_correo_pj",
+                  Formulario.controls.fm_correo_pj.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_mobilePhone_pj')"
+          >
+            <div class="labelsColor">Número de celular*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fm_mobilePhone_pj"
+                [class.control-invalid]="formInvalid('fm_mobilePhone_pj')"
+                [maxlength]="9"
+                [minlength]="9"
+                (keypress)="validar_campo($event, 'fm_mobilePhone_pj')"
+                matInput
+                placeholder="Ingrese número de celular"
+                name="cellphone"
+                (input)="onKeydown($event, 'fm_mobilePhone_pj')"
+                (paste)="onPaste2($event,'1','fm_mobilePhone_pj')"
+                autocomplete="off"
+              />
+              <mat-error
+                *ngIf="Formulario.controls.fm_mobilePhone_pj.invalid"
+                >{{
+                  eShowError(
+                    "fm_mobilePhone_pj",
+                    Formulario.controls.fm_mobilePhone_pj.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_phone_pj')"
+          >
+            <div class="labelsColor">Número de teléfono fijo</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fm_phone_pj"
+                [class.control-invalid]="formInvalid('fm_phone_pj')"
+                [maxlength]="10"
+                [minlength]="6"
+                (keypress)="validar_campo_phone($event, 'fm_phone_pj')"
+                matInput
+                placeholder="Número de teléfono fijo"
+                name="phone"
+                (input)="onKeydown($event, 'fm_phone_pj')"
+                (paste)="onPaste2($event,'2', 'fm_phone_pj')"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_phone_pj.invalid">{{
+                eShowError(
+                  "fm_phone_pj",
+                  Formulario.controls.fm_phone_pj.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_departamentoListPJ')"
+          >
+            <div class="labelsColor">Departamento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_departamentoListPJ"
+                formControlName="fm_departamentoListPJ"
+                (selectionChange)="cambiarProvinciaPJ()"
+              >
+                <mat-option
+                  *ngFor="let item of departamentoList"
+                  [value]="item"
+                  >{{ item.nodep }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="Formulario.controls.fm_departamentoListPJ.invalid"
+                >{{
+                  eShowError(
+                    "fm_departamentoListPJ",
+                    Formulario.controls.fm_departamentoListPJ.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_provinciaListPJ')"
+          >
+            <div class="labelsColor">Provincia*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_provinciaListPJ"
+                formControlName="fm_provinciaListPJ"
+                (selectionChange)="cambiarDistritoPJ()"
+              >
+                <mat-option
+                  *ngFor="let item of provinciaListPJ"
+                  [value]="item"
+                  >{{ item.noprv }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="Formulario.controls.fm_provinciaListPJ.invalid"
+                >{{
+                  eShowError(
+                    "fm_provinciaListPJ",
+                    Formulario.controls.fm_provinciaListPJ.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_distritoListPJ')"
+          >
+            <div class="labelsColor">Distrito*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_distritoListPJ"
+                formControlName="fm_distritoListPJ"
+              >
+                <mat-option
+                  *ngFor="let item of distritoListPJ"
+                  [value]="item"
+                  >{{ item.nodis }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="Formulario.controls.fm_distritoListPJ.invalid"
+                >{{
+                  eShowError(
+                    "fm_distritoListPJ",
+                    Formulario.controls.fm_distritoListPJ.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_direccion_PJ')"
+          >
+            <div class="labelsColor">Dirección*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_direccion_PJ"
+                type="text"
+                class="form-control"
+                formControlName="fm_direccion_PJ"
+                [class.control-invalid]="formInvalid('fm_direccion_PJ')"
+                [minlength]="5"
+                [maxlength]="100"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese dirección"
+                name="address"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_direccion_PJ.invalid">{{
+                eShowError(
+                  "fm_direccion_PJ",
+                  Formulario.controls.fm_direccion_PJ.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_paginawebPJ')"
+          >
+            <div class="labelsColor">Página web</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_paginawebPJ"
+                type="text"
+                class="form-control"
+                formControlName="fm_paginawebPJ"
+                [maxlength]="100"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese página web"
+                (keypress)="quitarDobleEspacio('fm_paginawebPJ', fm_paginawebPJ, $event)"
+                (input)="onInputFormat($event,'lowercase','fm_paginawebPJ')"
+                [class.control-invalid]="formInvalid('fm_paginawebPJ')"
+                autocomplete="off"
+              />
+              <mat-error
+                *ngIf="
+                  Formulario.controls.fm_paginawebPJ.invalid &&
+                  (Formulario.controls.fm_paginawebPJ.dirty ||
+                    Formulario.controls.fm_paginawebPJ.touched)
+                "
+                >{{
+                  eShowError(
+                    "fm_paginawebPJ",
+                    Formulario.controls.fm_paginawebPJ.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" class="padd_4" *ngIf="buildHide('filesCiu')">
+            <div class="labelsColor">
+              {{ lblFeaturesFile }}
+            </div>
+            <file-upload
+              [(ngModel)]="uploadedFilesCiu"
+              formControlName="filesCiu"
+              [multiple]="true"
+              [animation]="true"
+              discard="true"
+              accept=".pdf,.jpg,.jpeg,.png,.bmp"
+              (drop)="validatorFile('filesCiu')"
+              (change)="validatorFile('filesCiu')"
+            >
+              <ng-template
+                let-isFileDragDropAvailable="isFileDragDropAvailable"
+                #placeholder
+              >
+                <file-upload-drop-zone>
+                  <ng-container
+                    *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable"
+                  >
+                    {{ lblAddFiles }}
+                  </ng-container>
+                  <ng-template #isNotDragDropAvailable> </ng-template>
+                </file-upload-drop-zone>
+              </ng-template>
+
+              <ng-template
+                let-i="index"
+                let-file="file"
+                let-control="control"
+                #item
+              >
+                <file-upload-list-item
+                  [index]="i"
+                  class="item-test"
+                  [file]="file"
+                  [control]="control"
+                  >Eliminar</file-upload-list-item
+                >
+              </ng-template>
+            </file-upload>
+
+            <p *ngIf="errmaxLengthName" class="text-file-valid">
+              {{ lblErrorMaxLengthName }}
+            </p>
+            <p *ngIf="errduplicate" class="text-file-valid">
+              Archivo con nombre duplicado
+            </p>
+            <p *ngIf="errorOnlyFile" class="text-file-valid">
+              {{ lblErrorOnlyFile }}
+            </p>
+            <p *ngIf="errminSizeFile" class="text-file-valid">
+              El tamaño del archivo mínimo es 1B
+            </p>
+            <p *ngIf="errmaxSizeFile" class="text-file-valid">
+              {{ lblErrorMaxSizeFile }}
+            </p>
+            <p *ngIf="errmaxFiles" class="text-file-valid">
+              {{ lblErrorMaxFiles }}
+            </p>
+          </div>
+
+          <div
+            *ngIf="buildHide('fm_razon_social')"
+            fxFlex="100"
+            class="centerTitle"
+          >
+            DATOS DEL REPRESENTANTE
+          </div>
+
+<!--          <div-->
+<!--            fxFlex="100"-->
+<!--            fxFlex.md="100"-->
+<!--            fxFlex.sm="100"-->
+<!--            fxFlex.xs="100"-->
+<!--            class="padd_4"-->
+<!--            *ngIf="buildHide('fm_tipoDocumentoAdjunto')"-->
+<!--          >-->
+<!--            <div class="labelsColor">Tipo de documento adjunto*</div>-->
+<!--            <mat-form-field appearance="outline" style="width: 100%">-->
+<!--              <mat-select-->
+<!--                placeholder="Seleccione"-->
+<!--                formControlName="fm_tipoDocumentoAdjunto"-->
+<!--                (selectionChange)="eChangeDocumentoAttach($event)"-->
+<!--              >-->
+<!--                <mat-option-->
+<!--                  *ngFor="let doc of tipoDocumentoAdjunto"-->
+<!--                  [value]="doc.id"-->
+<!--                >-->
+<!--                  {{ doc.value.toUpperCase() }}-->
+<!--                </mat-option>-->
+<!--              </mat-select>-->
+<!--              <mat-error-->
+<!--                *ngIf="Formulario.controls.fm_tipoDocumentoAdjunto.invalid"-->
+<!--                >{{-->
+<!--                  eShowError(-->
+<!--                    "fm_tipoDocumentoAdjunto",-->
+<!--                    Formulario.controls.fm_tipoDocumentoAdjunto.errors-->
+<!--                  )-->
+<!--                }}</mat-error-->
+<!--              >-->
+<!--            </mat-form-field>-->
+<!--          </div>-->
+
+          <div fxFlex="100" fxLayout="row" >
+            <div fxFlex="50" *ngIf="buildHide('orgPolitica')" fxLayout="column">
+              <div class="labelsColor">¿Es una organización política? *</div>
+              <div style="margin-top: 10px; padding: 0 100px">
+                <mat-checkbox
+                  (change)="cargo($event)"
+                  formControlName="fm_orgSi"
+                  name="fm_orgSi"
+                  class="margin-right-8"
+                  color="primary"
+                >Sí</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="cargo($event)"
+                  formControlName="fm_orgNo"
+                  name="fm_orgNo"
+                  color="primary"
+                >No</mat-checkbox
+                >
+              </div>
+            </div>
+            <div
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+              *ngIf="buildHide('fm_cargo')"
+              fxLayout="column"
+            >
+              <div class="labelsColor">Cargo</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <mat-select
+                  placeholder="Seleccione"
+                  formControlName="fm_cargo"
+                  disabled="true"
+                >
+                  <mat-option *ngFor="let doc of cargoLst" [value]="doc" selected>
+                    {{ doc.nombre }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="Formulario.controls.fm_cargo.invalid">{{
+                    eShowError("fm_cargo", Formulario.controls.fm_cargo.errors)
+                  }}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div fxFlex="100" fxLayout="row" fxLayoutAlign="start start" *ngIf="cargoSelect && (documentTypeSelected === 'ruc' || documentTypeSelected === 'pr')">
+            <div fxFlex="50" class="padd_4">
+              <ng-container *ngIf="buildHide('fm_asiento_registral_rep') && this.Formulario.get('fm_orgNo').value">
+                <div class="labelsColor">Asiento registral*</div>
+                <mat-form-field appearance="outline" style="width: 100%">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="fm_asiento_registral_rep"
+                    [class.control-invalid]="formInvalid('fm_asiento_registral_rep')"
+                    matInput
+                    placeholder="Ingrese el asiento registral"
+                    name="fm_asiento_registral_rep"
+                    id="fm_asiento_registral_rep"
+                    [maxlength]="50"
+                    [minlength]="3"
+                    autocomplete="off"
+                  />
+                  <mat-error
+                    *ngIf="Formulario.controls.fm_asiento_registral_rep.invalid"
+                  >{{
+                      eShowError(
+                        "fm_asiento_registral_rep",
+                        Formulario.controls.fm_asiento_registral_rep.errors
+                      )
+                    }}</mat-error>
+                </mat-form-field>
+              </ng-container>
+              <div *ngIf="!(buildHide('fm_asiento_registral_rep') && this.Formulario.get('fm_orgNo').value)"
+                   style="height: 76px;">
+              </div>
+            </div>
+
+            <div fxFlex="50" class="padd_4">
+              <ng-container *ngIf="buildHide('orgPolitica') && this.Formulario.get('fm_orgSi').value">
+                <div class="labelsColor">¿Es Personero Legal Alterno? *</div>
+                <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 10px; ; padding: 0 100px">
+                  <mat-checkbox
+                    (change)="toggleCheckbox($event, true, 'alterno')"
+                    [checked]="Formulario.get('alterno')?.value"
+                    color="primary"
+                    class="margin-right-8">Sí</mat-checkbox>
+                  <mat-checkbox
+                    (change)="toggleCheckbox($event, false, 'alterno')"
+                    [checked]="Formulario.get('alterno')?.value === false"
+                    color="primary">No</mat-checkbox>
+                </div>
+              </ng-container>
+              <div *ngIf="!(buildHide('orgPolitica') && this.Formulario.get('fm_orgSi').value)"
+                   style="height: 76px;">
+              </div>
+            </div>
+          </div>
+          <!--          <div fxFlex="100" class="padd_4" *ngIf="buildHide('filesRep')">-->
+          <!--            <div class="labelsColor">-->
+<!--              {{ lblFeaturesFile }}-->
+<!--            </div>-->
+<!--            <file-upload-->
+<!--              [(ngModel)]="uploadedFilesRep"-->
+<!--              formControlName="filesRep"-->
+<!--              [multiple]="true"-->
+<!--              [animation]="true"-->
+<!--              discard="true"-->
+<!--              accept=".pdf,.jpg,.jpeg,.png,.bmp"-->
+<!--              (change)="validatorFile('filesRep')"-->
+<!--              (drop)="validatorFile('filesRep')"-->
+<!--            >-->
+<!--              <ng-template-->
+<!--                let-isFileDragDropAvailable="isFileDragDropAvailable"-->
+<!--                #placeholder-->
+<!--              >-->
+<!--                <file-upload-drop-zone>-->
+<!--                  <ng-container-->
+<!--                    *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable"-->
+<!--                  >-->
+<!--                    {{ lblAddFiles }}-->
+<!--                  </ng-container>-->
+<!--                  <ng-template #isNotDragDropAvailable> </ng-template>-->
+<!--                </file-upload-drop-zone>-->
+<!--              </ng-template>-->
+
+<!--              <ng-template-->
+<!--                let-i="index"-->
+<!--                let-file="file"-->
+<!--                let-control="control"-->
+<!--                #item-->
+<!--              >-->
+<!--                <file-upload-list-item-->
+<!--                  [index]="i"-->
+<!--                  class="item-test"-->
+<!--                  [file]="file"-->
+<!--                  [control]="control"-->
+<!--                  >Eliminar</file-upload-list-item-->
+<!--                >-->
+<!--              </ng-template>-->
+<!--            </file-upload>-->
+
+<!--            <p *ngIf="errmaxLengthName" class="text-file-valid">-->
+<!--              {{ lblErrorMaxLengthName }}-->
+<!--            </p>-->
+<!--            <p *ngIf="errduplicate" class="text-file-valid">-->
+<!--              Archivo con nombre duplicado-->
+<!--            </p>-->
+<!--            <p *ngIf="errorOnlyFile" class="text-file-valid">-->
+<!--              {{ lblErrorOnlyFile }}-->
+<!--            </p>-->
+<!--            <p *ngIf="errminSizeFile" class="text-file-valid">-->
+<!--              El tamaño del archivo mínimo es 1B-->
+<!--            </p>-->
+<!--            <p *ngIf="errmaxSizeFile" class="text-file-valid">-->
+<!--              {{ lblErrorMaxSizeFile }}-->
+<!--            </p>-->
+<!--            <p *ngIf="errmaxFiles" class="text-file-valid">-->
+<!--              {{ lblErrorMaxFiles }}-->
+<!--            </p>-->
+<!--          </div>-->
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_optiontipo_rep')"
+          >
+            <div class="labelsColor">Tipo de documento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                formControlName="fm_optiontipo_rep"
+                (selectionChange)="eChangeDocumentoRep($event)"
+              >
+                <mat-option *ngFor="let doc of typeDocument2" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="Formulario.controls.fm_optiontipo_rep.invalid"
+                >{{
+                  eShowError(
+                    "fm_optiontipo_rep",
+                    Formulario.controls.fm_optiontipo_rep.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="buildHide('fm_numerodoc_rep')"
+          >
+            <div class="labelsColor">Número de documento*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fm_numerodoc_rep"
+                [maxlength]="maxlengthNumDocRep"
+                [minlength]="minlengthNumDocRep"
+                matInput
+                placeholder="Ingrese el número de documento"
+                (keypress)="validar_campo($event, 'fm_numerodoc_rep')"
+                (blur)="validarDocumento('fm_numerodoc_rep')"
+                (keyup)="activarBoton('fm_numerodoc_rep', 'fm_optiontipo_rep')"
+                [readonly]="Formulario.controls.fm_optiontipo_rep.value == null"
+                name="doc"
+                (keyup.enter)="buscarCE('r', '')"
+                (paste)="onPaste2($event,'fm_optiontipo_rep','fm_numerodoc_rep')"
+                autocomplete="off"
+              />
+              <!--                (paste)="onPaste($event)"-->
+              <!--                autocomplete="off"-->
+              <mat-error *ngIf="Formulario.controls.fm_numerodoc_rep.invalid">
+                {{eShowError("fm_numerodoc_rep",Formulario.controls.fm_numerodoc_rep.errors)}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">{{ lblApPat }}</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="appaterno"
+                type="text"
+                class="input_text"
+                formControlName="apPaterno"
+                matInput
+                placeholder="Ingrese apellido paterno"
+                [maxlength]="100"
+                (keypress)="soloExpLetras('appaterno', apPaterno, $event);validarEntrada('appaterno', apPaterno, $event)"
+                (blur)="validarEntrada('appaterno', apPaterno)"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð.\-&#39;&quot;:/°;,() ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error
+                *ngIf="
+                  apPaterno.invalid && (apPaterno.dirty || apPaterno.touched)
+                "
+                >{{ eShowError("fm_appaterno", apPaterno.errors) }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">{{ lblApMat }}</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="apmaterno"
+                type="text"
+                class="input_text"
+                formControlName="apMaterno"
+                matInput
+                placeholder="Ingrese apellido materno"
+                [maxlength]="100"
+                (keypress)="soloExpLetras('apmaterno', apMaterno, $event);validarEntrada('apmaterno', apMaterno, $event)"
+                (blur)="validarEntrada('apmaterno', apMaterno)"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð.\-&#39;&quot;:/°;,() ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error
+                *ngIf="
+                  apMaterno.invalid && (apMaterno.dirty || apMaterno.touched)
+                "
+                >{{ eShowError("fm_apmaterno", apMaterno.errors) }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Nombres*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="nombres"
+                type="text"
+                class="input_text"
+                formControlName="nombres"
+                matInput
+                placeholder="Ingrese nombres"
+                [maxlength]="100"
+                (keypress)="soloExpLetras('nombres', nombres, $event);validarEntrada('nombres', nombres, $event)"
+                (blur)="validarEntrada('nombres', nombres)"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð.\-&#39;&quot;:/°;,() ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error
+                *ngIf="nombres.invalid && (nombres.dirty || nombres.touched)"
+                >{{ eShowError("fm_nombres", nombres.errors) }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Correo electrónico*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_correo"
+                type="text"
+                class="lowercase"
+                formControlName="fm_correo"
+                [class.control-invalid]="formInvalid('fm_correo')"
+                name="text"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese correo electrónico"
+                [maxlength]="50"
+                (keypress)="quitarDobleEspacio('fm_correo', fm_correo, $event)"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_correo.invalid">{{
+                eShowError("fm_correo", Formulario.controls.fm_correo.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de celular*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fm_celular"
+                [class.control-invalid]="formInvalid('fm_celular')"
+                [maxlength]="9"
+                [minlength]="9"
+                (keypress)="validar_campo($event, 'fm_celular')"
+                matInput
+                placeholder="Ingrese número de celular"
+                name="cellphone"
+                (input)="onKeydown($event, 'fm_celular')"
+                (paste)="onPaste2($event,'1','fm_celular')"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_celular.invalid">{{
+                  eShowError("fm_celular", Formulario.controls.fm_celular.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de teléfono fijo</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="fm_phone"
+                [class.control-invalid]="formInvalid('fm_phone')"
+                [maxlength]="10"
+                [minlength]="6"
+                (keypress)="validar_campo_phone($event, 'fm_phone')"
+                matInput
+                placeholder="Número de teléfono fijo"
+                name="phone"
+                (input)="onKeydown($event, 'fm_phone')"
+                (paste)="onPaste2($event,'2','fm_phone')"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_phone.invalid">{{
+                eShowError("fm_phone", Formulario.controls.fm_phone.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="btype"
+          >
+            <div class="labelsColor">Departamento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_departamentoList"
+                formControlName="fm_departamentoList"
+                (selectionChange)="cambiarProvincia()"
+              >
+                <mat-option
+                  *ngFor="let item of departamentoList"
+                  [value]="item"
+                  >{{ item.nodep }}</mat-option
+                >
+              </mat-select>
+              <mat-error
+                *ngIf="Formulario.controls.fm_departamentoList.invalid"
+                >{{
+                  eShowError(
+                    "fm_departamentoList",
+                    Formulario.controls.fm_departamentoList.errors
+                  )
+                }}</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="btype"
+          >
+            <div class="labelsColor">Provincia*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_provinciaList"
+                formControlName="fm_provinciaList"
+                (selectionChange)="cambiarDistrito()"
+              >
+                <mat-option *ngFor="let item of provinciaList" [value]="item">{{
+                    item.noprv
+                  }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_provinciaList.invalid">{{
+                  eShowError(
+                    "fm_provinciaList",
+                    Formulario.controls.fm_provinciaList.errors
+                  )
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="btype"
+          >
+            <div class="labelsColor">Distrito*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_distritoList"
+                formControlName="fm_distritoList"
+              >
+                <mat-option *ngFor="let item of distritoList" [value]="item">{{
+                  item.nodis
+                }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_distritoList.invalid">{{
+                eShowError(
+                  "fm_distritoList",
+                  Formulario.controls.fm_distritoList.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="btype"
+          >
+            <div class="labelsColor">Dirección*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_direccion"
+                type="text"
+                class="form-control"
+                formControlName="fm_direccion"
+                [class.control-invalid]="formInvalid('fm_direccion')"
+                [minlength]="5"
+                [maxlength]="100"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese dirección"
+                name="address"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_direccion.invalid">{{
+                eShowError(
+                  "fm_direccion",
+                  Formulario.controls.fm_direccion.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="btype">
+            <div class="labelsColor">¿Es candidato a un proceso electoral? *</div>
+            <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 10px; ; padding: 0 100px">
+              <mat-checkbox
+                (change)="toggleCheckbox($event, true, 'fm_candidate'); changeCandidate()"
+                [checked]="Formulario.get('fm_candidate')?.value"
+                [disabled]="this.checkBoxDisabled"
+                color="primary">Sí</mat-checkbox>
+              <mat-checkbox
+                (change)="toggleCheckbox($event, false, 'fm_candidate'); changeCandidate()"
+                [checked]="Formulario.get('fm_candidate')?.value === false"
+                [disabled]="this.checkBoxDisabled"
+                color="primary">No</mat-checkbox>
+            </div>
+          </div>
+          <div fxFlex="50" class="padd_4" *ngIf="this.Formulario.get('fm_candidate').value">
+            <div class="labelsColor">Proceso electoral*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_electoral_process"
+                formControlName="fm_electoral_process"
+                panelClass="auto-width-select-panel">
+                <mat-option *ngFor="let item of listProcesses" [value]="item.code">{{
+                    item.name
+                  }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_electoral_process.invalid">{{
+                  eShowError(
+                    "fm_electoral_process",
+                    Formulario.controls.fm_electoral_process.errors
+                  )
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Observación</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <textarea
+                type="text"
+                class="form-control"
+                formControlName="fm_observacion"
+                placeholder="Observación"
+                appTrim
+                matTextareaAutosize
+                matAutosizeMinRows="2"
+                matAutosizeMaxRows="5"
+                maxlength="200"
+                matInput
+                #textinput
+                id="observacion"
+                name="observacion"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+              >
+              </textarea>
+              <mat-hint>{{ textinput.value.length }} / 200</mat-hint>
+              <mat-error *ngIf="Formulario.controls.fm_observacion.invalid">{{
+                eShowError(
+                  "fm_observacion",
+                  Formulario.controls.fm_observacion.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div *ngIf="cargoActive" fxFlex="100" class="centerTitle">
+            DATOS DE OTROS FUNCIONARIOS
+          </div>
+
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Cargo</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                name="fm_cargoTesorero"
+                formControlName="fm_cargoTesorero"
+              >
+                <mat-option *ngFor="let cargo of cargoList" [value]="cargo">
+                  {{ cargo.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_cargoTesorero.invalid">{{
+                eShowError(
+                  "fm_cargoTesorero",
+                  Formulario.controls.fm_cargoTesorero.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de documento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_tipoDocumentoTesorero"
+                formControlName="fm_tipoDocumentoTesorero"
+                (selectionChange)="tipoDocumento($event, 'fm_documentoTesorero')"
+              >
+                <mat-option *ngFor="let doc of typeDocument2" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_tipoDocumentoTesorero.invalid">{{
+                eShowError(
+                  "fm_tipoDocumentoTesorero",
+                  Formulario.controls.fm_tipoDocumentoTesorero.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de documento*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_documentoTesorero"
+                type="text"
+                class="form-control"
+                formControlName="fm_documentoTesorero"
+                [class.control-invalid]="formInvalid('fm_documentoTesorero')"
+                name="text"
+                matInput
+                placeholder="Ingrese número de documento"
+                (keyup)="activarBoton('fm_documentoTesorero', 'fm_tipoDocumentoTesorero')"
+                (keyup.enter)="sDocument('fm_documentoTesorero', 'fm_tipoDocumentoTesorero')"
+                (paste)="onPaste2($event,'fm_tipoDocumentoTesorero','fm_documentoTesorero')"
+                [maxlength] ="maxlengtht"
+                [minlength] ="maxlengtht"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                autocomplete="off"
+                (blur)="validarDocumento('fm_documentoTesorero')"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_documentoTesorero.invalid">{{
+                eShowError("fm_documentoTesorero", Formulario.controls.fm_documentoTesorero.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido paterno</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_apellidoPaternoTesorero"
+                type="text"
+                class="input_text"
+                formControlName="fm_apellidoPaternoTesorero"
+                [class.control-invalid]="formInvalid('fm_apellidoPaternoTesorero')"
+                name="text"
+                matInput
+                placeholder="Ingrese apellido paterno"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_apellidoPaternoTesorero.invalid">{{
+                eShowError("fm_apellidoPaternoTesorero", Formulario.controls.fm_apellidoPaternoTesorero.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido materno</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_apellidoMaternoTesorero"
+                type="text"
+                class="input_text"
+                formControlName="fm_apellidoMaternoTesorero"
+                [class.control-invalid]="formInvalid('fm_apellidoMaternoTesorero')"
+                name="text"
+                matInput
+                placeholder="Ingrese apellido materno"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_apellidoMaternoTesorero.invalid">{{
+                eShowError("fm_apellidoMaternoTesorero", Formulario.controls.fm_apellidoMaternoTesorero.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Nombres*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_nombresTesorero"
+                type="text"
+                class="input_text"
+                formControlName="fm_nombresTesorero"
+                [class.control-invalid]="formInvalid('fm_nombresTesorero')"
+                name="text"
+                matInput
+                placeholder="Ingrese nombres"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_nombresTesorero.invalid">{{
+                eShowError("fm_nombresTesorero", Formulario.controls.fm_nombresTesorero.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Correo electrónico*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_emailTesorero"
+                type="text"
+                class="lowercase"
+                formControlName="fm_emailTesorero"
+                [class.control-invalid]="formInvalid('fm_emailTesorero')"
+                name="text"
+                matInput
+                placeholder="Ingrese correo electrónico"
+                [maxlength]="50"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_emailTesorero.invalid">{{
+                eShowError("fm_emailTesorero", Formulario.controls.fm_emailTesorero.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="cargoActive"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de celular*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_celularTesorero"
+                type="text"
+                class="form-control"
+                formControlName="fm_celularTesorero"
+                [class.control-invalid]="formInvalid('fm_celularTesorero')"
+                name="text"
+                matInput
+                placeholder="Ingrese número de celular"
+                [maxlength]="9"
+                [minlength]="9"
+                (paste)="onPaste2($event,'1','fm_celularTesorero')"
+                (keypress)="validar_campo($event, 'fm_celular')"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_celularTesorero.invalid">{{
+                eShowError("fm_celularTesorero", Formulario.controls.fm_celularTesorero.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="cargoActive"
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="separate"
+          ></div>
+
+          <button
+            *ngIf="cargoActive"
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="btnAgregar"
+            mat-button
+            (click)="agregarRepresentanteLegalOP()"
+          >
+            {{ txtButtonRepresentanteLegalOP }}
+             <span *ngIf="!representanteLegalOP" class="material-icons">add_box</span>
+            <span *ngIf="representanteLegalOP"  class="material-icons">
+              indeterminate_check_box
+            </span>
+          </button>
+
+            <div
+             *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Cargo</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <mat-select
+                  name="fm_cargoRepre"
+                  formControlName="fm_cargoRepre"
+                >
+                  <mat-option *ngFor="let cargo of cargoList" [value]="cargo">
+                    {{ cargo.value }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="Formulario.controls.fm_cargoRepre.invalid">{{
+                  eShowError(
+                    "fm_cargoRepre",
+                    Formulario.controls.fm_cargoRepre.errors
+                  )
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div
+              *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Tipo de documento*</div>
+              <mat-form-field appearance="outline" style="width: 100%">
+                <mat-select
+                  placeholder="Seleccione"
+                  name="fm_tipoDocumentoRepre"
+                  formControlName="fm_tipoDocumentoRepre"
+                  (selectionChange)="tipoDocumento($event, 'fm_documentoRepre')"
+                >
+                  <mat-option *ngFor="let doc of typeDocument2" [value]="doc.id">
+                    {{ doc.value }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="Formulario.controls.fm_tipoDocumentoRepre.invalid">{{
+                  eShowError(
+                    "fm_tipoDocumentoRepre",
+                    Formulario.controls.fm_tipoDocumentoRepre.errors
+                  )
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div
+              *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Número de documento*</div>
+              <mat-form-field
+                class=""
+                disabled="true"
+                appearance="outline"
+                style="width: 100%"
+              >
+                <input
+                  id="fm_documentoRepre"
+                  type="text"
+                  class="form-control"
+                  formControlName="fm_documentoRepre"
+                  [class.control-invalid]="formInvalid('fm_documentoRepre')"
+                  name="text"
+                  matInput
+                  placeholder="Ingrese número de documento"
+                  (keyup)="activarBoton('fm_documentoRepre', 'fm_tipoDocumentoRepre')"
+                  (keyup.enter)="sDocument('fm_documentoRepre', 'fm_tipoDocumentoRepre')"
+                  (paste)="onPaste2($event,'fm_tipoDocumentoRepre','fm_documentoRepre')"
+                  [maxlength] ="maxlengthr"
+                  [minlength] ="maxlengthr"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                  autocomplete="off"
+                  (blur)="validarDocumento('fm_documentoRepre')"
+                />
+                <mat-error *ngIf="Formulario.controls.fm_documentoRepre.invalid">{{
+                  eShowError("fm_documentoRepre", Formulario.controls.fm_documentoRepre.errors)
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div
+              *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Apellido paterno</div>
+              <mat-form-field
+                class=""
+                disabled="true"
+                appearance="outline"
+                style="width: 100%"
+              >
+                <input
+                  id="fm_apellidoPaternoRepre"
+                  type="text"
+                  class="input_text"
+                  formControlName="fm_apellidoPaternoRepre"
+                  [class.control-invalid]="formInvalid('fm_apellidoPaternoRepre')"
+                  name="text"
+                  matInput
+                  placeholder="Ingrese apellido paterno"
+                  [maxlength]="100"
+                  oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                  autocomplete="off"
+                />
+                <mat-error *ngIf="Formulario.controls.fm_apellidoPaternoRepre.invalid">{{
+                  eShowError("fm_apellidoPaternoRepre", Formulario.controls.fm_apellidoPaternoRepre.errors)
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div
+              *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Apellido materno</div>
+              <mat-form-field
+                class=""
+                disabled="true"
+                appearance="outline"
+                style="width: 100%"
+              >
+                <input
+                  id="fm_apellidoMaternoRepre"
+                  type="text"
+                  class="input_text"
+                  formControlName="fm_apellidoMaternoRepre"
+                  [class.control-invalid]="formInvalid('fm_apellidoMaternoRepre')"
+                  name="text"
+                  matInput
+                  placeholder="Ingrese apellido materno"
+                  [maxlength]="100"
+                  oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                  autocomplete="off"
+                />
+                <mat-error *ngIf="Formulario.controls.fm_apellidoMaternoRepre.invalid">{{
+                  eShowError("fm_apellidoMaternoRepre", Formulario.controls.fm_apellidoMaternoRepre.errors)
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+            <div
+              *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Nombres*</div>
+              <mat-form-field
+                class=""
+                disabled="true"
+                appearance="outline"
+                style="width: 100%"
+              >
+                <input
+                  id="fm_nombresRepre"
+                  type="text"
+                  class="input_text"
+                  formControlName="fm_nombresRepre"
+                  [class.control-invalid]="formInvalid('fm_nombresRepre')"
+                  name="text"
+                  matInput
+                  placeholder="Ingrese nombres"
+                  [maxlength]="100"
+                  oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                  autocomplete="off"
+                />
+                <mat-error *ngIf="Formulario.controls.fm_nombresRepre.invalid">{{
+                  eShowError("fm_nombresRepre", Formulario.controls.fm_nombresRepre.errors)
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div
+              *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Correo electrónico*</div>
+              <mat-form-field
+                class=""
+                disabled="true"
+                appearance="outline"
+                style="width: 100%"
+              >
+                <input
+                  id="fm_emailRepre"
+                  type="text"
+                  class="lowercase"
+                  formControlName="fm_emailRepre"
+                  [class.control-invalid]="formInvalid('fm_emailRepre')"
+                  name="text"
+                  matInput
+                  placeholder="Ingrese correo electrónico"
+                  [maxlength]="50"
+                  oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                  autocomplete="off"
+                />
+                <mat-error *ngIf="Formulario.controls.fm_emailRepre.invalid">{{
+                  eShowError("fm_emailRepre", Formulario.controls.fm_emailRepre.errors)
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div
+              *ngIf="representanteLegalOP"
+              fxFlex="50"
+              fxFlex.md="50"
+              fxFlex.sm="100"
+              fxFlex.xs="100"
+              class="padd_4"
+            >
+              <div class="labelsColor">Número de celular*</div>
+              <mat-form-field
+                class=""
+                disabled="true"
+                appearance="outline"
+                style="width: 100%"
+              >
+                <input
+                  id="fm_celularRepre"
+                  type="text"
+                  class="form-control"
+                  formControlName="fm_celularRepre"
+                  [class.control-invalid]="formInvalid('fm_celularRepre')"
+                  name="text"
+                  matInput
+                  placeholder="Ingrese número de celular"
+                  [maxlength]="9"
+                  [minlength]="9"
+                  (paste)="onPaste2($event,'1','fm_celularRepre')"
+                  (keypress)="validar_campo($event, 'fm_celular')"
+                  autocomplete="off"
+                />
+                <mat-error *ngIf="Formulario.controls.fm_celularRepre.invalid">{{
+                  eShowError("fm_celularRepre", Formulario.controls.fm_celularRepre.errors)
+                }}</mat-error>
+              </mat-form-field>
+            </div>
+
+
+          <button
+            *ngIf="cargoActive"
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="btnAgregar"
+            mat-button
+            (click)="agregarPresidente()"
+          >
+            {{ txtButtonPresidente }}
+            <span *ngIf="!presidente" class="material-icons">add_box</span>
+            <span *ngIf="presidente"  class="material-icons">
+              indeterminate_check_box
+            </span>
+          </button>
+
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Cargo</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                name="fm_cargoPresi"
+                formControlName="fm_cargoPresi"
+              >
+                <mat-option *ngFor="let cargo of cargoList" [value]="cargo">
+                  {{ cargo.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_cargoPresi.invalid">{{
+                eShowError(
+                  "fm_cargoPresi",
+                  Formulario.controls.fm_cargoPresi.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de documento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_tipoDocumentoPresi"
+                formControlName="fm_tipoDocumentoPresi"
+                (selectionChange)="tipoDocumento($event, 'fm_documentoPresi')"
+              >
+                <mat-option *ngFor="let doc of typeDocument2" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_tipoDocumentoPresi.invalid">{{
+                eShowError(
+                  "fm_tipoDocumentoPresi",
+                  Formulario.controls.fm_tipoDocumentoPresi.errors
+                )
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de documento*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_documentoPresi"
+                type="text"
+                class="form-control"
+                formControlName="fm_documentoPresi"
+                [class.control-invalid]="formInvalid('fm_documentoPresi')"
+                name="text"
+                matInput
+                placeholder="Ingrese número de documento"
+                (keyup)="activarBoton('fm_documentoPresi', 'fm_tipoDocumentoPresi')"
+                (keyup.enter)="sDocument('fm_documentoPresi', 'fm_tipoDocumentoPresi')"
+                (paste)="onPaste2($event,'fm_tipoDocumentoPresi','fm_documentoPresi')"
+                [maxlength] ="maxlengthp"
+                [minlength] ="maxlengthp"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                autocomplete="off"
+                (blur)="validarDocumento('fm_documentoPresi')"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_documentoPresi.invalid">{{
+                eShowError("fm_documentoPresi", Formulario.controls.fm_documentoPresi.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido paterno</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_apellidoPaternoPresi"
+                type="text"
+                class="input_text"
+                formControlName="fm_apellidoPaternoPresi"
+                [class.control-invalid]="formInvalid('fm_apellidoPaternoPresi')"
+                name="text"
+                matInput
+                placeholder="Ingrese apellido paterno"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_apellidoPaternoPresi.invalid">{{
+                eShowError("fm_apellidoPaternoPresi", Formulario.controls.fm_apellidoPaternoPresi.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido materno</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_apellidoMaternoPresi"
+                type="text"
+                class="input_text"
+                formControlName="fm_apellidoMaternoPresi"
+                [class.control-invalid]="formInvalid('fm_apellidoMaternoPresi')"
+                name="text"
+                matInput
+                placeholder="Ingrese apellido materno"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_apellidoMaternoPresi.invalid">{{
+                eShowError("fm_apellidoMaternoPresi", Formulario.controls.fm_apellidoMaternoPresi.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Nombres*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_nombresPresi"
+                type="text"
+                class="input_text"
+                formControlName="fm_nombresPresi"
+                [class.control-invalid]="formInvalid('fm_nombresPresi')"
+                name="text"
+                matInput
+                placeholder="Ingrese nombres"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_nombresPresi.invalid">{{
+                eShowError("fm_nombresPresi", Formulario.controls.fm_nombresPresi.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Correo electrónico*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_emailPresi"
+                type="text"
+                class="lowercase"
+                formControlName="fm_emailPresi"
+                [class.control-invalid]="formInvalid('fm_emailPresi')"
+                name="text"
+                matInput
+                placeholder="Ingrese correo electrónico"
+                [maxlength]="50"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_emailPresi.invalid">{{
+                eShowError("fm_emailPresi", Formulario.controls.fm_emailPresi.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidente"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de celular*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_celularPresi"
+                type="text"
+                class="form-control"
+                formControlName="fm_celularPresi"
+                [class.control-invalid]="formInvalid('fm_celularPresi')"
+                name="text"
+                matInput
+                placeholder="Ingrese número de celular"
+                [maxlength]="9"
+                [minlength]="9"
+                (paste)="onPaste2($event,'1','fm_celularPresi')"
+                (keypress)="validar_campo($event, 'fm_celular')"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_celularPresi.invalid">{{
+                eShowError("fm_celularPresi", Formulario.controls.fm_celularPresi.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+<!--          AQUÍ EMPIEZA EL NUEVO PERFIL-->
+          <button
+            *ngIf="cargoActive"
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="btnAgregar"
+            mat-button
+            (click)="agregarPresidenteOEC()"
+          >
+            {{ txtButtonPresidenteOEC }}
+            <span *ngIf="!presidenteOEC" class="material-icons">add_box</span>
+            <span *ngIf="presidenteOEC"  class="material-icons">
+              indeterminate_check_box
+            </span>
+          </button>
+
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Cargo</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                name="fm_cargoPresiOEC"
+                formControlName="fm_cargoPresiOEC"
+              >
+                <mat-option *ngFor="let cargo of cargoList" [value]="cargo">
+                  {{ cargo.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_cargoPresiOEC.invalid">{{
+                  eShowError(
+                    "fm_cargoPresiOEC",
+                    Formulario.controls.fm_cargoPresiOEC.errors
+                  )
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de documento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="fm_tipoDocumentoPresiOEC"
+                formControlName="fm_tipoDocumentoPresiOEC"
+                (selectionChange)="tipoDocumento($event, 'fm_documentoPresiOEC')"
+              >
+                <mat-option *ngFor="let doc of typeDocument2" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_tipoDocumentoPresiOEC.invalid">{{
+                  eShowError(
+                    "fm_tipoDocumentoPresiOEC",
+                    Formulario.controls.fm_tipoDocumentoPresiOEC.errors
+                  )
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de documento*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_documentoPresiOEC"
+                type="text"
+                class="form-control"
+                formControlName="fm_documentoPresiOEC"
+                [class.control-invalid]="formInvalid('fm_documentoPresiOEC')"
+                name="text"
+                matInput
+                placeholder="Ingrese número de documento"
+                (keyup)="activarBoton('fm_documentoPresiOEC', 'fm_tipoDocumentoPresiOEC')"
+                (keyup.enter)="sDocument('fm_documentoPresiOEC', 'fm_tipoDocumentoPresiOEC')"
+                (paste)="onPaste2($event,'fm_tipoDocumentoPresiOEC','fm_documentoPresiOEC')"
+                [maxlength] ="maxlengthp"
+                [minlength] ="maxlengthp"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                autocomplete="off"
+                (blur)="validarDocumento('fm_documentoPresiOEC')"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_documentoPresiOEC.invalid">{{
+                  eShowError("fm_documentoPresiOEC", Formulario.controls.fm_documentoPresiOEC.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido paterno</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_apellidoPaternoPresiOEC"
+                type="text"
+                class="input_text"
+                formControlName="fm_apellidoPaternoPresiOEC"
+                [class.control-invalid]="formInvalid('fm_apellidoPaternoPresiOEC')"
+                name="text"
+                matInput
+                placeholder="Ingrese apellido paterno"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_apellidoPaternoPresiOEC.invalid">{{
+                  eShowError("fm_apellidoPaternoPresiOEC", Formulario.controls.fm_apellidoPaternoPresiOEC.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido materno</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_apellidoMaternoPresiOEC"
+                type="text"
+                class="input_text"
+                formControlName="fm_apellidoMaternoPresiOEC"
+                [class.control-invalid]="formInvalid('fm_apellidoMaternoPresiOEC')"
+                name="text"
+                matInput
+                placeholder="Ingrese apellido materno"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_apellidoMaternoPresiOEC.invalid">{{
+                  eShowError("fm_apellidoMaternoPresiOEC", Formulario.controls.fm_apellidoMaternoPresiOEC.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Nombres*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_nombresPresiOEC"
+                type="text"
+                class="input_text"
+                formControlName="fm_nombresPresiOEC"
+                [class.control-invalid]="formInvalid('fm_nombresPresiOEC')"
+                name="text"
+                matInput
+                placeholder="Ingrese nombres"
+                [maxlength]="100"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_nombresPresiOEC.invalid">{{
+                  eShowError("fm_nombresPresiOEC", Formulario.controls.fm_nombresPresiOEC.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Correo electrónico*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_emailPresiOEC"
+                type="text"
+                class="lowercase"
+                formControlName="fm_emailPresiOEC"
+                [class.control-invalid]="formInvalid('fm_emailPresiOEC')"
+                name="text"
+                matInput
+                placeholder="Ingrese correo electrónico"
+                [maxlength]="50"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ@._-]/g, '').replace(/(\..?)\../g, '$1');"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_emailPresiOEC.invalid">{{
+                  eShowError("fm_emailPresiOEC", Formulario.controls.fm_emailPresiOEC.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            *ngIf="presidenteOEC"
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Número de celular*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="fm_celularPresiOEC"
+                type="text"
+                class="form-control"
+                formControlName="fm_celularPresiOEC"
+                [class.control-invalid]="formInvalid('fm_celularPresiOEC')"
+                name="text"
+                matInput
+                placeholder="Ingrese número de celular"
+                [maxlength]="9"
+                [minlength]="9"
+                (paste)="onPaste2($event,'1','fm_celularPresiOEC')"
+                (keypress)="validar_campo($event, 'fm_celular')"
+                autocomplete="off"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_celularPresiOEC.invalid">{{
+                  eShowError("fm_celularPresiOEC", Formulario.controls.fm_celularPresiOEC.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+<!--          AQUÍ TERMINA EL NUEVO PERFIL-->
+
+          <div fxFlex="100" class="padd_4" *ngIf="buildHide('files')">
+            <div class="labelsColor">
+              {{ lblFeaturesFile }}
+            </div>
+            <!-- <p>{{ Formulario.get("files").errors | json }}</p> -->
+            <file-upload
+              [(ngModel)]="uploadedFiles"
+              formControlName="files"
+              [multiple]="true"
+              [animation]="true"
+              discard="true"
+              accept=".pdf,.jpg,.jpeg,.png,.bmp"
+              (drop)="validatorFile('files')"
+              (change)="validatorFile('files')"
+            >
+              <ng-template
+                let-isFileDragDropAvailable="isFileDragDropAvailable"
+                #placeholder
+              >
+                <file-upload-drop-zone>
+                  <ng-container
+                    *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable"
+                  >
+                    {{ lblAddFiles }}
+                  </ng-container>
+                  <ng-template #isNotDragDropAvailable> </ng-template>
+                </file-upload-drop-zone>
+              </ng-template>
+
+              <ng-template
+                let-i="index"
+                let-file="file"
+                let-control="control"
+                #item
+              >
+                <file-upload-list-item
+                  [index]="i"
+                  class="item-test"
+                  [file]="file"
+                  [control]="control"
+                  >Eliminar</file-upload-list-item
+                >
+              </ng-template>
+            </file-upload>
+
+            <p *ngIf="errmaxLengthName" class="text-file-valid">
+              {{ lblErrorMaxLengthName }}
+            </p>
+            <p *ngIf="errduplicate" class="text-file-valid">
+              Archivo con nombre duplicado
+            </p>
+            <p *ngIf="errorOnlyFile" class="text-file-valid">
+              {{ lblErrorOnlyFile }}
+            </p>
+            <p *ngIf="errminSizeFile" class="text-file-valid">
+              El tamaño del archivo mínimo es 1B
+            </p>
+            <p *ngIf="errmaxSizeFile" class="text-file-valid">
+              {{ lblErrorMaxSizeFile }}
+            </p>
+            <p *ngIf="errmaxFiles" class="text-file-valid">
+              {{ lblErrorMaxFiles }}
+            </p>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="
+              Formulario.get('fm_optiontipo').value == 'ruc' ||
+              Formulario.get('fm_optiontipo').value == 'pr'
+            "
+          ></div>
+          <mat-progress-bar
+            *ngIf="load"
+            mode="indeterminate"
+          ></mat-progress-bar>
+          <div
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100">
+            <span class="labelsColor">*Campos requeridos</span>
+          </div>
+
+          <div
+            fxFlex="100"
+            class="newNotif"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+          >
+            <button class="btnBrown" mat-button (click)="cancelar()">
+              CANCELAR
+            </button>
+            <button
+              type="submit"
+              class="btnBlue"
+              mat-button
+              [disabled]="!((Formulario.valid && Formulario.dirty) && cargoSelect )"
+              (click)="alert()"
+            >ACEPTAR
+            </button>
+          </div>
+        </div>
+      </form>
+      <br />
+    </div>
+  </div>
+</section>

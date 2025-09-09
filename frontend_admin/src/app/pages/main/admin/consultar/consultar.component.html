@@ -1,0 +1,91 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span> {{esNotificador ? 'Consulta de casillas' : esSuperAdmin ? 'Gestión de casillas' : null}}
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form class="example-form" fxLayout="row wrap">
+        <div class="marg_r10" fxFlex="50" fxFlex.sm="100" fxFlex.xs="100">
+          <div class="labelsColor">Buscar</div>
+          <mat-form-field class="" appearance="outline" style="width: 100%">
+            <input type="tel" matInput placeholder="Nom, Apell, Num doc, correo" [maxlength]="100" name="txtSearch" autocomplete="off"
+                   (keyup.enter)="searchByQuery()" [(ngModel)]="textSearch" />
+          </mat-form-field>
+        </div>
+        <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10" fxLayoutAlign="center center">
+          <div class="labelsColor hidden_"> </div>
+          <button style="width: 100%; line-height: 31px; margin-top: 4px;" type="submit" class="btnBlue" mat-button
+                  (click)="searchByQuery()">Buscar</button>
+        </div>
+        <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10" fxLayoutAlign="center center">
+          <div class="labelsColor hidden_"> </div>
+          <button style="width: 100%; line-height: 30px; margin-top: 4px;" type="submit" mat-raised-button
+                  (click)="cleanSearch()">Limpiar</button>
+        </div>
+      </form>
+    </div>
+    <div class="listBoxGeneral" *ngIf="this.envio">
+      <div *ngIf="userData && userData.Items.length > 0 && envio; else noDatauserData">
+        <mat-selection-list [multiple]="false">
+          <mat-list-item *ngFor="let user of userData.Items" >
+            <div fxLayout="row" fxFlex>
+              <div class="listPhotoBox" fxLayout="column" fxLayoutAlign="center center">
+                <div [ngClass]="getColor(user.name||user.organization)" fxLayout="row" fxLayoutAlign="center center">
+                  {{ user.name | slice: 0:1 }}
+                  {{ user.organization | slice: 0:1 }}
+                </div>
+              </div>
+              <div class="listSubject" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+
+                <div>
+                  <p class="lNombre" title="{{ user.name}}">
+                    {{ (user.name + ' ' + (user?.lastname || '')) | slice:0:60 }}
+                    {{ (user.name + ' ' + user?.lastname)?.length > 60 ? '...' : '' }}
+                  </p>
+                  <p class="lNombre" title="{{ user.organization}}">
+                    {{ user.organization | slice:0:60 }}
+                    {{ user.organization?.length > 60 ? '...' : '' }}
+                  </p>
+                  <p class="lDocument">{{ user.doc_type }}: {{ user.doc }}</p>
+                  <p class="lOrganizacion" *ngIf="esAdministrador">
+                    Creado por: {{user.createUser}}
+                  </p>
+                </div>
+                <div style="display: flex;align-items: center;">
+                  <div>
+                    <p class="lOrganizacion" *ngIf="esNotificador || esAdministrador">
+                      {{user.estate_inbox}}
+                    </p>
+                  </div>
+                  <div style="margin-left: 40px;">
+                    <p class="lOrganizacion" *ngIf="esNotificador">
+                      {{ user.evaluatedAt || user.createdAt | date :'dd/MM/yyyy hh:mm:ss a' }}
+                    </p>
+                  </div>
+                  <div style="margin-left: 20px;">
+<!--                    <Button mat-stroked-button class="aprobacionBoton" *ngIf="(esAdministrador ) && (user.estate_inbox === 'APROBADO' || user.estate_inbox === 'DESAPROBADO' || user.estate_inbox === 'DESHABILITADO' )" (click)="redirectDetailRegCasilla(user)">Ver Detalle</Button>-->
+<!--                    <Button mat-stroked-button class="aprobacionBoton" *ngIf="(esAdministrador ) && (user.estate_inbox === 'Registro interno' || user.estate_inbox === 'DESHABILITADO ')" (click)="handleVerCasilla(user);">Ver Detalle</Button>-->
+                    <button mat-stroked-button *ngIf="esAdministrador && ( user.estate_inbox === 'DESHABILITADO' || user.estate_inbox === 'DESHABILITADO ')" (click)="enableInbox(user)"><span class="material-icons" style="color: green;">check_circle</span>Habilitar</button>
+                    <button mat-stroked-button *ngIf="esAdministrador && (user.estate_inbox === 'APROBADO' || user.estate_inbox === 'DESAPROBADO' || user.estate_inbox === 'Registro interno' || user.estate_inbox === 'PENDIENTE')" (click)="disableInbox(user)"><span class="material-icons" style="color: red;">highlight_off</span>Deshabilitar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-list-item>
+        </mat-selection-list>
+        <mat-paginator style="margin-right: 30px;" [length]="userData.recordsTotal" [pageIndex]="userData.page-1" [pageSize]="userData.count" [pageSizeOptions]="[5, 10, 25, 100]" (page)="pageEvent = $event;pageChangeEvent($event)">
+        </mat-paginator>
+      </div>
+    </div>
+    <ng-template #noDatauserData>
+      <div class="labelsColor" style="text-align: center; font-size: 15px;">
+        <br>
+        <strong>No se encontraron registros.</strong>
+      </div>
+    </ng-template>
+    <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="center center">
+      <div class="icon-loading"></div>
+    </div>
+  </div>
+</section>

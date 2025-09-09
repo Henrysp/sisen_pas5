@@ -1,0 +1,505 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$front-primary: mat-palette($mat-indigo);
+$front-accent: mat-palette($mat-pink, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$front-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$front-theme: mat-light-theme($front-primary, $front-accent, $front-warn);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($front-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body {
+    margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
+    /* background: #eee; */
+    background-image: url(assets/img/PantallasCS3_BG.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/******************************************
+Generales (Ini)
+******************************************/
+app-header, app-randompages, app-notificaciones, app-nueva-notificacion, app-notificacion-adjuntos, app-notificacion-detalle, app-notificaciones-electronicas, app-notificaciones-electronicas-detalle{
+    width: 100%;
+}
+app-header{
+    z-index: 900;
+}
+/**** Input Cleaner (Ini) ****/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active  {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+/*
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid green;
+  -webkit-text-fill-color: green;
+  -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+*/
+/**** Input Cleaner (Fin) ****/
+/**** Vertical Scroll (Ini) ****/
+::-webkit-scrollbar  {
+    width: 8px;
+    background: #e6e5ef;
+    height: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(87,87,86,1);
+    cursor: pointer;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(157,157,156,1);
+    cursor: pointer;
+}
+::scrollbar {
+    width: 8px;
+    background: #e6e5ef;
+    height: 8px;
+}
+::scrollbar-thumb {
+    background: #8d959a;
+    cursor: pointer;
+}
+::scrollbar-thumb:hover {
+    background: rgba(157,157,156,1);
+    cursor: pointer;
+}
+.vertical_scrl{
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-style: scrollbar;
+}
+.vertical_scrl_noti{
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-style: scrollbar;
+}
+.vertical_scrl::-webkit-scrollbar  {
+    width: 8px;
+    background: #e6e5ef;
+    height: 8px;
+    border-radius: 8px;
+}
+
+.vertical_scrl::-webkit-scrollbar-thumb {
+    background: rgba(104,79,219,1);
+    cursor: pointer;
+    border-radius: 0px;
+}
+
+.vertical_scrl::-webkit-scrollbar-thumb:hover {
+    background: rgba(104,79,219,0.65);
+    cursor: pointer;
+}
+.vertical_scrl::scrollbar {
+    width: 8px;
+    background: #e6e5ef;
+    height: 8px;
+    border-radius: 0px;
+}
+
+.vertical_scrl::scrollbar-thumb {
+    background: #8d959a;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.vertical_scrl::scrollbar-thumb:hover {
+    background: rgba(104,79,219,0.65);
+    cursor: pointer;
+}
+/**** Vertical Scroll (Fin) ****/
+/**** Botones (Ini) ****/
+.btnRed{
+    color: white;
+    background: #ff1e26;
+    width: 50%;
+    right: 0px;
+}
+.btnGrey{
+    color: #b2b2b2;
+    width: 50%;
+    border: 1px solid #b2b2b2;
+}
+.btnBlack{
+    color: #b2b2b2;
+    width: 50%;
+    border: 1px solid #b2b2b2;
+}
+.btnBlue{
+    color: white;
+    background: #175BA5;
+    width: 50%;
+    right: 0px;
+}
+.btnBrown{
+    color: white;
+    background: #BD6C15;
+    width: 50%;
+    right: 0px;
+}
+.btnGreen{
+    color: white;
+    background: #11D19F;
+    width: 50%;
+    right: 0px;
+}
+/**** Botones (Fin) ****/
+
+/***** Generales (Fin) *****/
+/******************************************
+Login (Ini)
+******************************************/
+.inputColor .mat-form-field-infix{
+    /*
+    background: #FFFFFF !important;
+    height: 16px;
+    border-top: 1px solid transparent;
+    */
+}
+.centerTitle{
+    color: #707070;
+    font-size: 24px;
+    font-weight: 500;
+    text-align: center;
+    margin: 20px 0 35px 0;
+}//Actualizacion del mensaje en ciudadano
+.centerTitleMsj{
+  color: #707070;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  margin: 20px 0 35px 0;
+}
+.loginRadio{
+    margin-bottom: 10px;
+}
+.loginRadio .mat-radio-button{
+    margin-right: 16px;
+}
+.loginRadio .mat-radio-button.mat-accent .mat-radio-inner-circle, .loginRadio .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple), .loginRadio .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple, .loginRadio .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple{
+    background-color: #40a7ff;
+}
+.loginRadio .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle{
+    border-color: #40a7ff;
+}
+/*
+.loginRadio .mat-radio-label-content{
+    color: #175BA5;
+    font-size: 14px;
+    font-weight: 500;
+}
+*/
+.labelsColor{
+    color: #175BA5;
+    font-size: 14px;
+    font-weight: 500;
+}
+.linkContent{
+    font-size: 16px;
+    color: #11D19F;
+    text-align: center;
+    display: block;
+    margin-bottom: 16px;
+}
+.inputColor .mat-form-field-flex{
+    /*
+    background: #FFFFFF;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+    box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+    min-height: 33px;
+    */
+}
+.inputColor .material-icons{
+    color: #00C2FF; /* #11D19F */
+    position: relative;
+    top: 3px;
+}
+.inputColor .material-icons.grad45{
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.inputColor .mat-form-field-infix{
+    padding: 0.5em 0;
+    border-top: 5px solid transparent;
+}
+.inputColor .mat-form-field-appearance-outline .mat-form-field-outline{
+    background: #FFFFFF;
+    color: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+    box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+}
+.inputColor .mat-form-field-appearance-outline .mat-form-field-outline-start{
+    border-radius: 0 0 0 0px;
+}
+.inputColor .mat-form-field-appearance-outline .mat-form-field-outline-end{
+    border-radius: 0 0px 0px 0;
+}
+/******************************************
+Login (Fin)
+******************************************/
+/******************************************
+Recuperar Contrasena (Ini)
+******************************************/
+.bigInputColor .material-icons{
+    color: #11D19F;
+    position: relative;
+    top: 6px;
+}
+.bigInputColor .mat-form-field-infix{
+    /* padding: 0.2em 0; */
+    padding: 1em 0 1em 0;
+    /* border-top: 0px solid transparent; */
+    border-top: 0.2em solid transparent;
+}
+.bigInputColor.mat-form-field-appearance-outline .mat-form-field-outline{
+    background: #FFFFFF !important;
+    color: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+    box-shadow: 0px 0px 5px 0px rgba(106,179,235,1);
+}
+.bigInputColor.mat-form-field-appearance-outline .mat-form-field-outline-start{
+    border-radius: 0 0 0 0px;
+}
+.bigInputColor.mat-form-field-appearance-outline .mat-form-field-outline-end{
+    border-radius: 0 0px 0px 0;
+}
+/******************************************
+Recuperar Contrasena (Fin)
+******************************************/
+/******************************************
+Header (Ini)
+******************************************/
+.header {
+    background-image: url(../src/assets/img/PantallasCS3_Blue.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* border-bottom: 6px solid;
+    border-color: red; */
+    padding: 0;
+}
+.baseToolbar {
+    box-shadow: 3px 0 34px -13px rgba(0,0,0,.4);
+}
+/***** Header (Fin) *****/
+/******************************************
+SideBar (Ini)
+******************************************/
+/*
+.menuContent{
+    width: 260px;
+    background: rgba(60,58,58,1);
+    box-shadow: 3px 0 37px -13px rgba(0,0,0,.6);
+    padding-top: 4px;
+}
+*/
+/***** SideBar (Fin) *****/
+/******************************************
+Footer (Ini)
+******************************************/
+app-footer {
+    background: #1D3572;
+    color: #fff;
+}
+/***** Footer (Fin) *****/
+/******************************************
+AccordMenu (Ini)
+******************************************/
+/* */
+.accordMenu{
+    margin: 3px 8px;
+    width: 100%;
+}
+.accordMenu mat-expansion-panel-header{
+    height: 48px !important;
+}
+.accordMenu .mat-expansion-panel-header{
+    height: 60px;
+    text-align: left;
+    padding-left: 16px;
+}
+.accordMenu .mat-expansion-panel{
+    margin-bottom: 6px;
+    background: linear-gradient(60deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    color: rgba(255, 255, 255, 1);
+}
+.accordMenu .mat-expansion-panel:hover{
+    background: linear-gradient(60deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1));
+}
+.accordMenu .mat-expansion-panel-header-title{
+    color: rgb(255 255 255);
+}
+.accordMenu .mat-expansion-panel-header-description, .accordMenu .mat-expansion-indicator::after{
+    color: rgb(255 255 255);
+}
+.accordMenu .mat-expansion-panel-header.mat-expanded:focus, .accordMenu .mat-expansion-panel-header.mat-expanded:hover{
+    background: linear-gradient(60deg, #e31c51, #e21f47);
+}
+.accordMenu .mat-accordion .mat-expansion-panel:not(.mat-expanded), .accordMenu .mat-accordion .mat-expansion-panel:not(.mat-expansion-panel-spacing){
+    border-radius: 1 !important;
+}
+.accordMenu .mat-expansion-panel:not([class*=mat-elevation-z]){
+    box-shadow: none;
+}
+.accordMenu .mat-expansion-panel-spacing{
+    margin: 6px 0;
+}
+.accordMenu .mat-expansion-panel-body {
+    padding: 0 0 0; /*0 24px 16px*/
+}
+.accordMenu .noMarginLR{
+    margin: 3px 0 !important;
+}
+.accordMenu .mat-expansion-panel-header-title{
+    width: 24px;
+    max-width: 24px;
+    min-width: 24px;
+    margin-right: 4px;
+}
+/***** AccordMenu (Fin) *****/
+/*********************************************************
+Estandarización de Componentes (Ini)
+*********************************************************/
+/******************
+Bonotes (Ini)
+******************/
+.botonesControl{
+    margin: 16px 0;
+}
+.botonesControl .mat-raised-button:first-child{
+    margin: 0 4px 0 0;
+}
+.botonesControl .mat-raised-button:last-child{
+    margin: 0 0 0 4px;
+}
+.botonesControl .mat-raised-button{
+    width: 160px;
+    margin: 0 4px;
+}
+.btnGrey{
+    background: #6f6f6e;
+    color: #FFFFFF;
+}
+.btnRed{
+    background: #175BA5;
+    color: #FFFFFF;
+}
+/**** Botones (Fin) ****/
+/******************
+Inputs (Ini)
+******************/
+.mat-form-field-appearance-legacy .mat-form-field-underline {
+    background-color: rgba(0, 0, 0, 0.42);
+}
+/**** Inputs (Fin) ****/
+/***** Estandarización de Componentes (Fin) *****/
+
+/**** Notificaciones (Ini) ****/
+app-notificaciones, app-nueva-notificacion, app-notificacion-adjuntos, app-notificacion-detalle, app-notificaciones-electronicas, app-notificaciones-electronicas-detalle{
+    background: #F5F6FA;
+}
+/**** Notificaciones (Fin) ****/
+.marg_r10{
+    margin-right: 10px;
+}
+/**** Nueva Notificación (Ini) ****/
+.padd_4{
+    padding: 0 4px;
+}
+.textBlue{
+    font-size: 14px;
+    color: #233559;
+}
+.selItem{
+    background: #E1F0FF;
+}
+
+.viewItem{
+    background: #f4f7fa;
+}
+/**** Nueva Notificación (Fin) ****/
+
+/*** Icon Loading***/
+.icon-loading {
+    opacity:0.67;
+    background-image:  url('/assets/img/loading.gif');
+    background-repeat: no-repeat;
+    height:70px;
+    width:70px;
+    background-size: cover;
+}
+/*** Fin Icon Loading***/
+
+@media (max-width: 1400px) {
+    .limit50{
+        max-width: 80%;
+    }
+}
+@media (max-width: 1280px){
+    .overClass{
+        overflow-y: scroll;
+    }
+}
+
+.mat-checkbox-background, .mat-checkbox-frame{
+  height: 23px!important;
+  width: 23px!important;
+}
+.mat-checkbox-inner-container{
+  height: 23px!important;
+  margin-left: 5px!important;
+  margin-bottom: 15px!important;
+  width: 23px!important;
+}
+
+
+
+
+

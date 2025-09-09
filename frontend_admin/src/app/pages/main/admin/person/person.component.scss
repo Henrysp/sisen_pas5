@@ -1,0 +1,50 @@
+@media (max-width: 960px) {
+    .generalBox {
+      border-left: none;
+      margin: 8px 0px 0 0px;
+      padding: 15px 15px 15px 15px;
+    }
+    .allTitles {
+      font-size: 18px;
+      margin-top: 30px;
+    }
+    .greyLine {
+      width: 20px;
+    }
+    .centerTitle {
+      font-size: 16px;
+      margin: 10px 0 35px 0;
+    }
+}
+.input_text {
+  text-transform: uppercase;
+}
+.text-file-valid {
+  font-size: 12px;
+  text-align: end;
+  color: red;
+}
+.item-test span {
+  white-space: normal !important;
+}
+.input-nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  width: 90%;
+}
+.btnBrown {
+  color: white;
+  background: #bd6c15;
+  width: 50%;
+  right: 0px;
+  margin: 10px;
+}
+.btnBlue {
+  color: white;
+  background: #175ba5;
+  width: 50%;
+  right: 0px;
+  margin: 10px;
+}

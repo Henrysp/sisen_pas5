@@ -1,0 +1,96 @@
+<div class="main-div">
+  <div>
+    <div class="logoOnpe">
+      <img src="../../../assets/img/PantallasCS3_Onpe.png" alt="" />
+    </div>
+  </div>
+  <div class="center">
+    <div class="logoSistema">
+      <img src="../../../assets/img/loginLogo70.png" alt="" />
+    </div>
+    <div class="centerTitle">
+      NUEVA CONTRASEÑA
+      <p class="minPwd">
+      </p>
+    </div>
+    <form
+      #myform="ngForm"
+      [formGroup]="Formulario"
+      class="example-form"
+      (ngSubmit)="onSumit()"
+    >
+      <div class="labelsColor">Ingrese contraseña actual</div>
+      <mat-form-field
+        class="example-full-width bigInputColor"
+        appearance="outline"
+      >
+        <span matPrefix class="material-icons">lock</span>
+        <input
+          matInput
+          placeholder="Contraseña enviada al correo"
+          [type]="hide ? 'password' : 'text'"
+          formControlName="fm_oldpass"
+          [class.control-invalid]="formInvalid('fm_oldpass')"
+          required
+          appOnlyNumber="integer"
+          autocomplete="false"
+        />
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </mat-form-field>
+      <div class="labelsColor">Ingrese su nueva contraseña</div>
+      <mat-form-field
+        class="example-full-width bigInputColor"
+        appearance="outline"
+      >
+        <span matPrefix class="material-icons">lock</span>
+        <input
+          mat-icon="lock"
+          matInput
+          placeholder="Nueva Contraseña"
+          [type]="hide1 ? 'password' : 'text'"
+          formControlName="fm_newpass"
+          [class.control-invalid]="formInvalid('fm_newpass')"
+          required
+        />
+        <mat-icon matSuffix (click)="hide1 = !hide1">{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </mat-form-field>
+      <div class="labelsColor">Confirmar su nueva contraseña</div>
+      <mat-form-field
+        class="example-full-width bigInputColor"
+        appearance="outline"
+      >
+        <span matPrefix class="material-icons">lock</span>
+        <input
+          mat-icon="lock"
+          matInput
+          placeholder="Nueva Contraseña"
+          [type]="hide2 ? 'password' : 'text'"
+          formControlName="fm_repeatnewpass"
+          [class.control-invalid]="formInvalid('fm_repeatnewpass')"
+          required
+        />
+        <mat-icon matSuffix (click)="hide2 = !hide2">{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </mat-form-field>
+      <span class="mensajeLogin">{{ mensaje }}</span>
+      <span class="mensajeLogin"
+        >Mínimo 8 dígitos entre números, mayúsculas y minúsculas</span
+      >
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <button
+          type="submit"
+          fxFlex="50"
+          class="btnBlue"
+          mat-raised-button
+          [disabled]="myform.invalid"
+        >
+          Aceptar
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="dirFooter">
+    Jr. Washington 1894, Lima 01<br />
+    informes@onpe.gob.pe - Fono ONPE: 417 0630 opción 1<br />
+    Horario de atención: Lunes a Sábado de 08:00 h – 20:00 h
+  </div>
+</div>

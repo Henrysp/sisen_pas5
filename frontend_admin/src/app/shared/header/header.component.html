@@ -1,0 +1,39 @@
+
+<mat-toolbar class="header baseToolbar">
+  <div fxFlex fxLayoutAlign="start center" class="cardHeader">
+    <img src="../../../assets/img/PantallasCS3_Logo.png" alt="" class="imgLogoOnpe">
+  </div>
+  <div fxFlex="33" fxFlex.xs="50" fxLayout="row" class="cardHeader" fxLayoutAlign="end center">
+    <div fxLayoutAlign="center" class="labelsColor" fxHide.sm fxHide.xs>
+      <mat-form-field  [floatLabel]="'never'">
+        <mat-select placeholder="Seleccione perfil" (click)="getProfilesAvailable()" (selectionChange)="changeSelectProfile($event)">
+          <mat-option *ngFor="let item of profilesAvailable" [value]="item.value">
+            {{ item.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="cardHeader" fxLayoutAlign="end center" fxLayout="row">
+      <button mat-button [disabled]="inputDisabled" (click)="changeProfile()" fxHide.sm fxHide.xs >
+        Cambiar perfil
+      </button>
+    </div>
+    <div class="userInfo" fxLayout="row" fxLayoutAlign="end center" fxHide fxShow.sm fxShow.xs>
+      <span class="material-icons" matTooltip="{{userName}}">account_box</span>
+      <div fxFlex class="nameFlex" fxHide.xs>
+        <div>{{userName}}</div>
+      </div>
+    </div>
+    <div>
+    <button mat-icon-button aria-label="Cerrar Sesión"  (click)="cerrarSession()" fxHide fxShow.sm fxShow.xs>
+      <mat-icon>logout</mat-icon>
+    </button>
+    <button mat-button (click)="cerrarSession()" fxHide.sm fxHide.xs >
+      Cerrar sesión
+    </button>
+    </div>
+  </div>
+</mat-toolbar>
+
+
+

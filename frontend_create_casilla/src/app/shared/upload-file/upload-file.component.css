@@ -1,0 +1,44 @@
+.upload-file {
+  flex-direction: column;
+}
+
+.upload-file .label {
+  color: #0009;
+  padding-bottom: 10px;
+}
+
+.upload-file input {
+  opacity: 0;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.card-upload {
+  color: #949494;
+  background-color: #f1f1f1;
+  text-align: center;
+}
+
+.fileover {
+  background-color: #dfdfdf;
+}
+
+.fileover .default-message{
+  border: 1px solid red;
+}
+
+.fileover .default-message {
+  display: none;
+}
+
+.try-load-message {
+  display: none;
+}
+
+.fileover .try-load-message {
+  display: inline;
+}

@@ -1,0 +1,59 @@
+<div class="universe" fxLayout="column">
+  <app-header></app-header>
+  <section fxFlex fxLayout="row" class="principalSection overClass">
+    <!-- Sidebar (Ini) -->
+    <div
+      class="menuContent"
+      fxLayout="row wrap"
+      fxLayoutAlign="space-around start"
+      fxHide.sm
+      fxHide.xs
+    >
+      <div>
+        <div class="usrIniciales" fxLayout="row" fxLayoutAlign="center center">
+          {{ letterInitial }}
+        </div>
+        <div class="usrPhoto" style="display: none">
+          <img
+            src="https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+            alt="Carlos Diaz"
+          />
+        </div>
+        <div class="usrIntro">Bienvenido</div>
+        <div class="usrBox">
+          <h1 style="text-transform: capitalize">
+            {{ userName }}
+          </h1>
+          <p class="usrPerfil">{{perfil}}</p>
+          <p class="usrGerencia">
+            {{cargo}}
+          </p>
+        </div>
+      </div>
+      <div class="separatorLine"></div>
+      <div class="menuOptions">
+        <button *ngIf="contador !== '...'; else loading" mat-stroked-button (click)="linkRedirect()">
+          <span class="material-icons">mail_outline</span> Notificaciones ({{contador}})
+        </button>
+        <ng-template #loading>
+          <div class="loading-container">
+            <div class="spinner"></div>
+            <span>Cargando...</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxFlex style="position: relative">
+      <router-outlet></router-outlet>
+    </div>
+  </section>
+  <div id="menuInferior" fxHide fxShow.sm fxShow.xs fxLayout="row">
+    <button mat-stroked-button fxFlex (click)="linkRedirect()">
+      <p class="infBtn">
+        <span class="material-icons">mail_outline</span><br />
+        Notificaciones
+      </p>
+    </button>
+  </div>
+  <app-footer></app-footer>
+</div>

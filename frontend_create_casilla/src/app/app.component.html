@@ -1,0 +1,54 @@
+<div class="centrarVerticalmente3">
+  <img alt="" class="imagenLogo" src="/assets/isologo.svg" />
+</div>
+<nav class="navbar">
+  <div class="container-fluid centrarVerticalmente4" >
+    <span>Datos del solicitante</span>
+  </div>
+</nav>
+<br/>
+<div #principal >
+  <div *ngIf="isValid;else other_content" >
+    <app-creacion-pasos></app-creacion-pasos>
+  </div>
+</div>
+
+<ng-template #other_content>
+  <app-verificacion-navegador></app-verificacion-navegador>
+</ng-template>
+<div style="text-align: center;">
+  <div id="chrome" class="compartir">
+    <span class="label-blue-oneline">Navegadores recomendados: </span>
+    <img alt="" src="assets/chrome.jpeg" width="30px" height="30px">
+    <span class="label-blue-oneline"> Google Chrome </span>
+  </div>
+  <div id="firefox" class="compartir">
+    <img alt="" src="assets/firefox.jpeg" width="30px" height="30px">
+    <span class="label-blue-oneline"> Mozilla Firefox </span>
+    <img alt="" src="assets/edge.png" width="30px" height="30px">
+    <span class="label-blue-oneline"> Microsoft Edge</span>
+    <div class="label-blue-oneline" >
+      <p>SISEN<sup>®️</sup> Versión 2.0</p>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="container foot">
+    <div class="row">
+      <div class="col-sm" style="text-align: initial;">
+        <span class="font-foot1">Central telefónica: </span> <br>
+        <span class="font-foot2"> (01) 4170630  | Lunes a Viernes - 8:30 a.m. a 5:00 p.m.</span>
+
+      </div>
+      <div class="col-sm" style="text-align: initial;">
+        <span class="font-foot1">Escríbenos</span> <br>
+        <span class="font-foot2"> informes@onpe.gob.pe</span>
+
+      </div>
+      <div class="col-sm" style="text-align: initial;">
+        <span class="font-foot1">Oficina central</span> <br>
+        <span class="font-foot2"> Jr. Washington 1894 - Cercado de Lima</span><br>
+      </div>
+    </div>
+  </div>
+</footer>

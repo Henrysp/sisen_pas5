@@ -1,0 +1,126 @@
+<div class="universe" fxLayout="column">
+  <app-header></app-header>
+  <section fxFlex fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" class="principalSection overClass">
+    <!-- Sidebar (Ini) -->
+    <div class="menuContent" fxLayout="row wrap" fxLayoutAlign="space-around start" fxHide.sm fxHide.xs>
+      <div>
+        <div class="usrIniciales" fxLayout="row" fxLayoutAlign="center center">
+          {{ letterInitial }}
+        </div>
+        <div class="usrIntro">Bienvenido</div>
+        <div class="usrBox">
+          <h1 style="text-transform: none">
+            {{ userName }}
+          </h1>
+          <p class="usrPerfil">
+            {{ labelProfile }}
+          </p>
+          <p class="usrGerencia">
+            {{ jobAreaName }}
+          </p>
+          <button *ngIf="sidebar == 'notifier'" mat-button (click)="linkRedirect('nueva-notificacion')">
+            CREAR NOTIFICACIÓN
+          </button>
+          <button *ngIf="sidebar == 'register'" mat-button (click)="linkRedirect('operador/nueva-casilla')">
+            CREAR CASILLA ELECTRÓNICA
+          </button>
+        </div>
+      </div>
+      <div class="separatorLine"></div>
+      <div *ngIf="sidebar == 'admin' || sidebar == 'register'" class="menuOptions">
+      </div>
+      <div *ngIf="sidebar == 'notifier'" class="menuOptions">
+        <button mat-stroked-button (click)="refreshNotifications()">
+          <span class="material-icons">mail_outline</span> Notificaciones
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'evaluator'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('operador/usuarios')">
+          <span class="material-icons">supervisor_account</span> Usuarios
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin' || sidebar == 'register' || sidebar == 'consult'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('list-boxes')">
+          <span class="material-icons">work</span> Casillas Electrónicas
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin' && isSuperAdmin" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('admin/consultar')">
+          <span class="material-icons">disabled_by_default</span>Gestión de casillas
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin' || sidebar == 'consult' || sidebar == 'notifier'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('operador/operador-reportes')">
+          <span class="material-icons">description</span> Reportes
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('admin/person')">
+          <span class="material-icons">person_add</span> Persona
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('admin/catalog')">
+          <span class="material-icons">mail_outline</span> Procedimiento
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('admin/calendar')">
+          <span class="material-icons">calendar_today</span> Calendario
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'notifier'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('admin/consultar')">
+          <span class="material-icons">search</span>Consulta
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('admin/usuarios')">
+          <span class="material-icons">manage_accounts</span> Usuarios
+        </button>
+      </div>
+      <div *ngIf="sidebar == 'admin'" class="menuOptions">
+        <button mat-stroked-button (click)="linkRedirect('admin/disable-users')">
+          <span class="material-icons">no_accounts</span> Gestión de usuarios
+        </button>
+      </div>
+    </div>
+    <div  fxFlex style="position: relative">
+      <router-outlet></router-outlet>
+    </div>
+  </section>
+  <div id="menuInferior" fxHide fxShow.sm fxShow.xs fxLayout="row">
+    <button mat-stroked-button fxFlex="50" *ngIf="sidebar == 'register'" (click)="linkRedirect('list-boxes')">
+      <p class="infBtn">
+        <span class="material-icons">work</span><br />
+        Casillas Electrónicas
+      </p>
+    </button>
+    <button mat-stroked-button fxFlex="50" *ngIf="sidebar == 'evaluator'" (click)="linkRedirect('operador/usuarios')">
+      <p class="infBtn">
+        <span class="material-icons">supervisor_account</span><br />
+        Usuarios
+      </p>
+    </button>
+    <button mat-stroked-button fxFlex="50" *ngIf="sidebar == 'notifier'" (click)="refreshNotifications()">
+      <p class="infBtn">
+        <span class="material-icons">mail_outline</span><br />
+        Notificaciones
+      </p>
+    </button>
+    <button mat-stroked-button fxFlex="50" *ngIf="sidebar == 'register'"
+            (click)="linkRedirect('operador/nueva-casilla')">
+      <p class="infBtn">
+        <span class="material-icons">add</span><br />
+        Crear Casilla Electrónica
+      </p>
+    </button>
+    <button mat-stroked-button fxFlex="50" *ngIf="sidebar == 'notifier'" (click)="linkRedirect('nueva-notificacion')">
+      <p class="infBtn">
+        <span class="material-icons">add</span><br />
+        Crear Notificación
+      </p>
+    </button>
+  </div>
+  <app-footer></app-footer>
+</div>

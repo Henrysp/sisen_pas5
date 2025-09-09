@@ -1,0 +1,57 @@
+.swal2-html-container{
+  text-align: center!important;
+}
+.brownCircle {
+    width: 8px;
+    height: 8px;
+    background: #bd6c15;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 6px 10px 10px 26px;
+}
+
+.greyLine {
+    width: 60px;
+    height: 1px;
+    background: #d1d1d1;
+    margin: 9px 10px 0 0;
+}
+
+.allTitles {
+    color: #bd6c15;
+    font-size: 30px;
+    font-weight: normal;
+    margin-top: 40px;
+}
+
+.generalBox {
+    border-left: #d1d1d1 solid 1px;
+    margin: 8px 30px 0 30px;
+    padding: 15px 15px 0 15px;
+}
+.mat-column-tipo {
+    max-width: 10%;
+}
+.mat-column-codigo {
+  max-width: 10%;
+}
+.mat-column-nombre {
+    max-width: 80%;
+}
+.mat-column-acciones {
+    max-width: 15%;
+    justify-content: center;
+}
+.item_table {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    text-justify: auto;
+}
+.exPnlBtn{
+    font-size: 10px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.54);
+}

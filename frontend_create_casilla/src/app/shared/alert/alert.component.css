@@ -1,0 +1,26 @@
+.alert-danger {
+  background-color: #f8d7da;
+  color: #842029
+}
+.alert-warn {
+  color: #664d03;
+  background-color: #fff3cd;
+}
+.alert-success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+}
+
+.alert-info {
+  color: #F4F4F4;
+  background-color: #d1e7dd;
+  /*height: 55px;*/
+  border-top: #F4F4F4;
+}
+
+
+@media only screen and (min-width: 360px) and (max-width: 768px) {
+  .alert-info {
+    height: unset;
+  }
+}

@@ -1,0 +1,191 @@
+<form [formGroup]="formGroup" (submit)="$event.preventDefault()">
+
+
+  <app-alert type="info" class="adicionalAlert">
+    <div class="camposObligatorios">
+      <p>Sólo se pueden registrar personas jurídicas con RUC que inicie con el número 20. Si su RUC no inicia con este número, debe seleccionar la condición "PERSONA NATURAL".</p>
+  </div>
+</app-alert>
+<br>
+  <div class="row height40">
+    <div class="col-sm-2 height40" >
+      <label class="label-blue"> Tipo de documento *</label>
+    </div>
+    <div class="col-sm height40">
+      <select class="form-select" formControlName="tipoDocumento" [disabled]="buscando" (change)="tipoDocumentoCambiado()" >
+        <option *ngFor="let item of tipoDocumentoList" [value]="item.codigo">{{item.nombre.toUpperCase()}}</option>
+      </select>
+    </div>
+    <div class="col-sm height40">
+      <label class="label-blue">N° de {{lblDocumento}} *</label>
+    </div>
+    <div class="input-group mb-3 col-sm height40">
+     <input type="text" inputmode="numeric" class="form-control" style="text-transform: uppercase;"
+            (keypress)="validarPrimerDigitoRUC($event)" formControlName="numeroDocumento"
+            [ngClass]="{ 'is-invalid': (f.numeroDocumento!.touched || f.numeroDocumento!.dirty) && f.numeroDocumento.errors }"
+            (change)="invalidarDocumento()"
+            (keydown.enter)="validarDocumento()" [maxlength] ="maxlength" [minlength]="minlength" >
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2" *ngIf="(getNumeroDoc().length == 11 && !numeroRucValido && lblDocumento == 'RUC')" (click)="validarDocumento()"  [class.spinner]="loading" [disabled]="loading">Consultar</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm"><small>En caso de que no cuente con RUC ingresar la información de su partida registral</small></div>
+  </div><br/>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Razón social *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input id="razonSocial" type="text" class="form-control" style="text-transform: uppercase;" formControlName="razonSocial"
+      [ngClass]="{ 'is-invalid': (f.razonSocial!.touched || f.razonSocial!.dirty) && f.razonSocial.errors }" autocomplete="off"
+      maxlength="100" (keypress)="quitarDobleEspacio('razonSocial', $event)" ng-trim="true">
+    </div>
+  </div>
+  <div class="row height40">
+    <div class="col-sm-2 height40" *ngIf="bPc">
+      <label class="label-blue"> N° de partida registral*</label>
+    </div>
+    <div class="input-group mb-3 col-sm height40" *ngIf="bPc">
+      <input type="text" inputmode="numeric" class="form-control"
+             [ngClass]="{ 'is-invalid': (f.numeroPartida!.touched || f.numeroPartida!.dirty) && f.numeroPartida.errors }" formControlName="numeroPartida"
+             style="text-transform: uppercase;" [maxlength] ="50" [minlength]="3">
+    </div>
+    <div class="col-sm-2 height40">
+      <label class="label-blue">Asiento registral *</label>
+    </div>
+    <div class="input-group mb-3 col-sm height40">
+      <input type="text" inputmode="numeric" class="form-control"
+             [ngClass]="{ 'is-invalid': (f.asientoRegistral!.touched || f.asientoRegistral!.dirty) && f.asientoRegistral.errors }" formControlName="asientoRegistral"
+             [maxlength] ="50" [minlength]="3" >
+    </div>
+  </div><br/>
+  <app-alert type="info" class="adicionalAlert">
+    <div class="camposObligatoriosFile">
+      <p><strong>Adjuntar documentos</strong>
+      <p>Si es una Organización Política: Copia de la Resolución y Asiento de Inscripción emitidos por la Dirección Nacional de Registro de Organizaciones Políticas (DNROP) del JNE.</p>
+      <p>Si es una Institución Privada: Copia de la Partida Registral del Registro de Personas Jurídicas otorgada por la SUNARP y el documento que conste el poder vigente del representante legal.</p>
+    </div>
+  </app-alert>
+  <br>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Cargar el documento adjunto *</label>
+    </div>
+    <div class="col-sm">
+      <div class="row">
+        <file-upload id="drop-area" formControlName="files" [multiple]="true" [animation]="true" accept=".pdf" fxFlex="100"
+                     [(ngModel)]="uploadedFiles"
+                     [fileslimit]="2"
+                     [maxsize]="maxsize_"
+                     (drop)="validatorFile()"
+                     [ngStyle]="{'outline-color': filesControl.valid == false ? 'red' : ''}"
+                     [ngStyle]="{'background-color': filesControl.valid == false ? '#fdf4f4' : ''}"
+                     (change)="validatorFile()">
+          <ng-template let-isFileDragDropAvailable="isFileDragDropAvailable" #placeholder >
+            <file-upload-drop-zone>
+              <ng-container *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable" >
+                Agregar archivo PDF o dar clic aquí.
+              </ng-container>
+              <ng-template #isNotDragDropAvailable> </ng-template>
+            </file-upload-drop-zone>
+          </ng-template>
+          <ng-template let-i="index" let-file="file" let-control="control" #item >
+            <file-upload-list-item [index]="i" class="item-test" [file]="file" [control]="control" >Remover</file-upload-list-item>
+          </ng-template>
+        </file-upload>
+      </div>
+      <div class="row">
+        <small>El archivo adjunto será sujeto de fiscalización posterior.</small>
+      </div>
+    </div>
+  </div>
+  <br>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue"> Correo electrónico *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input type="email" class="form-control" maxlength="50" placeholder="example@mail.com" formControlName="correoElectronico"
+      [ngClass]="{ 'is-invalid': (f.correoElectronico!.touched || f.correoElectronico!.dirty) && f.correoElectronico.errors }"
+      autocomplete="off" style="text-transform: lowercase;">
+      <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="validarCorreoElectronico()" [disabled]="ActiveButton() || oneClick">Validar</button>
+    </div>
+    <div class="col-sm">
+      <label class="label-blue">Número de celular *</label>
+    </div>
+      <div class="input-group mb-3 col-sm">
+        <input type="text" inputmode="numeric" class="form-control"   formControlName="numeroCelular"
+        [ngClass]="{ 'is-invalid': (f.numeroCelular!.touched || f.numeroCelular!.dirty) && f.numeroCelular.errors }"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');" (keypress)="validarCelular($event)"
+        minlength="9" maxlength="9"    autocomplete="off" >
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="validarNumeroCelular()" [disabled]="ActiveButtonSMS()  || oneClick">Validar</button>
+      </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Número de teléfono fijo (opcional)</label>
+    </div>
+      <div class="input-group mb-3 col-sm"> <!-- oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');"-->
+        <input type="text" inputmode="numeric" class="form-control"   formControlName="numeroTelefono" [ngClass]="{ 'is-invalid': (f.numeroTelefono!.touched || f.numeroTelefono!.dirty) && f.numeroTelefono.errors }" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..?)\../g, '$1');" (keypress)="validarsoloTelefonoFijo($event)"  minlength="6" maxlength="10" autocomplete="off" >
+      </div>
+    <div class="col-sm">
+      <label class="label-blue"> Departamento *</label>
+    </div>
+    <div class="col-sm">
+      <select class="form-select" id="departamento" name="departamento" formControlName="departamento" [ngClass]="{ 'is-invalid': (f.departamento!.touched || f.departamento!.dirty) && f.departamento.errors }" (change)="cambiarProvincia()">
+        <option  ngValue="">SELECCIONE DEPARTAMENTO</option>
+        <option *ngFor="let item of departamentoList" [ngValue]="item">{{item.nodep}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Provincia *</label>
+    </div>
+
+      <div class="input-group mb-3 col-sm">
+        <select class="form-select"id="provincia" name="provincia" formControlName="provincia" [ngClass]="{ 'is-invalid': (f.provincia!.touched || f.provincia!.dirty) && f.provincia.errors }" (change)="cambiarDistrito()">
+          <option  ngValue="">SELECCIONE PROVINCIA</option>
+          <option *ngFor="let item of provinciaList" [ngValue]="item">{{item.noprv}}</option>
+        </select>
+      </div>
+    <div class="col-sm">
+      <label class="label-blue"> Distrito *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <select class="form-select" id="distrito" name="distrito" formControlName="distrito" [ngClass]="{ 'is-invalid': (f.distrito!.touched || f.distrito!.dirty) && f.distrito.errors }">
+        <option  ngValue="">SELECCIONE DISTRITO</option>
+        <option  *ngFor="let item of distritoList" [ngValue]="item">{{item.nodis}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Dirección *</label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input id="domicilioID" type="text" class="form-control" maxlength="100" minlength="5" formControlName="domicilioFisico"
+             [ngClass]="{ 'is-invalid': (f.domicilioFisico!.touched || f.domicilioFisico!.dirty) && f.domicilioFisico.errors }"
+             (keypress)="validardomicilio($event, 'domicilioID')"
+             (blur)="validarEntrada('domicilioID', formGroup, 'domicilioFisico')"
+             placeholder="Jirón/Av./Calle" autocomplete="off" >
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2">
+      <label class="label-blue">Página web (opcional) </label>
+    </div>
+    <div class="input-group mb-3 col-sm">
+      <input id="paginaWebID" type="text" class="form-control" maxlength="100" placeholder="www.example.com" minlength="5" formControlName="paginaWeb" [ngClass]="{ 'is-invalid': (f.paginaWeb!.touched || f.paginaWeb!.dirty) && f.paginaWeb.errors }" (keypress)="validarPaginaWeb($event, 'paginaWebID')" autocomplete="off"
+      pattern="(https?:\/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+             style="text-transform: lowercase;">
+    </div>
+  </div>
+</form>

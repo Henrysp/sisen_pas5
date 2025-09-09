@@ -1,0 +1,682 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Notificación electrónica
+  </div>
+
+  <div id="imp1" class="generalBox">
+    <div class="controlBox inputColor">
+      <div id="no-imp1" class="topLine">
+        <div class="limit50 printLine">
+          <a (click)="cancel()">
+            <span class="material-icons">arrow_back</span>
+            Regresar
+          </a>
+          <a (click)="print()">
+            <span class="material-icons">print</span>
+            Imprimir
+          </a>
+        </div>
+      </div>
+      <ng-container *ngIf="loading; then mostrarLoading; else ocultarLoading"></ng-container>
+      <ng-template #mostrarLoading>
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="icon-loading"></div>
+        </div>
+      </ng-template>
+      <ng-template #ocultarLoading>
+        <div fxLayout="row" class="limit50 detailHead">
+          <div
+            class="listPhotoBox"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+          >
+            <div
+              [ngClass]="getColor(notification.inbox_name)"
+              fxLayout="row"
+              fxLayoutAlign="center center"
+            > <!-- class="listCircle rdmColor_1" -->
+              {{ notification.inbox_name.length > 0 ? notification.inbox_name.charAt(0) : "O" }}
+            </div>
+          </div>
+          <div
+            class="listSubject"
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center">
+            <div fxFlex fxLayout="column">
+              <p class="lSubject parrafo_texto">
+                {{ isAutomatic ? this.notification.expedient : this.formulario.controls["n_expediente"].value }}
+              </p>
+              <p class="lGerencia"></p>
+              <p class="lDetalleDate">
+                {{
+                (isAutomatic ? this.notification.created_at : this.formulario.controls["n_received_at"].value) | date: "dd/MM/yyyy hh:mm a"
+                }}
+              </p>
+            </div>
+            <div>
+              <button mat-stroked-button (click)="downloadAcuse(this.notification.expedient)">
+                Descargar Constancia de notificación
+                <span class="material-icons"> download </span>
+              </button>
+
+              <button mat-stroked-button (click)="downloadAcuseRecibido2(this.notification.id,this.notification.expedient, this.notification.read_at)"
+                      *ngIf="this.notification.read_at !== undefined">
+                Descargar Acuse Recibido
+                <span class="material-icons"> download </span>
+              </button>
+
+              <button mat-stroked-button (click)="downloadReporteLecturaNotification(this.notification.id, this.notification.expedient)"
+                      *ngIf="isOP && this.notification.read_at !== undefined">
+                Descargar Reporte Lectura Notificación
+                <span class="material-icons"> download </span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="isAutomatic; then preNotificationTemplate; else notificationTemplate"></ng-container>
+        <ng-template #preNotificationTemplate>
+          <div
+            fxLayout="row wrap"
+            fxLayoutAlign="start start"
+            class="formNotif dobleGrey"
+            *ngFor="let adjunto of adjuntos"
+          >
+            <div
+              fxLayout="row"
+              fxLayoutAlign="start start"
+              matTooltip={{lbl_bloqueado}}
+            >
+              <button mat-stroked-button
+                      [disabled]=true
+                      (click)="viewDocument(adjunto)">
+                <mat-icon matSuffix class="grad45">attach_file</mat-icon>
+                {{ adjunto.name }}
+              </button>
+            </div>
+          </div>
+          <div class="formNotif textBlue" fxLayout="row wrap">
+            <div fxFlex="100" class="padd_4">
+              <div class="labelsColor">Destinatario:</div>
+              <p>{{ this.notification.inbox_name }} {{ this.notification.organization_name }}</p>
+            </div>
+            <div fxFlex="100" class="padd_4">
+              <div class="labelsColor">Número de expediente:</div>
+              <p>{{ this.notification.n_expedient }}</p>
+            </div>
+            <div fxFlex="100" class="padd_4">
+              <div class="labelsColor">Mensaje:</div>
+              <p>{{ this.notification.message }}</p>
+            </div>
+          </div>
+          <div class="formNotif" fxLayout="row wrap">
+            <div
+              fxFlex="100"
+              class="newNotif"
+              fxLayout="row"
+              fxLayoutAlign="center center"
+            >
+              <button class="btnBrown" mat-button (click)="cancel()">
+                CANCELAR
+              </button>
+              <button
+                class="btnBlue"
+                [disabled]="enviando"
+                mat-button
+                (click)="NotificationSign()"
+              >
+                ENVIAR
+              </button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template #notificationTemplate>
+          <div class="formNotif textBlue" fxLayout="row wrap" fxLayoutGap="10px">
+            <span class="labelsColor">Destinatario:</span>
+            <p>{{ this.notification.inbox_name }} {{ this.notification.organization_name }}</p>
+          </div>
+          <div class="formNotif textBlue" fxLayout="row wrap" fxLayoutGap="10px">
+            <div class="labelsColor">Número de expediente:</div>
+            <p>{{ this.notification.n_expedient }}</p>
+          </div>
+          <div class="formNotif textBlue" fxLayout="row wrap" fxLayoutGap="10px">
+            <div class="labelsColor">Procedimiento:</div>
+            <p>{{ this.notification.procedure}}</p>
+          </div>
+          <div
+            fxLayout="row wrap"
+            fxLayoutAlign="start start"
+            class="formNotif dobleGrey"
+            *ngFor="let adjunto of adjuntos"
+          >
+            <ng-container *ngIf="adjunto.blocked != null ? adjunto.blocked : false; else blocked">
+              <div
+                fxLayout="row"
+                fxLayoutAlign="start start"
+                matTooltip={{lbl_bloqueado}}>
+                <button mat-stroked-button
+                        [disabled]=true
+                        (click)="viewDocument(adjunto)">
+                  <mat-icon matSuffix class="grad45">attach_file</mat-icon>
+                  {{ adjunto.name }}
+                </button>
+              </div>
+            </ng-container>
+            <ng-template #blocked>
+              <div
+                fxLayout="row"
+                fxLayoutAlign="start start">
+                <button mat-stroked-button
+                        (click)="viewDocument(adjunto)">
+                  <mat-icon matSuffix class="grad45">attach_file</mat-icon>
+                  {{ adjunto.name }}
+                </button>
+              </div>
+            </ng-template>
+
+          </div>
+          <div class="formNotif textBlue" fxLayout="row wrap">
+            <div class="labelsColor">Asunto:</div>
+            <div fxFlex="100" class="padd_4">
+              <p class="parrafo_texto">
+                {{ this.formulario.controls["n_message"].value }}
+              </p>
+            </div>
+          </div>
+          <div class="blueSeed limit50">
+            <img src="../../../../assets/img/onpeblanco.svg" alt=""/>
+          </div>
+          <div class="topLine1 limit50"></div>
+
+          <!--Estado de la notificacion-->
+          <div class="greyBoxIndicator limit50" fxLayout="row">
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <div class="greyBoxTitle">Estado de la notificación:</div>
+            </div>
+            <div style="display: block!important;">
+              <div class="listCtrls posRef" fxLayout="row">
+                <div class="listBtnBox2">
+                  Depositado
+                  <div class="color_1 posUno">
+                    <mat-icon>check_circle</mat-icon>
+                  </div>
+                  <div class="microInfo">
+                    {{
+                    this.formulario.controls["n_received_at"].value
+                      | date: "dd/MM/yyyy hh:mm a"
+                    }}
+                  </div>
+                </div>
+                <div class="listBtnBox2">
+                  Recibido
+                  <div class="{{ view2 }}">
+                    <mat-icon>{{ icon2 }}</mat-icon>
+                  </div>
+                  <div class="microInfo">
+                    {{
+                    this.formulario.controls["n_read_at"].value
+                      | date: "dd/MM/yyyy hh:mm a"
+                    }}
+                  </div>
+                </div>
+                <div class="listBtnBox2">
+                  Vencido
+                  <div class="{{ view3 }}">
+                    <mat-icon>{{ icon3 }}</mat-icon>
+                  </div>
+                  <div class="microInfo" *ngIf="notification.expired">
+                    {{
+                    this.formulario.controls["n_expired_in"].value
+                      | date: "dd/MM/yyyy hh:mm a"
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topLine1 limit50"></div>
+
+          <!--color_1 -- verde, color_2 --- plomo, check_circle --- circulo con check, circle --- solo circulo-->
+
+          <!--Lectura de la notificacion-->
+          <div class="greyBoxIndicator limit50" fxLayout="row" *ngIf="isOP">
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <p class="greyBoxTitle" style="text-align: center">Recepción de la notificación<br> por perfil:</p>
+            </div>
+            <div style="display: block!important;">
+              <!--<h4 style="text-align: left; font-weight: 400;" *ngIf="cargos">Perfil: Persona Juridica</h4>
+              <div class="listCtrls posRef" fxLayout="row">
+                <div class="listBtnBox2">
+                  Recibido
+                  <div class="color_2">
+                    <mat-icon>circle</mat-icon>
+                  </div>
+                  <div class="microInfo">
+                    {{
+                    this.formulario.controls["n_received_at"].value
+                      | date: "dd/MM/yyyy hh:mm a"
+                    }}
+                  </div>
+                </div>
+              </div>-->
+              <div *ngIf="cargos">
+                <div *ngFor="let cargo of cargoList" fxLayout="col" fxLayoutAlign="start center">
+                  <div style="width: 150px;"><h4 style="text-align: left; font-weight: 400;">{{cargo.nombre}}</h4></div>
+                  <div class="listCtrls posRef" fxLayout="row">
+                    <div class="listBtnBox2">
+                      Recibido
+                      <div class="{{cargo.view}}">
+                        <mat-icon>{{notification.expired && cargo.view === 'color_1' ? null : cargo.icon}}</mat-icon>
+                      </div>
+                      <div class="microInfo">
+                        {{cargo.read_at | date: "dd/MM/yyyy hh:mm a"}}
+                      </div>
+                    </div>
+                  </div>
+                  <div style="width: 10px;" *ngIf="!cargo.value" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon matTooltip="Funcionario no disponible al emitir la notificación" matTooltipPosition="above">report</mat-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-template>
+        <br>
+        <div>
+          <table style="margin: 0 auto;" class="table" border="0" cellspacing="2" cellpadding="2">
+            <tr>
+              <td>Cantidad de alertas enviadas al correo: </td>
+              <td style="text-align: center; background-color: #c4c4c4" width="50"><b>{{countSend.email}}</b></td>
+              <td>Cantidad de destinatarios enviados: </td>
+              <td style="text-align: center; background-color: #c4c4c4" width="50"><b>{{countSend.email_receiver}}</b></td>
+            </tr>
+            <tr>
+              <td>Cantidad de SMS enviadas al celular: </td>
+              <td style="text-align: center; background-color: #c4c4c4" width="50"><b>{{countSend.sms}}</b></td>
+              <td>Cantidad de destinatarios enviados: </td>
+              <td style="text-align: center; background-color: #c4c4c4" width="50"><b>{{countSend.sms_receiver}}</b></td>
+            </tr>
+          </table>
+        </div>
+
+        <ng-container>
+          <div *ngIf="this.notification.email_sent_at && (this.notification.inbox_doc_type === 'dni' || this.notification.inbox_doc_type === 'ce')">
+            <br>
+            <br>
+            <div class="formNotif textBlue">
+              <div class="labelsColor"><strong>Estado de la comunicación</strong></div>
+            </div>
+            <br>
+            <table style="margin: 0 auto; width: 50%;" class="table" border="0" cellspacing="2" cellpadding="2">
+              <tr>
+                <th colspan="2" class="labelsColor">Destinatario: {{this.notification.inbox_name }}</th>
+              </tr>
+              <tr class="labelsColor">
+                <th>Depositado: </th>
+                <th>Depositado: </th>
+              </tr>
+              <tr>
+                <td style="text-align: center; background-color: #c4c4c4" width="50">
+                  <mat-icon *ngIf="this.notification.email_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="'Enviado a: ' + this.notification.event_history.email.sent_to"
+                            matTooltipPosition="above">mail</mat-icon>
+                  <mat-icon *ngIf="!this.notification.email_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="'Enviado a: ' + this.notification.event_history.email.sent_to"
+                            matTooltipPosition="above"
+                            (click) = "resendEmailAndSms('email', this.notification.inbox_email, false)">mail</mat-icon>
+                </td>
+                <td style="text-align: center; background-color: #c4c4c4" width="50">
+                  <mat-icon *ngIf="this.notification.sms_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="'Enviado a: ' + this.notification.event_history.sms.sent_to"
+                            matTooltipPosition="above">textsms</mat-icon>
+                  <mat-icon *ngIf="!this.notification.sms_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="'Enviado a: ' + this.notification.event_history.sms.sent_to"
+                            matTooltipPosition="above"
+                            (click) = "resendEmailAndSms('sms', this.notification.inbox_cellphone, false)">textsms</mat-icon>
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: center; background-color: #c4c4c4" width="50">{{this.notification.email_sent_at}}</td>
+                <td style="text-align: center; background-color: #c4c4c4" width="50">{{this.notification.sms_sent_at}}</td>
+              </tr>
+            </table>
+            <br>
+            <br>
+          </div>
+          <div *ngIf="this.notification.email_sent_at && (this.notification.inbox_doc_type === 'ruc' || this.notification.inbox_doc_type === 'pr')">
+            <br>
+            <div class="formNotif textBlue">
+              <div class="labelsColor"><strong>Estado de la comunicación</strong></div>
+              <br>
+            </div>
+          </div>
+            <div style="display: flex; justify-content: space-between;" *ngIf="!isOP && (this.notification.inbox_doc_type === 'ruc' || this.notification.inbox_doc_type === 'pr')">
+            <table style="margin: 0 auto; width: 30%;" class="table">
+              <tr>
+                <th colspan="2" class="labelsColor">Destinatario: PERSONA JURÍDICA</th>
+              </tr>
+              <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+              <tr>
+                <td style="text-align: center; background-color: #dfdfdf">
+                  <mat-icon *ngIf="this.notification.email_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="this.notification.email_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.email.sent_to + '\nEl correo electrónico coincide con el registrado en el representante.' : 'Enviado a: ' + this.notification.event_history.email.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>
+                  <mat-icon *ngIf="!this.notification.email_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="this.notification.email_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.email.sent_to + '\nEl correo electrónico coincide con el registrado en el representante.' : 'Enviado a: ' + this.notification.event_history.email.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                            (click) = "resendEmailAndSms('email', this.notification.inbox_email, false)">mail</mat-icon>
+                </td>
+                <td style="text-align: center; background-color: #dfdfdf">
+                  <mat-icon *ngIf="this.notification.sms_sent_status" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="this.notification.sms_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.sms.sent_to + '\nEl número de celular coincide con el registrado en el representante.' : 'Enviado a: ' + this.notification.event_history.sms.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>
+                  <mat-icon *ngIf="!this.notification.sms_sent_status" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="this.notification.sms_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.sms.sent_to + '\nEl número de celular coincide con el registrado en el representante.' : 'Enviado a: ' + this.notification.event_history.sms.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                            (click) = "resendEmailAndSms('sms', this.notification.inbox_cellphone, false)">textsms</mat-icon>
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: center; background-color: #dfdfdf">{{this.notification.email_sent_at}}</td>
+                <td style="text-align: center; background-color: #dfdfdf">{{this.notification.sms_sent_at}}</td>
+              </tr>
+            </table>
+            <br>
+            <table style="margin: 0 auto; width: 30%;" class="table">
+              <tr>
+                <th colspan="2" class="labelsColor" *ngIf="notification.orgPol === undefined ">Destinatario: REPRESENTANTE</th>
+                <th colspan="2" class="labelsColor" *ngIf="!isOP">Destinatario: REPRESENTANTE LEGAL</th>
+                <th colspan="2" class="labelsColor" *ngIf="isOP">Destinatario: PERSONERO LEGAL TITULAR</th>
+              </tr>
+              <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+              <tr *ngIf="!isOP || notification.orgPol === undefined ">
+                <td style="text-align: center; background-color: #dfdfdf">
+                  <mat-icon *ngIf="this.notification.email_sent_at_rep ? this.notification.email_sent_status_rep : (this.notification.email_sent_at_rep === null ? false : this.notification.email_sent_status)" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="this.notification.email_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.email_rep.sent_to + '\nEl correo electrónico coincide con el registrado en la PJ.' : 'Enviado a: ' + this.notification.event_history.email_rep.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>
+                  <mat-icon *ngIf="this.notification.email_sent_at_rep ? !this.notification.email_sent_status_rep : (this.notification.email_sent_at_rep === null ? true : !this.notification.email_sent_status)" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="this.notification.email_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.email_rep.sent_to + '\nEl correo electrónico coincide con el registrado en la PJ.' : 'Enviado a: ' + this.notification.event_history.email_rep.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                            (click) = "resendEmailAndSms('email', this.notification.event_history.email_rep.sent_to, true)">mail</mat-icon>
+                </td>
+                <td style="text-align: center; background-color: #dfdfdf">
+                  <mat-icon *ngIf="this.notification.sms_sent_at_rep ? this.notification.sms_sent_status_rep : (this.notification.sms_sent_at_rep === null ? false : this.notification.sms_sent_status)" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="this.notification.sms_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.sms_rep.sent_to + '\nEl número de celular coincide con el registrado en la PJ.' : 'Enviado a: ' + this.notification.event_history.sms_rep.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>
+                  <mat-icon *ngIf="this.notification.sms_sent_at_rep ? !this.notification.sms_sent_status_rep : (this.notification.sms_sent_at_rep === null ? true : !this.notification.sms_sent_status)" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="this.notification.sms_sent_at_rep === '' ? 'Enviado a: ' + this.notification.event_history.sms_rep.sent_to + '\nEl número de celular coincide con el registrado en la PJ.' : 'Enviado a: ' + this.notification.event_history.sms_rep.sent_to"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                            (click) = "resendEmailAndSms('sms', this.notification.event_history.sms_rep.sent_to, true)">textsms</mat-icon>
+                </td>
+              </tr>
+              <tr *ngIf="isOP">
+                <td style="text-align: center; background-color: #dfdfdf">
+                  <mat-icon *ngIf="emailPersonero?.status" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="emailPersonero?.sent_to ? 'Enviado a: ' + emailPersonero?.sent_to : ''"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>
+                  <mat-icon *ngIf="!emailPersonero?.status || emailPersonero === undefined" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="emailPersonero?.sent_to ? 'Enviado a: ' + emailPersonero?.sent_to : ''"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                            (click) = "resendEmailAndSmsOP('email', emailPersonero.sent_to, true,'2')">mail</mat-icon>
+                </td>
+                <td style="text-align: center; background-color: #dfdfdf" width="50">
+                  <mat-icon *ngIf="smsPersonero?.status" class="mat-icon status-true" style="cursor:pointer;"
+                            [matTooltip]="smsPersonero?.sent_to ? 'Enviado a: ' + smsPersonero?.sent_to : ''"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>
+                  <mat-icon *ngIf="!smsPersonero?.status || smsPersonero === undefined" class="mat-icon status-false" style="cursor:pointer;"
+                            [matTooltip]="smsPersonero?.sent_to ? 'Enviado a: ' + smsPersonero?.sent_to : ''"
+                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"
+                            (click) = "resendEmailAndSmsOP('sms', smsPersonero.sent_to, true,'2')">textsms</mat-icon>
+                </td>
+              </tr>
+              <tr *ngIf="!isOP || notification.orgPol === undefined ">
+                <td style="text-align: center; background-color: #dfdfdf">{{this.notification.email_sent_at_rep ? this.notification.email_sent_at_rep : this.notification.email_sent_at_rep === null ? '-' : this.notification.email_sent_at}}</td>
+                <td style="text-align: center; background-color: #dfdfdf">{{this.notification.sms_sent_at_rep ? this.notification.sms_sent_at_rep : this.notification.sms_sent_at_rep === null ? '-' : this.notification.sms_sent_at}}</td>
+              </tr>
+              <tr *ngIf="isOP">
+                <td style="text-align: center; background-color: #dfdfdf">
+                  {{ notification.event_history_notifications.EMAIL_SENT.Pers_Legal_OP.length > 0 ? emailPersonero.date : 'Sin información' }}
+                </td>
+                <td style="text-align: center; background-color: #dfdfdf">
+                  {{ notification.event_history_notifications.SMS_SENT.Pers_Legal_OP.length > 0 ? smsPersonero.date : 'Sin información' }}
+                </td>
+              </tr>
+            </table>
+            </div>
+<!--                  <th colspan="2" class="labelsColor">Destinatario: TESORERO</th>-->
+<!--                </tr>-->
+<!--                <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+<!--                <tr>-->
+<!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                    <mat-icon *ngIf="emailTesorero?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                              [matTooltip]="emailTesorero?.sent_to ? 'Enviado a: ' + emailTesorero?.sent_to : ''"-->
+<!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                    <mat-icon *ngIf="cargoList[1].value && !emailTesorero?.status" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                              [matTooltip]="emailTesorero?.sent_to ? 'Enviado a: ' + emailTesorero?.sent_to : ''"-->
+<!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                              (click) = "resendEmailAndSmsOP('email', emailTesorero.sent_to, true,'3')">mail</mat-icon>-->
+<!--                    <mat-icon *ngIf="!cargoList[1].value" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                              [matTooltip]="emailTesorero?.sent_to ? 'Enviado a: ' + emailTesorero.sent_to : ''"-->
+<!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                  </td>-->
+<!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                    <mat-icon *ngIf="smsTesorero?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                              [matTooltip]="smsTesorero?.sent_to ? 'Enviado a: ' + smsTesorero?.sent_to : ''"-->
+<!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                    <mat-icon *ngIf="cargoList[1].value && !smsTesorero?.status" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                              [matTooltip]="smsTesorero?.sent_to ? 'Enviado a: ' + smsTesorero?.sent_to : ''"-->
+<!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                              (click) = "resendEmailAndSmsOP('sms', smsTesorero.sent_to, true,'3')">textsms</mat-icon>-->
+<!--                    <mat-icon *ngIf="!cargoList[1].value" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                              [matTooltip]="smsTesorero?.sent_to ? 'Enviado a: ' + smsTesorero.sent_to : ''"-->
+<!--                              matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                    {{ notification.event_history_notifications.EMAIL_SENT.Tesorero_OP.length > 0 && cargoList[1].value ? emailTesorero.date : 'Sin información' }}-->
+<!--                  </td>-->
+<!--                  <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                    {{ notification.event_history_notifications.SMS_SENT.Tesorero_OP.length > 0 && cargoList[1].value? smsTesorero.date : 'Sin información' }}-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--              </table>-->
+
+<!--            <br>-->
+<!--          </div>-->
+<!--          </div>-->
+          <!--              aqui-->
+          <div class="notification-tables-container" style="display: flex; justify-content: space-between;" *ngIf="isOP">
+            <ng-container *ngFor="let cargo of cargoDisplayData">
+              <table style="margin: 0 auto; width: 30%;" class="table notification-table" border="0" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                  <th colspan="2" class="labelsColor">Destinatario: {{cargo.title}}</th>
+                </tr>
+                <tr>
+                  <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">
+                    <mat-icon
+                      [ngClass]="{
+                'status-true': cargo.showButton && cargo.email?.status,
+                'status-false': cargo.showButton && (cargo.email?.status === false || cargo.email === undefined),
+                'not-exist': !cargo.showButton
+              }"
+                      [style.cursor]="(!cargo.showButton || !cargo.email) ? 'default' : 'pointer'"
+                      [matTooltip]="cargo.tooltipEMAIL ? cargo.tooltipEMAIL : (cargo.showButton && cargo.email?.sent_to) ? 'Enviado a: ' + cargo.email.sent_to : ''"
+                      matTooltipClass="multi-line-tooltip"
+                      matTooltipPosition="above"
+                      (click)="cargo.email?.status === false ? resendEmailAndSmsOP('email', cargo.email.sent_to, cargo.isRep, cargo.positionId) : null">
+                      mail
+                    </mat-icon>
+                  </td>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">
+                    <mat-icon
+                      [ngClass]="{
+                'status-true': cargo.showButton && cargo.sms?.status,
+                'status-false': cargo.showButton && (cargo.sms?.status === false || cargo.sms === undefined),
+                'not-exist': !cargo.showButton
+              }"
+                      [style.cursor]="(!cargo.showButton || !cargo.sms) ? 'default' : 'pointer'"
+                      [matTooltip]="cargo.tooltipSMS ? cargo.tooltipSMS : (cargo.showButton && cargo.sms?.sent_to) ? 'Enviado a: ' + cargo.sms.sent_to : ''"
+                      matTooltipClass="multi-line-tooltip"
+                      matTooltipPosition="above"
+                      (click)="(cargo.sms?.status === false || (cargo.showButton && cargo.sms === undefined)) ? resendEmailAndSmsOP('sms', cargo.sms?.sent_to, cargo.isRep, cargo.positionId) : null">
+                      textsms
+                    </mat-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">
+                    {{ cargo.emailHistoryCheck ? cargo.email?.date : 'Sin información' }}
+                  </td>
+                  <td style="text-align: center; background-color: #dfdfdf" width="50">
+                    {{ cargo.smsHistoryCheck ? cargo.sms?.date : 'Sin información' }}
+                  </td>
+                </tr>
+                </tbody>
+                <br>
+              </table>
+            </ng-container>
+          </div>
+<!--          REFACTOR-->
+<!--          <div style="display: flex; justify-content: space-between;" *ngIf="isOP">-->
+<!--            <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+<!--              <tr>-->
+<!--                <th colspan="2" class="labelsColor">Destinatario: REPRESENTANTE LEGAL OP</th>-->
+<!--              </tr>-->
+<!--              <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+<!--              <tr>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  <mat-icon *ngIf="emailRep_Legal?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                            [matTooltip]="emailRep_Legal?.sent_to ? 'Enviado a: ' + emailRep_Legal.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                  <mat-icon *ngIf="emailRep_Legal?.status === false" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                            [matTooltip]="emailRep_Legal?.sent_to ? 'Enviado a: ' + emailRep_Legal.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                            (click) = "resendEmailAndSmsOP('email', emailRep_Legal.sent_to, true,'4')">mail</mat-icon>-->
+<!--                  <mat-icon *ngIf="emailRep_Legal === undefined" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                            [matTooltip]="emailRep_Legal?.sent_to ? 'Enviado a: ' + emailRep_Legal.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                </td>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  <mat-icon *ngIf="smsRep_Legal?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                            [matTooltip]="smsRep_Legal?.sent_to ? 'Enviado a: ' + smsRep_Legal.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                  <mat-icon *ngIf="cargoList[2].value && (smsRep_Legal?.status === false || smsRep_Legal === undefined)" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                            [matTooltip]="smsRep_Legal?.sent_to ? 'Enviado a: ' + smsRep_Legal.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                            (click) = "resendEmailAndSmsOP('sms', smsRep_Legal.sent_to, true,'4')">textsms</mat-icon>-->
+<!--                  <mat-icon *ngIf="!cargoList[2].value" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                            [matTooltip]="smsRep_Legal?.sent_to ? 'Enviado a: ' + smsRep_Legal.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  {{ notification.event_history_notifications.EMAIL_SENT.Rep_Legal_OP.length > 0 && cargoList[2].value ? emailRep_Legal.date : 'Sin información' }}-->
+<!--                </td>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  {{ notification.event_history_notifications.SMS_SENT.Rep_Legal_OP.length > 0 && cargoList[2].value ? smsRep_Legal.date : 'Sin información' }}-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </table>-->
+<!--            <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+<!--              <tr>-->
+<!--                <th colspan="2" class="labelsColor">Destinatario: PRESIDENTE</th>-->
+<!--              </tr>-->
+<!--              <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+<!--              <tr>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  <mat-icon *ngIf="emailPresidente?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                            [matTooltip]="emailPresidente?.sent_to ? 'Enviado a: ' + emailPresidente.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                  <mat-icon *ngIf="emailPresidente?.status === false" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                            [matTooltip]="emailPresidente?.sent_to ? 'Enviado a: ' + emailPresidente.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                            (click) = "resendEmailAndSmsOP('email', emailPresidente.sent_to, true,'5')">mail</mat-icon>-->
+<!--                  <mat-icon *ngIf="emailPresidente === undefined" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                            [matTooltip]="emailPresidente?.sent_to ? 'Enviado a: ' + emailPresidente.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                </td>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  <mat-icon *ngIf="smsPresidente?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                            [matTooltip]="smsPresidente?.sent_to ? 'Enviado a: ' + smsPresidente.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                  <mat-icon *ngIf="smsPresidente?.status === false" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                            [matTooltip]="smsPresidente?.sent_to ? 'Enviado a: ' + smsPresidente.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                            (click) = "resendEmailAndSmsOP('sms', smsPresidente.sent_to, true,'5')">textsms</mat-icon>-->
+<!--                  <mat-icon *ngIf="smsPresidente === undefined" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                            [matTooltip]="smsPresidente?.sent_to ? 'Enviado a: ' + smsPresidente.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  {{ notification.event_history_notifications.EMAIL_SENT.Presidente_OP.length > 0 ? emailPresidente.date : 'Sin información' }}-->
+<!--                </td>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  {{ notification.event_history_notifications.SMS_SENT.Presidente_OP.length > 0 ? smsPresidente.date : 'Sin información' }}-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </table>-->
+<!--&lt;!&ndash;            Nuevo perfil&ndash;&gt;-->
+<!--            <table style="margin: 0 auto; width: 30%;" class="table" border="0" cellspacing="2" cellpadding="2">-->
+<!--              <tr>-->
+<!--                <th colspan="2" class="labelsColor">Destinatario: PRESIDENTE DE OEC</th>-->
+<!--              </tr>-->
+<!--              <td colspan="2" style="text-align: center;" class="labelsColor">Depositado:</td>-->
+<!--              <tr>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  <mat-icon *ngIf="emailPresidenteOEC?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                            [matTooltip]="emailPresidenteOEC?.sent_to ? 'Enviado a: ' + emailPresidenteOEC.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                  <mat-icon *ngIf="emailPresidenteOEC?.status === false" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                            [matTooltip]="emailPresidenteOEC?.sent_to ? 'Enviado a: ' + emailPresidenteOEC.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                            (click) = "resendEmailAndSmsOP('email', emailPresidenteOEC.sent_to, true,'6')">mail</mat-icon>-->
+<!--                  <mat-icon *ngIf="emailPresidenteOEC === undefined" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                            [matTooltip]="emailPresidenteOEC?.sent_to ? 'Enviado a: ' + emailPresidenteOEC.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">mail</mat-icon>-->
+<!--                </td>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  <mat-icon *ngIf="smsPresidenteOEC?.status" class="mat-icon status-true" style="cursor:pointer;"-->
+<!--                            [matTooltip]="smsPresidenteOEC?.sent_to ? 'Enviado a: ' + smsPresidenteOEC.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                  <mat-icon *ngIf="smsPresidenteOEC?.status === false" class="mat-icon status-false" style="cursor:pointer;"-->
+<!--                            [matTooltip]="smsPresidenteOEC?.sent_to ? 'Enviado a: ' + smsPresidenteOEC.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above"-->
+<!--                            (click) = "resendEmailAndSmsOP('sms', smsPresidenteOEC.sent_to, true,'5')">textsms</mat-icon>-->
+<!--                  <mat-icon *ngIf="smsPresidenteOEC === undefined" class="mat-icon not-exist" style="cursor:default;"-->
+<!--                            [matTooltip]="smsPresidenteOEC?.sent_to ? 'Enviado a: ' + smsPresidenteOEC.sent_to : ''"-->
+<!--                            matTooltipClass="multi-line-tooltip" matTooltipPosition="above">textsms</mat-icon>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--              <tr>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  {{ notification.event_history_notifications.EMAIL_SENT.PresidenteOEC_OP.length > 0 ? emailPresidenteOEC.date : 'Sin información' }}-->
+<!--                </td>-->
+<!--                <td style="text-align: center; background-color: #dfdfdf" width="50">-->
+<!--                  {{ notification.event_history_notifications.SMS_SENT.PresidenteOEC_OP.length > 0 ? smsPresidenteOEC.date : 'Sin información' }}-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </table>-->
+<!--          </div>-->
+          <!--              aqui-->
+        </ng-container>
+      </ng-template>
+<div>
+  <br>
+</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,91 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()" #form="ngForm">
+<div mat-dialog-content>
+
+    <div fxLayout="row" class="allTitlesPop">
+      Seleccione tipo de documento y Nro de documento
+    </div>
+    <div><br></div>
+    <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="left center" fxFlex="50">
+        <p style="color: black;font-size: 0.8rem;text-align: left;">Tipo de documento: </p>
+        <mat-form-field appearance="outline" style="width: 70%" >
+
+          <mat-select placeholder="Seleccione" name="fm_optiontipo" formControlName="fm_optiontipo"  (selectionChange)="eChangeDocumento($event)" >
+            <mat-option *ngFor="let doc of listDocument" [value]="doc.id">
+              {{ doc.value }}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="formGroup.get('fm_optiontipo').hasError('required')">
+            {{ getErrorMessage() }}
+          </mat-error>
+
+        </mat-form-field>
+      </div>
+      <div   fxLayout="row" fxLayoutAlign="center center" fxFlex="50">
+        <p style="color: black;font-size: 0.8rem;text-align: center;">Nro de documento: </p>
+        <mat-form-field class="" appearance="outline" style="width: 80%" >
+          <input
+            class="form-control"
+            type="text"
+
+            formControlName="fm_numerodoc"
+
+            (input)="enterValidDocumentNumber($event, 'fm_numerodoc')"
+            [placeholder]="buildHolder('fm_numerodoc')"
+            (blur)="lostFocusDocumentNumber($event)"
+            matInput
+            autocomplete="off"
+            [appFocus]="toggleNroDocumento"
+            #inputDocNumber
+          />
+          <mat-error *ngIf="formGroup.get('fm_numerodoc').hasError('longitudInvalida')">
+            {{ messageErrorDocmentNumber }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row" class="allTitlesPop">
+      Ingrese un rango de fechas de creación y/o evaluación
+    </div>
+  <div fxLayout="row">
+      <div fxLayout="row" fxLayoutAlign="center center" fxFlex="50">
+          <mat-form-field class="collFilter">
+              <mat-label>Desde</mat-label>
+              <input matInput formControlName="startDate"  [min]="minDatefi" [max]="maxDatefi"  (dateChange)="onValueChange($event)" autocomplete="off" readonly class="datepicker-input"
+                     [(ngModel)]="fechaInicio" name="fechaInicio" [matDatepicker]="picker">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+
+              <mat-error *ngIf="formGroup.get('startDate').hasError('required')">
+                {{ getErrorMessage() }}
+              </mat-error>
+
+          </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center center" fxFlex="50">
+          <mat-form-field class="collFilter">
+              <mat-label>Hasta</mat-label>
+              <input matInput formControlName="finishDate" [min]="fechaInicio" [max]="maxDateff" autocomplete="off" readonly class="datepicker-input" [(ngModel)]="fechaFin" name="fechaFin" [matDatepicker]="picker2">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+
+              <mat-error *ngIf="formGroup.get('finishDate').hasError('required')">
+                {{ getErrorMessage() }}
+              </mat-error>
+
+          </mat-form-field>
+      </div>
+  </div>
+  <p style="color: red;font-size: 0.8rem;text-align: center;">{{mensaje}}</p>
+</div>
+<div mat-dialog-actions fxLayout="row">
+  <div fxFlex="50" fxLayout="row">
+    <button mat-button class="btnBrown margLR_4" (click)="handleCancelar();" fxFlex>CANCELAR</button>
+  </div >
+  <div fxFlex="50" fxLayout="row">
+    <!-- <button mat-button cdkFocusInitial class="btnBlue2 margLR_4" (click)="handleOk();" fxFlex>ACEPTAR</button> -->
+    <button mat-button cdkFocusInitial class="btnBlue2 margLR_4" type="submit" [disabled]="formGroup.disabled" fxFlex>ACEPTAR</button>
+  </div>
+</div>
+</form>

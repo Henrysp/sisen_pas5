@@ -1,0 +1,113 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Notificaciones electrónicas
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form [formGroup]="formSearch" fxLayout="row wrap">
+        <div fxFlex class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+          <div class="labelsColor">Buscar</div>
+          <mat-form-field class="" appearance="outline" style="width: 100%">
+            <input
+              matInput
+              formControlName="textSearch"
+              maxlength="{{maxTam}}"
+              (keyup.enter)="searchByQuery()"
+              placeholder="Buscar..."
+              name="txtSearch"
+            />
+            <mat-icon matSuffix (click)="searchByQuery()">search</mat-icon>
+          </mat-form-field>
+        </div>
+        <div fxFlex.sm="100" fxFlex.xs="100">
+          <div class="labelsColor">Filtro</div>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <mat-select
+              name="filter"
+              formControlName="filterSelected"
+              (selectionChange)="onOptionsSelected()"
+            >
+              <mat-option *ngFor="let filtro of filtros" [value]="filtro.value">
+                {{ filtro.viewValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+    <div class="listBoxGeneral" *ngIf="notificationRespone && notificationRespone.recordsTotal != 0; else noDataNotifications">
+      <mat-selection-list [multiple]="false">
+        <mat-list-option
+          [ngClass]="{ selItem: !notification.read_position_status }"
+          *ngFor="let notification of notificationRespone.Items"
+        >
+          <div
+            fxLayout="row"
+            fxFlex
+            (click)="goNotificationDetail(notification.id)"
+          >
+            <div
+              class="listPhotoBox"
+              fxLayout="column"
+              fxLayoutAlign="center center"
+            >
+              <div
+                [ngClass]="getColor(notification.notifier_area)"
+                fxLayout="row"
+                fxLayoutAlign="center center"
+              >
+                {{ notification.notifier_area | slice: 0:1 }}
+              </div>
+            </div>
+            <div
+              class="listSubject"
+              fxFlex
+              fxLayout="row"
+              fxLayoutAlign="start center"
+            >
+              <div>
+                <p class="lSubject">
+                  {{ notification.expedient }}
+                </p>
+                <p class="lGerencia">
+                  {{ notification.notifier_area }}
+                </p>
+              </div>
+            </div>
+            <div class="listDate inputColor">
+              <mat-icon matSuffix class="grad45">attach_file</mat-icon>
+              <div class="greyText" fxHide.xs>
+                Notificado: {{ notification.received_at | date: "dd/MM/yyyy" }}
+              </div>
+              <div
+                class="greyText"
+                fxHide.xs
+                *ngIf="notification.read_at !== undefined"
+              >
+                Recibido: {{ notification.read_at | date: "dd/MM/yyyy" }}
+              </div>
+            </div>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+      <mat-paginator #paginator
+        [length]="notificationRespone.recordsTotal"
+        [pageSize]="notificationRespone.count"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="pageChangeEvent($event)"
+      >
+      </mat-paginator>
+    </div>
+    <ng-template #noDataNotifications>
+      <div class="labelsColor" style="text-align: center; font-size: 15px;">
+        <br>
+        <strong>No se encontraron registros.</strong>
+      </div>
+    </ng-template>
+    <div fxLayout="row" *ngIf="!listReadyCheck" fxLayoutAlign="center center">
+      <div class="icon-loading"></div>
+    </div>
+  </div>
+</section>

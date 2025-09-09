@@ -1,0 +1,46 @@
+.brownCircle{
+    width: 8px;
+    height: 8px;
+    background: #BD6C15;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 6px 10px 10px 26px;
+}
+.greyLine{
+    width: 60px;
+    height: 1px;
+    background: #D1D1D1;
+    margin: 9px 10px 0 0;
+}
+.allTitles{
+    color: #BD6C15;
+    font-size: 30px;
+    font-weight: normal;
+    margin-top: 40px;
+}
+.generalBox{
+    border-left: #D1D1D1 solid 1px;
+    margin: 8px 30px 0 30px;
+    padding: 15px 15px 0 15px;
+}
+
+.formNotif{
+    max-width: 50%;
+    margin: 0 auto;
+}
+.newNotif{
+    margin: 16px 0 0;
+}
+.newNotif .btnGreen{
+    max-width: 200px;
+}
+.newNotif .btnBlue{
+    max-width: 160px;
+    margin: 0 8px;
+}
+.newNotif .btnBrown{
+    max-width: 160px;
+    margin: 0 8px;
+}

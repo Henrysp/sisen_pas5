@@ -1,0 +1,160 @@
+<section>
+    <div class="allTitles" fxLayout="row">
+        <span class="brownCircle"></span>
+        <span class="greyLine"></span> Casilla electrónica
+    </div>
+    <div class="generalBox">
+        <mat-progress-bar *ngIf="load" mode="indeterminate"></mat-progress-bar>
+
+        <div class="controlBox inputColor">
+            <div class="centerTitle">CANDIDATO A ELECCIÓN POPULAR</div>
+            <form>
+
+
+                <div class="formNotif" fxLayout="row wrap">
+                    <!-- SECCION CANDIDATO-->
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Tipo de documento</div>
+                        <mat-form-field appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.doc_type | uppercase}}" readonly class="form-control" matInput name="tipoDocumento" />
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Número de documento</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.doc}}" readonly class="form-control" matInput name="numeroDocumento" />
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="100" class="padd_4" *ngIf="buildHide('fm_razon_social')">
+                        <div class="labelsColor">Organización</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.organization_name}}" readonly class="form-control" matInput name="organizacion" />
+                        </mat-form-field>
+                    </div>
+                    <!-- -->
+                    <div *ngIf="buildHide('fm_razon_social')" fxFlex="100" class="centerTitle">
+                        DATOS DEL REPRESENTANTE
+                    </div>
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="buildHide('fm_optiontipo_rep')">
+                        <div class="labelsColor">Tipo de documento</div>
+                        <mat-form-field appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.doc_type | uppercase}}" readonly class="form-control" matInput name="tipoDocumentoRep" />
+
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="buildHide('fm_numerodoc_rep')">
+                        <div class="labelsColor">Número de Documento</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.doc}}" readonly class="form-control" matInput name="numeroDocRep" />
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Nombres</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.name}}" readonly class="form-control" matInput name="nombres" />
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Apellido Paterno</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.lastname}}" readonly class="form-control" matInput name="apellidoPaterno" />
+
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Apellido Materno</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.second_lastname}}" readonly class="form-control" matInput name="apellidoMaterno" />
+
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Correo electrónico</div>
+                        <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.email}}" readonly class="form-control" matInput name="email" />
+
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Departamento / Provincia / Distrito</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.ubigeo}}" readonly class="form-control" matInput name="ubigeo" />
+
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Dirección domiciliaria</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.address}}" readonly class="form-control" matInput name="direccion" />
+
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100">
+                        <div class="labelsColor">
+                            Número de celular obligatorio y/o fijo opcional
+                        </div>
+                        <div fxLayout="row">
+                            <div fxFlex="50" class="padd_4">
+                                <mat-form-field class="" appearance="outline" style="width: 100%">
+                                    <input type="text" value="{{usuario.cellphone}}" readonly class="form-control" matInput name="celular" />
+
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="50" class="padd_4">
+                                <mat-form-field class="" appearance="outline" style="width: 100%">
+                                    <input type="text" value="{{usuario.phone}}" readonly class="form-control" matInput name="telefono" />
+
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="buildHide('fm_organizacion')">
+                        <div class="labelsColor">Organización</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.organization_name}}" readonly class="form-control" matInput name="organizacion" />
+
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Número de expediente</div>
+                        <mat-form-field class="" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.nroExpediente}}" readonly class="form-control" matInput name="nroExpediente" />
+
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Fecha de presentación</div>
+                        <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.dateFiling}}" readonly class="form-control" matInput name="dateFiling" />
+
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                        <div class="labelsColor">Tipo de registro de acreditación</div>
+                        <mat-form-field appearance="outline" style="width: 100%">
+                            <input type="text" value="{{usuario.accreditation_name}}" readonly class="form-control" matInput name="acreditacion" />
+
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex="100" class="padd_4">
+                        <div *ngFor="let item of usuario.attachments" (click)="download(item.path,item.name)"> {{item.name}}</div>
+                    </div>
+                    <div fxFlex="100" class="newNotif" fxLayout="row" fxLayoutAlign="center center">
+                        <button class="btnBrown" mat-button (click)="cancelar()">
+                            CANCELAR
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <br />
+        </div>
+    </div>
+</section>

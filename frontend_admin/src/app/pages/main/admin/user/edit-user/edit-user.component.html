@@ -1,0 +1,324 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    {{ existUser ? "Editar Usuario" : "Crear Usuario" }}
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <div class="centerTitle">
+        {{ existUser ? "MODIFICAR USUARIO" : "CREAR USUARIO" }}
+      </div>
+      <form
+        #myform="ngForm"
+        [formGroup]="form"
+        (ngSubmit)="composer(actionType.SUBMIT)"
+        (keydown.enter)="$event.preventDefault()"
+      >
+        <div class="formNotif" fxLayout="row wrap">
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de documento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="tipoDocumento"
+                formControlName="tipoDocumento"
+                [disabled]="existUser"
+                (selectionChange)="eChangeDocumento($event)"
+              >
+                <mat-option *ngFor="let doc of documentos" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls.tipoDocumento.invalid">{{
+                eShowError("tipoDocumento", form.controls.tipoDocumento.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">{{ eChangeLabel("documento") }}</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="tel"
+                class="form-control"
+                formControlName="documento"
+                [maxlength]="prompt.max"
+                [minlength]="prompt.min"
+                matInput
+                [placeholder]="eChangeHolder('documento')"
+                (keypress)="validar_campo($event, 'documento')"
+                [readonly]="existUser || form.controls.tipoDocumento.value == ''"
+                (keyup.enter)="buscarCE()"
+              />
+              <!-- (keydown)="eChangekeydown($event, 'documento')" -->
+              <mat-icon
+                *ngIf="isCE"
+                style="cursor: pointer"
+                (click)="buscarCE()"
+                matSuffix
+                >search</mat-icon>
+              <mat-error *ngIf="form.controls.documento.invalid">{{
+                eShowError("documento", form.controls.documento.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">{{lblNombre}}</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="nombres"
+                type="text"
+                class="input_text"
+                formControlName="nombres"
+                matInput
+                [maxlength]="100"
+                placeholder="Nombres"
+                [readonly]="existData"
+                (keypress)="soloExpLetras('nombres', nombres, $event)"
+              />
+              <mat-error *ngIf="nombres.invalid && (nombres.dirty || nombres.touched)">{{
+                eShowError("nombres", nombres.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">{{lblApPat}}</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="appaterno"
+                type="text"
+                class="input_text"
+                formControlName="apPaterno"
+                matInput
+                [maxlength]="100"
+                placeholder="Apellido Paterno"
+                [readonly]="existData"
+                (keypress)="soloExpLetras('appaterno', apPaterno, $event)"
+              />
+              <mat-error *ngIf="apPaterno.invalid && (apPaterno.dirty || apPaterno.touched)">{{
+                eShowError("apPaterno", apPaterno.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">{{lblApMat}}</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="apmaterno"
+                type="text"
+                class="input_text"
+                formControlName="apMaterno"
+                matInput
+                [maxlength]="100"
+                placeholder="Apellido Materno"
+                [readonly]="existData"
+                (keypress)="soloExpLetras('apmaterno', apMaterno, $event)"
+              />
+              <mat-error *ngIf="apMaterno.invalid && (apMaterno.dirty || apMaterno.touched)">{{
+                eShowError("apPaterno", apMaterno.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Perfil*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="perfil"
+                formControlName="perfil"
+              >
+                <mat-option *ngFor="let item of perfiles" [value]="item.id">
+                  {{ item.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls.perfil.invalid">{{
+                eShowError("perfil", form.controls.perfil.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Correo electrónico*</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                id="correo"
+                type="text"
+                class="form-control"
+                formControlName="correo"
+                name="email"
+                matInput
+                [maxlength]="100"
+                placeholder="Ingrese correo electrónico"
+                (keypress)="quitarDobleEspacio('correo', correo, $event)"
+              />
+              <mat-error *ngIf="form.controls.correo.invalid">{{
+                eShowError("correo", form.controls.correo.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100">
+            <div class="labelsColor">
+              Teléfono celular* y/o fijo opcional
+            </div>
+            <div fxLayout="row">
+              <div fxFlex="50" class="padd_4">
+                <mat-form-field
+                  class=""
+                  appearance="outline"
+                  style="width: 100%"
+                >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="celular"
+                    [maxlength]="14"
+                    [minlength]="9"
+                    matInput
+                    placeholder="Ingrese número de celular"
+                    name="cellphone"
+                    (keypress)="validar_campo($event, 'celular')"
+                  />
+                  <mat-error *ngIf="form.controls.celular.invalid">{{
+                    eShowError("celular", form.controls.celular.errors)
+                  }}</mat-error>
+                </mat-form-field>
+              </div>
+              <div fxFlex="50" class="padd_4">
+                <mat-form-field
+                  class=""
+                  appearance="outline"
+                  style="width: 100%"
+                >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="telefono"
+                    [maxlength]="10"
+                    matInput
+                    placeholder="Número de teléfono"
+                    (keypress)="validar_campo($event, 'telefono')"
+                  />
+                  <mat-error *ngIf="form.controls.telefono.invalid">{{
+                    eShowError("telefono", form.controls.telefono.errors)
+                  }}</mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de registro de acreditación*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                [disableOptionCentering]="true"
+                name="typeDoc"
+                formControlName="jobArea"
+              >
+                <mat-option
+                  *ngFor="let acc of listJobArea"
+                  [value]="acc.code"
+                >
+                  {{ acc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls.jobArea.invalid">{{
+                eShowError("jobArea", form.controls.jobArea.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div
+            fxFlex="100"
+            fxFlex.md="100"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+          <span class="labelsColor">*Campos requeridos</span>
+          </div>
+          <mat-progress-bar
+            *ngIf="load"
+            mode="indeterminate"
+          ></mat-progress-bar>
+          <div
+            fxFlex="100"
+            class="newNotif"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+          >
+            <button [disabled]="load || !(form.valid && form.dirty)" type="submit" class="btnBlue" mat-button>
+              ACEPTAR
+            </button>
+            <button
+              class="btnBrown"
+              mat-button
+              [disabled]="load"
+              (click)="composer(actionType.CLOSE)"
+            >
+              CANCELAR
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

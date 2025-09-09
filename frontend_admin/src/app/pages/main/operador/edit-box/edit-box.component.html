@@ -1,0 +1,450 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Editar casilla electrónica
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <div class="centerTitle">MODIFICAR DE CASILLA ELECTRONICA</div>
+      <form
+        #myform="ngForm"
+        [formGroup]="form"
+        (ngSubmit)="composer(actionType.SUBMIT)"
+      >
+        <div class="formNotif" fxLayout="row wrap">
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de documento</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="tipoDocumento"
+                formControlName="tipoDocumento"
+                (selectionChange)="eChangeDocumento($event)"
+              >
+                <mat-option *ngFor="let doc of documentos" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls.tipoDocumento.invalid">{{
+                eShowError("tipoDocumento")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">{{ eChangeLabel("documento") }}</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="tel"
+                class="form-control"
+                formControlName="documento"
+                [maxlength]="prompt.max"
+                [minlength]="prompt.min"
+                matInput
+                [placeholder]="eChangeHolder('documento')"
+                (keyup.enter)="eSearch('general')"
+                (keydown)="eChangekeydown($event, 'documento')"
+                name="doc"
+              />
+              <mat-icon
+                style="cursor: pointer"
+                (click)="eSearch('general')"
+                matSuffix
+                >search</mat-icon
+              >
+              <mat-error *ngIf="form.controls.documento.invalid">{{
+                eShowError("documento")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" class="padd_4" *ngIf="eHide('razonSocial')">
+            <div class="labelsColor">Organización</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                class="form-control"
+                formControlName="razonSocial"
+                matInput
+                placeholder="Ingrese el nombre de la Organización"
+                [readonly]="existData"
+              />
+            </mat-form-field>
+          </div>
+          <div *ngIf="eHide('razonSocial')" fxFlex="100" class="centerTitle">
+            DATOS DEL REPRESENTANTE
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="eHide('tipoDocumentoRep')"
+          >
+            <div class="labelsColor">Tipo de documento</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                name="typeDoc"
+                formControlName="tipoDocumentoRep"
+                (selectionChange)="eChangeDocumentoRep($event)"
+              >
+                <mat-option *ngFor="let doc of documentosRep" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls.tipoDocumentoRep.invalid">{{
+                eShowError("tipoDocumentoRep")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="eHide('documentoRep')"
+          >
+            <div class="labelsColor">Número de Documento</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="tel"
+                class="form-control"
+                formControlName="documentoRep"
+                [maxlength]="promptRep.max"
+                [minlength]="promptRep.min"
+                matInput
+                placeholder="Ingrese el número de Documento"
+                (keyup.enter)="eSearch('representante')"
+                (keydown)="eChangekeydown($event, 'documentoRep')"
+                name="doc"
+                ngxTrim
+              />
+              <mat-error *ngIf="form.controls.documentoRep.invalid">{{
+                eShowError("documentoRep")
+              }}</mat-error>
+              <mat-icon
+                style="cursor: pointer"
+                (click)="eSearch('representante')"
+                matSuffix
+                >search</mat-icon
+              >
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Nombres</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="nombres"
+                matInput
+                placeholder="Nombres"
+                [readonly]="existData"
+                ngxTrim
+              />
+              <mat-error *ngIf="form.controls.nombres.invalid">{{
+                eShowError("nombres")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido Paterno</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="apPaterno"
+                matInput
+                placeholder="Apellido Paterno"
+                [readonly]="existData"
+                ngxTrim
+              />
+              <mat-error *ngIf="form.controls.apPaterno.invalid">{{
+                eShowError("apPaterno")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Apellido Materno</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="apMaterno"
+                matInput
+                placeholder="Apellido Materno"
+                [readonly]="existData"
+                ngxTrim
+              />
+              <mat-error *ngIf="form.controls.apMaterno.invalid">{{
+                eShowError("apPaterno")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Correo electrónico</div>
+            <mat-form-field
+              class=""
+              disabled="true"
+              appearance="outline"
+              style="width: 100%"
+            >
+              <input
+                type="email"
+                class="form-control"
+                formControlName="correo"
+                name="email"
+                matInput
+                placeholder="Ingrese correo electrónico"
+                ngxTrim
+              />
+              <mat-error *ngIf="form.controls.correo.invalid">{{
+                eShowError("correo")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100">
+            <div class="labelsColor">
+              Teléfono celular obligatorio y/o fijo opcional
+            </div>
+            <div fxLayout="row">
+              <div fxFlex="50" class="padd_4">
+                <mat-form-field
+                  class=""
+                  appearance="outline"
+                  style="width: 100%"
+                >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="celular"
+                    [maxlength]="14"
+                    [minlength]="9"
+                    matInput
+                    placeholder="Ingrese número de celular"
+                    name="cellphone"
+                    ngxTrim
+                  />
+                  <mat-error *ngIf="form.controls.celular.invalid">{{
+                    eShowError("celular")
+                  }}</mat-error>
+                </mat-form-field>
+              </div>
+              <div fxFlex="50" class="padd_4">
+                <mat-form-field
+                  class=""
+                  appearance="outline"
+                  style="width: 100%"
+                >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="telefono"
+                    [maxlength]="10"
+                    matInput
+                    placeholder="Número de teléfono"
+                    ngxTrim
+                  />
+                  <mat-error *ngIf="form.controls.telefono.invalid">{{
+                    eShowError("telefono")
+                  }}</mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Dirección domiciliaria</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="direccion"
+                [minlength]="9"
+                [maxlength]="100"
+                matInput
+                ngxTrim
+                placeholder="Ingrese dirección"
+                name="address"
+              />
+              <mat-error *ngIf="form.controls.direccion.invalid">{{
+                eShowError("direccion")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+            *ngIf="eHide('organizacion')"
+          >
+            <div class="labelsColor">Organización</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="organizacion"
+                matInput
+                placeholder="Organización"
+                [maxlength]="100"
+                ngxTrim
+              />
+              <mat-error *ngIf="form.controls.organizacion.invalid">{{
+                eShowError("organizacion")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div
+            fxFlex="50"
+            fxFlex.md="50"
+            fxFlex.sm="100"
+            fxFlex.xs="100"
+            class="padd_4"
+          >
+            <div class="labelsColor">Tipo de registro de acreditación</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select
+                placeholder="Seleccione"
+                [disableOptionCentering]="true"
+                name="typeDoc"
+                formControlName="acreditacion"
+              >
+                <mat-option
+                  *ngFor="let acc of listTypeAcreditation"
+                  [value]="acc.code"
+                >
+                  {{ acc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls.acreditacion.invalid">{{
+                eShowError("acreditacion")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxFlex="100" class="padd_4">
+            <div class="labelsColor">
+              Adjuntar 5 archivos PDF como máximo (peso máximo de 10 MB por cada
+              archivo)<br />
+              El nombre del archivo no debe superar los 100 caracteres
+            </div>
+            <!-- <p>{{ Formulario.get("files").errors | json }}</p> -->
+            <file-upload
+              [(ngModel)]="uploadedFiles"
+              formControlName="files"
+              [multiple]="true"
+              [animation]="true"
+              accept=".pdf"
+              [ngStyle]="{
+                'outline-color': filesControl.valid == false ? 'red' : ''
+              }"
+              [ngStyle]="{
+                'background-color': filesControl.valid == false ? '#fdf4f4' : ''
+              }"
+            >
+              <ng-template
+                let-isFileDragDropAvailable="isFileDragDropAvailable"
+                #placeholder
+              >
+                <file-upload-drop-zone>
+                  <ng-container
+                    *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable"
+                  >
+                    Agregar archivos, o dar clic aquí.
+                  </ng-container>
+                  <ng-template #isNotDragDropAvailable> </ng-template>
+                </file-upload-drop-zone>
+              </ng-template>
+
+              <ng-template
+                let-i="index"
+                let-file="file"
+                let-control="control"
+                #item
+              >
+                <file-upload-list-item
+                  [index]="i"
+                  class="item-test"
+                  [file]="file"
+                  [control]="control"
+                  >Remover</file-upload-list-item
+                >
+              </ng-template>
+            </file-upload>
+          </div>
+
+          <div
+            fxFlex="100"
+            class="newNotif"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+          >
+            <button type="submit" class="btnBlue" mat-button>ACEPTAR</button>
+            <button
+              class="btnBrown"
+              mat-button
+              (click)="composer(actionType.CLOSE)"
+            >
+              CANCELAR
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,187 @@
+<section>
+    <div class="allTitles" fxLayout="row">
+        <span class="brownCircle"></span>
+        <span class="greyLine"></span> {{esVentanadeCasillas?'Casillas Electrónicas':'Usuarios'}}
+    </div>
+    <div class="generalBox">
+        <div class="controlBox inputColor">
+            <form class="example-form" fxLayout="row wrap">
+                <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+                    <div class="labelsColor">Buscar</div>
+                    <mat-form-field class="" appearance="outline" style="width: 100%">
+                        <input type="tel" matInput placeholder="Ingrese datos de búsqueda" [maxlength]="100" name="txtSearch"  [(ngModel)]="textSearch" />
+                        <!-- <button mat-icon-button matSuffix (click)="searchByQuery()">
+                        <mat-icon>search</mat-icon>
+                        </button> -->
+                    </mat-form-field>
+                </div>
+                <div *ngIf="esVentanadeCasillas" class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+                    <div class="labelsColor">Estado</div>
+                    <mat-form-field appearance="outline" style="width: 100%">
+                        <mat-select [(ngModel)]="txtestado" name="txtestado">
+                            <mat-option *ngFor="let est of listEstados" [value]="est.value">{{est.name}}</mat-option>
+                          <!-- <mat-option value="">- TODOS -</mat-option>
+                          <mat-option value="APROBADO">APROBADO</mat-option>
+                          <mat-option value="DESAPROBADO">DESAPROBADO</mat-option>
+                          <mat-option value="REGISTRO INTERNO">REGISTRO INTERNO</mat-option>
+                          <mat-option value="PENDIENTE">PENDIENTE</mat-option> -->
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+              <div *ngIf="!esVentanadeCasillas" class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+                <div class="labelsColor">Estado</div>
+                <mat-form-field appearance="outline" style="width: 100%">
+                  <mat-select [(ngModel)]="txtestadoUser" name="txtestado">
+                    <mat-option *ngFor="let est of listEstadosUser" [value]="est.value">{{est.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div *ngIf="!esVentanadeCasillas" class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+                <div class="labelsColor">Perfil</div>
+                <mat-form-field appearance="outline" style="width: 100%">
+                  <mat-select [(ngModel)]="txtprofile" name="txtprofile">
+                    <mat-option *ngFor="let item of lstProfile" [value]="item.profile">{{item.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+                <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100" >
+                    <div class="labelsColor">Fecha inicio</div>
+                    <mat-form-field appearance="outline" style="width: 100%">
+                        <input type="date" matInput placeholder="dd/MM/YYYY"  name="txtfechaini" onkeydown="return false"
+                               [(ngModel)]="txtfechaini" [min]="dateMin" [max]="txtfechafin || dateMax "/>
+                      </mat-form-field>
+                </div>
+                <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100" >
+                    <div class="labelsColor">Fecha fin</div>
+                    <mat-form-field appearance="outline" style="width: 100%">
+                        <input type="date" matInput placeholder="dd/MM/YYYY" name="txtfechafin" onkeydown="return false"
+                               [(ngModel)]="txtfechafin" [max]="dateMax" [min]="txtfechaini" />
+                      </mat-form-field>
+                </div>
+                <div class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100"  fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10">
+                    <div class="labelsColor">Orden</div>
+                    <mat-form-field appearance="outline" style="width: 100%">
+                        <mat-select [(ngModel)]="ordenFec" name="ordenFec">
+                            <mat-option value="asc">Ascendente</mat-option>
+                            <mat-option value="desc">Descendente</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                </div>
+                <div class="marg_r10" fxFlex fxFlex.sm="40" fxFlex.xs="40" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10">
+                    <div class="labelsColor hidden_">.</div>
+                    <button
+                    style="width: 100%; line-height: 30px; margin-top: 4px;"
+                    type="submit"
+                    class="btnBlue"
+                    mat-button
+                    (click)="searchByQuery()"
+                  >
+                    Buscar
+                  </button>
+<!--                </div>-->
+<!--                <div class="marg_r10" fxFlex fxFlex.sm="40" fxFlex.xs="40" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10">-->
+<!--                    <div class="labelsColor hidden_">.</div>-->
+                    <button
+                    style="width: 100%; line-height: 30px; margin-top: 4px;"
+                    type="submit"
+
+                    mat-raised-button
+                    (click)="cleanSearch()"
+                  >
+                    Limpiar
+                  </button>
+                </div>
+
+                <button mat-fab color="primary" *ngIf="esAdministrador" (click)="newUser()" aria-label="Agregar usuario">
+          <!-- <mat-icon>add</mat-icon> -->
+          <span class="btn_add">+</span>
+        </button>
+
+            </form>
+        </div>
+        <div class="listBoxGeneral" *ngIf="userData.Items && userData.Items.length > 0; else noDatauserData" >
+            <mat-selection-list [multiple]="!this.esVentanadeCasillas" (selectionChange)="addDisableUsers($event)">
+                <mat-list-item *ngFor="let user of userData.Items">
+<!--                                 [value]="user"-->
+<!--                                 [class.disabled-option]="user.status === 'DESHABILITADO'"-->
+<!--                                 [disabled]="user.status === 'DESHABILITADO'">-->
+                    <div fxLayout="row" fxFlex>
+                        <div class="listPhotoBox" fxLayout="column" fxLayoutAlign="center center">
+                            <div *ngIf="esVentanadeCasillas" [ngClass]="getColor(user.name||user.organization)" fxLayout="row" fxLayoutAlign="center center">
+                                {{ user.name | slice: 0:1 }}
+                                {{ user.organization | slice: 0:1 }}
+                            </div>
+                          <div *ngIf="!esVentanadeCasillas" [ngClass]="getColor(user.name)" fxLayout="row" fxLayoutAlign="center center">
+                            {{ user.name | slice: 0:1 }}
+                          </div>
+                        </div>
+                        <div class="listSubject" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                            <div>
+                              <p [ngClass]="esVentanadeCasillas ? 'lNombre' : 'lNombre2'" title="{{ user.name}}">
+                                {{ (user.name + ' ' + (user?.lastname || '')) | slice:0:60 }}
+                                {{ (user.name + ' ' + user?.lastname)?.length > 60 ? '...' : '' }}
+                              </p>
+                              <p *ngIf="esVentanadeCasillas" class="lNombre" title="{{ user.organization}}">
+                                {{ user.organization | slice:0:60 }}
+                                {{ user.organization?.length > 60 ? '...' : '' }}
+                              </p>
+                              <p *ngIf="!esVentanadeCasillas && user.profile" class="lPerfil">
+                                {{ 'Perfil: ' + user.profile}}
+                              </p>
+                              <p *ngIf="!esVentanadeCasillas && !user.profile && user.profiles" class="lPerfil">
+                                {{ 'Perfil: ' + user.profiles }}
+                              </p>
+                                <!-- <p class="lDocument" (click)="handleVerCasilla(user);">{{ user.doc_type }}: {{ user.doc }}</p> -->
+                              <p *ngIf="esVentanadeCasillas" class="lDocument">{{ user.doc_type }}: {{ user.doc }}</p>
+                              <p *ngIf="!esVentanadeCasillas" class="lDocument">{{ user.doc_type }}: {{ user.doc }} | {{ 'USUARIO: ' }} {{ user?.LDAP }}</p>
+                                <p class="lOrganizacion" *ngIf="esAdministrador">
+                                    Creado por: {{user.createUser}}
+                                </p>
+                            </div>
+                            <div style="display: flex;align-items: center;">
+                                <div>
+                                    <p class="lOrganizacion" *ngIf="esAdministrador || esRegistrador || esConsultor" fxHide.md fxHide.xs fxHide.sm>
+                                        {{user.estate_inbox || user.status}}
+                                    </p>
+                                </div>
+                                <div style="margin-left: 40px;">
+                                    <p class="lOrganizacion" *ngIf="esAdministrador || esRegistrador || esConsultor" fxHide.md fxHide.xs fxHide.sm>
+                                        {{ user.evaluatedAt || user.createdAt | date :'dd/MM/yyyy hh:mm:ss a' }}
+                                    </p>
+                                </div>
+                                <div style="margin-left: 20px; ">
+                                    <!-- <Button mat-stroked-button class="aprobacionBoton" *ngIf="(esAdministrador || esRegistrador) && user.estate_inbox === 'PENDIENTE' && !user.enAtencion" (click)="redirectDetail(user)">Validar</Button> -->
+                                  <button mat-stroked-button *ngIf="user.pending_migration"  matTooltip="Casilla pendiente de migración" class="red-button"><span class="material-icons" style="color: white;">warning</span></button>
+                                  <button mat-stroked-button class="aprobacionBoton" *ngIf="(esAdministrador || esRegistrador) && (user.estate_inbox === 'APROBADO' || user.estate_inbox === 'DESAPROBADO' || user.estate_inbox === 'DESHABILITADO' )" (click)="redirectDetailRegCasilla(user)" >Ver Detalle</button>
+                                  <button mat-stroked-button class="aprobacionBoton" *ngIf="(esAdministrador || esRegistrador) && (user.estate_inbox === 'Registro interno' || user.estate_inbox === 'DESHABILITADO ')" (click)="handleVerCasilla(user);">Ver Detalle</button>
+                                  <!-- <Button mat-stroked-button class="aprobacionBoton" *ngIf="user.enAtencion && user.estate_inbox === 'PENDIENTE'">En Atención</Button> -->
+                                  <button mat-stroked-button class="aprobacionBoton" *ngIf="(esAdministrador || esRegistrador) && user.estate_inbox === 'PENDIENTE'" (click)="redirectDetail(user)">{{ user.enAtencion == true ? 'En Atención' : 'Validar' }}</button>
+                                  <button mat-stroked-button *ngIf="esAdministrador && (user.estate_inbox === 'APROBADO' || user.estate_inbox === 'Registro interno')" (click)="editCasilla(user)"><span class="material-icons" style="color: green;">edit</span></button>
+                                  <!-- <button mat-stroked-button *ngIf="esAdministrador" (click)="deleteUser(user)"><span class="material-icons" style="color: red;">delete</span></button> -->
+                                  <button mat-stroked-button class="habilitacionBoton" fxHide.md fxHide.sm fxHide.xs *ngIf="esAdministrador && !esVentanadeCasillas && user.status === 'DESHABILITADO'" (click)="enableUser(user)"><span class="material-icons" style="color: green;">check_circle</span>Habilitar</button>
+                                  <button mat-stroked-button fxHide fxShow.md fxShow.sm fxShow.xs *ngIf="esAdministrador && !esVentanadeCasillas && user.status === 'DESHABILITADO'" (click)="enableUser(user)"><span class="material-icons" style="color: green;">check_circle</span></button>
+                                  <button mat-stroked-button class="habilitacionBoton" fxHide.md fxHide.sm fxHide.xs *ngIf="esAdministrador && !esVentanadeCasillas && user.status === 'HABILITADO'" (click)="disableUser(user)"><span class="material-icons" style="color: red;">highlight_off</span>Deshabilitar</button>
+                                  <button mat-stroked-button fxHide fxShow.md fxShow.sm fxShow.xs *ngIf="esAdministrador && !esVentanadeCasillas && user.status === 'HABILITADO'" (click)="disableUser(user)"><span class="material-icons" style="color: red;">highlight_off</span></button>
+                                  <button mat-stroked-button *ngIf="esAdministrador && !esVentanadeCasillas && user.status !== 'DESHABILITADO'" (click)="editUser(user)"><span class="material-icons" style="color: midnightblue;">edit</span></button>
+                                  <button mat-stroked-button disabled *ngIf="esAdministrador && !esVentanadeCasillas && user.status === 'DESHABILITADO'"><span class="material-icons" style="color: grey;">edit</span></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </mat-list-item>
+            </mat-selection-list>
+            <mat-paginator style="margin-right: 30px;" [length]="userData.recordsTotal" [pageIndex]="userData.page-1" [pageSize]="userData.count" [pageSizeOptions]="[5, 10, 25, 100]" (page)="pageEvent = $event;pageChangeEvent($event)">
+            </mat-paginator>
+        </div>
+      <ng-template #noDatauserData>
+        <div class="labelsColor" style="text-align: center; font-size: 15px;">
+          <br>
+          <strong>No se encontraron registros.</strong>
+        </div>
+      </ng-template>
+        <div fxLayout="row" *ngIf="!listReadyCheck" fxLayoutAlign="center center">
+            <div class="icon-loading"></div>
+        </div>
+    </div>
+</section>

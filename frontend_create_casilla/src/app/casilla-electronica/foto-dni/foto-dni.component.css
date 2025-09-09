@@ -1,0 +1,25 @@
+li{
+    margin-bottom: 20px;
+}
+.layoutDivDni{
+    padding: 50px;
+}
+.imgDni{
+    margin: 0 auto;
+}
+
+
+.class-invalid{
+    outline-color : red;
+    background-color : #fdf4f4;
+}
+
+.text-file-valid {
+    font-size: 12px;
+    text-align: start;
+     color: red;
+}
+
+.camposObligatorios{
+    color: rgb(232, 0, 0);
+}

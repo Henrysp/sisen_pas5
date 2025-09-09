@@ -1,0 +1,45 @@
+<mat-toolbar class="header baseToolbar">
+  <div fxFlex fxLayoutAlign="start center" class="cardHeader">
+    <img
+      src="../../../assets/img/PantallasCS3_Logo.png"
+      alt=""
+      class="imgLogoOnpe"
+    />
+  </div>
+  <div
+    fxFlex="33"
+    fxFlex.xs="50"
+    fxLayout="row"
+    class="cardHeader"
+    fxLayoutAlign="end center"
+  >
+    <div
+      class="userInfo"
+      fxLayout="row"
+      fxLayoutAlign="end center"
+      fxHide
+      fxShow.sm
+      fxShow.xs
+    >
+      <span class="material-icons" matTooltip="{{ userName }}"
+        >account_box</span
+      >
+      <div fxFlex class="nameFlex" fxHide.xs>
+        <div>{{ userName }}</div>
+      </div>
+    </div>
+    <button
+      mat-icon-button
+      aria-label="Cerrar Sesión"
+      (click)="cerrarSession()"
+      fxHide
+      fxShow.sm
+      fxShow.xs
+    >
+      <mat-icon>logout</mat-icon>
+    </button>
+    <button mat-button (click)="cerrarSession()" fxHide.sm fxHide.xs>
+      CERRAR SESIÓN
+    </button>
+  </div>
+</mat-toolbar>

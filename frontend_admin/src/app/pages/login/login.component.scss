@@ -1,0 +1,243 @@
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner:before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  border-top-color: #000000;
+  animation: spinner 0.8s linear infinite;
+}
+
+body {
+  background-image: url(../../../assets/img/PantallasCS3_BG.jpg) no-repeat;
+  background-size: contain;
+}
+.center {
+  width: 310px;
+  margin: 10px auto;
+}
+
+.main-div {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.centerContent {
+  justify-content: center;
+}
+.leftContent {
+  position: relative;
+  justify-content: left;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.tituloInicio {
+  font-size: 15px;
+  position: relative;
+  left: 0px;
+  top: 4px;
+  display: block;
+  font-weight: 500;
+}
+.mensajeP {
+  display: block;
+  font-size: 11px;
+}
+.btnCancelar {
+  color: #b2b2b2;
+  width: 45%;
+  border: 1px solid #b2b2b2;
+}
+.btnIngresar {
+  color: white;
+  background: #ff1e26;
+  position: absolute;
+  width: 50%;
+
+  right: 0px;
+}
+.labelLogin {
+  font-weight: 500;
+}
+
+.mensajeLogin {
+  color: red;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  position: relative;
+  top: -20px;
+}
+.mensajeOlvidar {
+  color: red;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  position: relative;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.mensajeOlvidar:hover {
+  font-weight: 500;
+}
+
+/********************************
+LoginCard (Ini)
+********************************/
+.leftContent::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 40px;
+  background: #ff1e26;
+  left: -16px;
+  top: 0px;
+}
+/*
+input:-webkit-autofill {
+  color: #2a2a2a !important;
+  background: #ff1e26 !important;
+}
+input:-internal-autofill-selected {
+  appearance: menulist-button;
+  background-color: rgb(255, 0, 0) !important;
+  background-image: none !important;
+  color: -internal-light-dark(black, white) !important;
+}
+*/
+
+/***** LoginCard (Fin) *****/
+/***** Login Card (Ini) *****/
+.casper {
+  background: none !important;
+  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); */
+  box-shadow: none;
+}
+.logoOnpe {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.logoSistema {
+  color: #175ba5;
+  font-family: "Roboto";
+  text-align: center;
+}
+.logoSistema h1 {
+  font-size: 70px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.logoSistema p {
+  font-size: 12px;
+  margin: 0;
+}
+.logoSistema img {
+  width: auto;
+  height: 71px;
+}
+/*
+.casper>*>.mat-form-field-infix{
+  border-top: 2px solid transparent !important;
+  background: #FFFFFF !important;
+}
+*/
+/*
+.mat-form-field-infix{
+  background: #f50b0b !important;
+}
+.inputColor .mat-form-field-infix{
+  background: #f50b0b !important;
+}
+.mat-form-field-infix{
+  background: #f50b0b !important;
+  height: 60px;
+}
+*/
+/***** Login Card (Fin) *****/
+.dirFooter {
+  /*
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  color: #b2b2b2;
+  padding-bottom: 10px;
+  */
+  display: none;
+  margin-top: 60px;
+  text-align: center;
+  color: #b2b2b2;
+  padding-bottom: 10px;
+}
+@media (max-width: 600px) {
+  .logoOnpe {
+    margin-bottom: 0px;
+    height: 80px;
+  }
+  .logoOnpe img {
+    height: 80px;
+    width: auto;
+  }
+  .logoSistema h1 {
+    font-size: 50px;
+  }
+  .centerTitle {
+    font-size: 20px;
+    margin: 15px 0 25px 0;
+  }
+}
+
+#chrome{
+	//background-color:#3b5998;
+	float:left;
+}
+
+#firefox{
+	//background-color:#55acee;
+	float:left;
+}
+
+#google{
+	//background-color:#dd4b39;
+	float:left;
+}
+
+#email{
+	//background-color:#8E8E8E;
+	float:left;
+}
+
+#comment{
+	//background-color:#CBCA54;
+	float:left;
+}
+.compartir{
+  border-radius: 50%;
+margin-left:3px;
+text-align: center;
+}
+.float-image {
+  vertical-align: middle;
+  margin-right: 5px;
+}

@@ -1,0 +1,230 @@
+
+.color{
+  height: 20px;
+  width: 20px;
+  border-radius: 60px;
+  margin: 2px auto;
+}
+.verde{
+  background: #23df05;
+}
+.amarillo{
+  background: #FEF445;
+}
+.rojo{
+  background: #FF4949;
+}
+table{
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+.table td, .table th{
+  padding: 7px 32px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  text-align: center;
+}
+.mat-form-field {
+  line-height: 1.7;
+}
+
+.brownCircle {
+  width: 8px;
+  height: 8px;
+  background: #bd6c15;
+  display: block;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  margin: 6px 10px 10px 26px;
+}
+.greyLine {
+  width: 60px;
+  height: 1px;
+  background: #d1d1d1;
+  margin: 9px 10px 0 0;
+}
+.allTitles {
+  color: #bd6c15;
+  font-size: 30px;
+  font-weight: normal;
+  margin-top: 40px;
+}
+.generalBox {
+  border-left: #d1d1d1 solid 1px;
+  margin: 8px 30px 0 30px;
+  padding: 15px 15px 0 15px;
+}
+/**** List ****/
+.listBoxGeneral .mat-list-base .mat-list-item,
+.listBoxGeneral .mat-list-base .mat-list-option {
+  border-top: #efede8 solid 1px;
+  border-bottom: #efede8 solid 1px;
+  /* height: 80px; */
+  height: 92px;
+}
+.listBoxGeneral .mat-list-base .mat-list-item .mat-list-item-content-reverse,
+.listBoxGeneral .mat-list-base .mat-list-option .mat-list-item-content-reverse {
+  /* height: 80px; */
+  height: 92px;
+  /* padding: 10px 0; */
+}
+.listPhotoBox {
+  width: 40px;
+}
+.listSubject > div {
+  padding: 10px 0 10px 10px;
+}
+.listCtrls {
+  /*width: 200px;*/
+  padding: 10px 0;
+}
+.listCircle {
+  width: 32px;
+  height: 32px;
+  background: grey;
+  text-align: center;
+  color: #ffffff;
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  border-radius: 16px;
+}
+/**** Random Colors (Ini) ****/
+.rdmColor_1 {
+  background: #00c2ff; /* A - B - C */
+}
+.rdmColor_2 {
+  background: #9fce20; /* D - E - F */
+}
+.rdmColor_3 {
+  background: #da4997; /* G - H - I */
+}
+.rdmColor_4 {
+  background: #ff9900; /* J - K - L */
+}
+.rdmColor_5 {
+  background: #a120ce; /* M - N - Ñ */
+}
+.rdmColor_6 {
+  background: #f3ef0a; /* O - P - Q */
+}
+.rdmColor_7 {
+  background: #4d49be; /* R - T - U */
+}
+.rdmColor_8 {
+  background: #3e6991; /* V - W - X */
+}
+.rdmColor_9 {
+  background: #af9335; /* Y - Z */
+}
+/**** Random Colors (Fin) ****/
+.lSubject {
+  color: #1d3572;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  margin: 0;
+}
+.lGerencia {
+  color: #1d3572;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 19px;
+  margin: 0;
+}
+.lNombre {
+  color: #00c2ff; //#1e43aa;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 19px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.listBtnBox {
+  padding: 0 8px;
+  text-align: center;
+  color: #1d3572;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 19px;
+  width: 100px;
+}
+
+.listBtnBox>.cbox{
+  height: 100%;
+  display: table;
+  margin: 0 auto;
+}
+
+.listBtnBox>.cbox>a{
+  display: table-cell;
+  height: 100%;
+  width: 100%;
+  vertical-align: middle;
+}
+
+.listBtnBox .color_0 {
+  color: #1d3572;
+}
+.listBtnBox .color_1 {
+  color: #23df05;
+}
+.listBtnBox .color_2 {
+  color: #c4c4c4;
+}
+.listBtnBox .color_3 {
+  color: #FEF445;
+}
+.listBtnBox .color_4 {
+  color: #FF4949;
+}
+
+@media (max-width: 960px) {
+  .generalBox {
+    border-left: none;
+    margin: 8px 0px 0 0px;
+    padding: 15px 15px 15px 15px;
+  }
+  .allTitles {
+    font-size: 18px;
+    margin-top: 30px;
+  }
+  .greyLine {
+    width: 20px;
+  }
+  .centerTitle {
+    font-size: 16px;
+    margin: 10px 0 35px 0;
+  }
+
+  .lSubject {
+    font-size: 15px;
+    line-height: 18px;
+  }
+  .lGerencia {
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  .marg_r10 {
+    margin-right: 0;
+  }
+}
+@media (max-width: 600px) {
+  .listBoxGeneral .mat-list-base .mat-list-item,
+  .listBoxGeneral .mat-list-base .mat-list-option {
+    height: 100px;
+  }
+  .listBoxGeneral .mat-list-base .mat-list-item .mat-list-item-content-reverse,
+  .listBoxGeneral
+    .mat-list-base
+    .mat-list-option
+    .mat-list-item-content-reverse {
+    height: 100px;
+  }
+}

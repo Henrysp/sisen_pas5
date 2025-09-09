@@ -1,0 +1,40 @@
+<div class="principal">
+  <mat-stepper linear #stepper labelPosition="bottom">
+    <mat-step [stepControl]="datosGeneralesFormGroup" label="Datos generales" [editable]="isEditable">
+    <!-- <mat-step label="Datos generales"  > -->
+      <ng-template matStepLabel>Datos generales</ng-template>
+        <app-datos-generales (completedStep)="completedStep()" (TipoPerson)="personType($event)"></app-datos-generales>
+    </mat-step>
+    <!--<mat-step [stepControl]="datosRepresentanteFormGroup" label="Datos del representante">-->
+    <mat-step *ngIf="tipoPersona" label="Datos del representante" [editable]="isEditable">
+      <ng-template matStepLabel>Datos del representante</ng-template>
+      <app-datos-representante (completedStep)="completedStep()" (previousStep)="previousStep()" (Other)="other($event)"></app-datos-representante>
+    </mat-step>
+    <mat-step *ngIf="otherPerson" label="Datos de otros funcionarios" [editable]="isEditable">
+      <ng-template matStepLabel>Datos de otros funcionarios</ng-template>
+      <app-datos-otros (completedStep)="completedStep()" (previousStep)="previousStep()"></app-datos-otros>
+    </mat-step>
+    <!--<mat-step [stepControl]="terminosCondicionesFormGroup" label="Términos y condiciones">-->
+    <mat-step label="Términos y condiciones" [editable]="isEditable" >
+      <ng-template matStepLabel>Términos y condiciones</ng-template>
+      <app-terminos-condiciones (completedStep)="completedStep()" (previousStep)="previousStep()"></app-terminos-condiciones>
+    </mat-step>
+    <mat-step label="Foto con DNI/CE" [editable]="isEditable" >
+      <ng-template matStepLabel>Foto con DNI/CE</ng-template>
+      <app-foto-dni (completedStep)="completedStep()" (previousStep)="previousStep()"></app-foto-dni>
+    </mat-step>
+    <!--<mat-step [stepControl]="solicitudCasillaElectronicaFormGroup" label="Solicitud de Casilla Electrónica">-->
+    <mat-step label="Solicitud de Casilla Electrónica" [editable]="isEditable">
+      <ng-template matStepLabel>Solicitud de casilla electrónica</ng-template>
+      <app-solicitud (completedStep)="completedStep()" (previousStep)="previousStep()"></app-solicitud>
+    </mat-step>
+    <mat-step label="Solicitud de Casilla Electrónica" [editable]="isEditable">
+      <ng-template matStepLabel>Fin proceso</ng-template>
+      <app-fin-proceso (completedStep)="completedStep()" (previousStep)="previousStep()"></app-fin-proceso>
+    </mat-step>
+
+
+  </mat-stepper>
+
+</div>
+<!--<div class="footerVersion">V 1.3.1 </div>-->

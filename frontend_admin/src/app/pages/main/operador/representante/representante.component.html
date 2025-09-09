@@ -1,0 +1,124 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span> Editar datos de ciudadano
+</div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <!-- <div class="centerTitle">CANDIDATO A ELECCIÓN POPULAR</div> -->
+      <form #myform="ngForm" [formGroup]="Formulario">
+        <div mat-dialog-content>
+            <section>
+                <div class="generalBox">
+                    <div class="controlBox inputColor">
+                        <div class="formNotif" fxLayout="row wrap">
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor">Tipo de documento</div>
+                                <mat-form-field appearance="outline" style="width: 100%">
+                                    <mat-select disabled placeholder="Seleccione" name="typeDoc" formControlName="fm_optiontipo" (selectionChange)="changeTypeDocument($event)">
+                                        <mat-option *ngFor="let doc of typeDocument" [value]="doc.id">
+                                            {{ doc.value }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor">Número de documento</div>
+                                <mat-form-field class="" appearance="outline" style="width: 100%">
+                                    <input type="tel" disabled class="form-control" formControlName="fm_numerodoc" [class.control-invalid]="formInvalid('fm_numerodoc')" [maxlength]="maxlengthNumDoc" matInput placeholder="{{ placeHolder }}" name="doc" />
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor">Nombres </div>
+                                <mat-form-field class="" appearance="outline" style="width: 100%">
+                                    <input type="text" disabled class="form-control" formControlName="fm_nombres" maxlength="150" [class.control-invalid]="formInvalid('fm_nombres')" matInput placeholder="Nombres" />
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor"> Apellido Paterno</div>
+                                <mat-form-field class="" appearance="outline" style="width: 100%">
+                                    <input type="text" disabled class="form-control" formControlName="fm_apellidoPaterno" maxlength="150" [class.control-invalid]="formInvalid('fm_apellidoPaterno')" matInput placeholder="Apellidos" />
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor"> Apellido Materno</div>
+                                <mat-form-field class="" appearance="outline" style="width: 100%">
+                                    <input type="text" disabled class="form-control" formControlName="fm_apellidoMaterno" maxlength="150" [class.control-invalid]="formInvalid('fm_apellidoMaterno')" matInput placeholder="Apellidos" />
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor">Teléfono</div>
+                                <mat-form-field appearance="outline" style="width: 100%">
+                                    <input type="text" (keypress)="validarCelular($event)" disabled class="form-control" formControlName="fm_telefono" maxlength="9" minlength="9" [class.control-invalid]="formInvalid('fm_telefono')" matInput placeholder="Teléfono" />
+
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="50" fxFlex.md="50" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor">Correo electrónico</div>
+                                <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                                    <input type="email" minlength="5" maxlength="100" class="form-control" formControlName="fm_correo" [class.control-invalid]="formInvalid('fm_correo')" name="email" [attr.disabled]="inputDisabled ? '' : null" matInput placeholder="Ingrese correo electrónico" />
+                                </mat-form-field>
+                            </div>
+
+
+                            <div fxFlex="33" fxFlex.md="33" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" >
+                                <div class="labelsColor">Departamento</div>
+                                <mat-form-field appearance="outline" style="width: 100%">
+                                    <mat-select placeholder="Seleccione" name="dep" formControlName="fm_departamento" (selectionChange)="cambiarProvincia()">
+                                        <mat-option *ngFor="let item of departamentoList" [value]="item">{{item.nodep}} </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div fxFlex="33" fxFlex.md="33" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor">Provincia</div>
+                                <mat-form-field appearance="outline" style="width: 100%">
+                                    <mat-select placeholder="Seleccione" name="prov" formControlName="fm_provincia" (selectionChange)="cambiarDistrito()">
+                                        <mat-option *ngFor="let item of provinciaList" [value]="item">{{item.noprv}} </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+                            <div fxFlex="33" fxFlex.md="33" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" >
+                                <div class="labelsColor">Distrito</div>
+                                <mat-form-field appearance="outline" style="width: 100%">
+                                    <mat-select placeholder="Seleccione" name="dis" formControlName="fm_distrito" >
+                                        <mat-option *ngFor="let item of distritoList" [value]="item">{{item.nodis}} </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div fxFlex="100" fxFlex.md="100" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+                                <div class="labelsColor">Dirección</div>
+                                <mat-form-field class="" disabled="true" appearance="outline" style="width: 100%">
+                                    <input id="domicilioID" type="text" (keypress)="validardomicilio($event, 'domicilioID')" minlength="5" maxlength="100" class="form-control" formControlName="fm_direccion" [class.control-invalid]="formInvalid('fm_direccion')" name="email" [attr.disabled]="inputDisabled ? '' : null" matInput placeholder="Dirección" />
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <br /><br />
+
+                        <mat-dialog-actions class="footer-button">
+                            <!-- <button type="submit" class="btnBlue" mat-button [disabled]="myform.invalid || inputDisabled" (click)="saveEdit()">
+                              Actualizar
+                            </button> -->
+                            <button mat-flat-button color="primary">Actualizar</button>
+                            <button mat-flat-button color="accent">Nuevo representante</button>
+                            <!-- <button class="btnBrown" mat-button (click)="cancelar()">
+                                CANCELAR
+                            </button> -->
+                        </mat-dialog-actions>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+      </form>
+      <br />
+
+
+    </div>
+  </div>
+</section>

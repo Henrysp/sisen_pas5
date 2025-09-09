@@ -1,0 +1,195 @@
+<section>
+  <div class="allTitles" fxLayout="row" *ngIf="id === undefined ">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Nuevo Feriado
+  </div>
+  <div class="allTitles" fxLayout="row" *ngIf="id !== undefined ">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Editar Feriado
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form #myform="ngForm" [formGroup]="Formulario" (keydown.enter)="$event.preventDefault()" autocomplete="on">
+        <div class="formNotif" fxLayout="row wrap">
+          <div fxFlex="80" fxFlex.md="80" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Día feriado*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_nombres"
+                type="text"
+                class="form-control"
+                formControlName="fm_nombres"
+                [class.control-invalid]="formInvalid('fm_nombres')"
+                [minlength]="1"
+                [maxlength]="100"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese día feriado"
+                name="nombres"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_nombres.invalid">{{
+                  eShowError("fm_nombres", Formulario.controls.fm_nombres.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="80" fxFlex.md="80" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Descripción*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_descripcion"
+                type="text"
+                class="form-control"
+                formControlName="fm_descripcion"
+                [class.control-invalid]="formInvalid('fm_descripcion')"
+                [minlength]="1"
+                [maxlength]="100"
+                [attr.disabled]="inputDisabled ? '' : null"
+                matInput
+                placeholder="Ingrese descripcion"
+                name="descripcion"
+                oninput="this.value = this.value.replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ]/g, '').replace(/(\..?)\../g, '$1');"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_descripcion.invalid">{{
+                  eShowError("fm_descripcion", Formulario.controls.fm_descripcion.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="80" fxFlex.md="80" fxFlex.sm="100" fxFlex.xs="100" class="padd_4">
+            <mat-checkbox [checked]="chkDate" class="form-control" formControlName="fn_chkDate" (change)="visibleDate()" >El feriado es más de 01 día</mat-checkbox>
+          </div>
+          <div fxFlex="80" fxFlex.md="80" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="!chkDate">
+            <div class="labelsColor">Fecha*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                type="date"
+                class="form-control"
+                matInput
+                formControlName="fm_txtfechaIni"
+                placeholder="dd/MM/YYY"
+                [min]="dateMin"
+                [class.control-invalid]="formInvalid('fm_txtfechaIni')"
+                name="txtfechaIni"
+                (keydown)="keyoff($event)"
+                [formControl]="fm_txtfechaIni"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_txtfechaIni.invalid">{{
+                  eShowError("fm_txtfechaIni", Formulario.controls.fm_txtfechaIni.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="40" fxFlex.md="40" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="chkDate">
+            <div class="labelsColor">Fecha de Inicio*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_txtfechaIni"
+                type="date"
+                class="form-control"
+                matInput
+                formControlName="fm_txtfechaIni"
+                placeholder="dd/MM/YYY"
+                [min]="dateMin"
+                [max]="dateMax1"
+                [class.control-invalid]="formInvalid('fm_txtfechaIni')"
+                name="txtfechaIni"
+                (change)= "validMin()"
+                (keydown)="keyoff($event)"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_txtfechaIni.invalid">{{
+                  eShowError("fm_txtfechaIni", Formulario.controls.fm_txtfechaIni.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="40" fxFlex.md="40" fxFlex.sm="100" fxFlex.xs="100" class="padd_4" *ngIf="chkDate">
+            <div class="labelsColor">Fecha de Fin*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input
+                id="fm_txtfechaFin"
+                type="date"
+                class="form-control"
+                matInput
+                [min]="dateMin1"
+                [max]="dateMax"
+                formControlName="fm_txtfechaFin"
+                placeholder="dd/MM/YYY"
+                [class.control-invalid]="formInvalid('fm_txtfechaFin')"
+                name="txtfechaFin"
+                (change)= "validMax()"
+                (keydown)="keyoff($event)"
+              />
+              <mat-error *ngIf="Formulario.controls.fm_txtfechaFin.invalid">{{
+                  eShowError("fm_txtfechaFin", Formulario.controls.fm_txtfechaFin.errors)
+                }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" class="padd_4" *ngIf="filesDisabled">
+            <div class="labelsColor">
+              {{lblFeaturesFile}}
+            </div>
+            <file-upload
+              [(ngModel)]="uploadedFiles"
+              formControlName="files"
+              [multiple]="true"
+              [animation]="true"
+              discard="true" accept=".pdf,.jpg,.jpeg,.png,.bmp"
+              (drop)="validatorFile('files')"
+              (change)="validatorFile('files')"
+            >
+              <ng-template
+                let-isFileDragDropAvailable="isFileDragDropAvailable"
+                #placeholder
+              >
+                <file-upload-drop-zone>
+                  <ng-container *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable">
+                    {{lblAddFiles}}
+                  </ng-container>
+                  <ng-template #isNotDragDropAvailable> </ng-template>
+                </file-upload-drop-zone>
+              </ng-template>
+
+              <ng-template
+                let-i="index"
+                let-file="file"
+                let-control="control"
+                #item
+              >
+                <file-upload-list-item
+                  [index]="i"
+                  class="item-test"
+                  [file]="file"
+                  [control]="control"
+                >Eliminar</file-upload-list-item
+                >
+              </ng-template>
+            </file-upload>
+
+            <p *ngIf="errmaxLengthName" class="text-file-valid">{{lblErrorMaxLengthName}}</p>
+            <p *ngIf="errduplicate" class="text-file-valid">Archivo con nombre duplicado</p>
+            <p *ngIf="errorOnlyFile" class="text-file-valid">{{lblErrorOnlyFile}}</p>
+            <p *ngIf="errminSizeFile" class="text-file-valid">El tamaño del archivo mínimo es 1B</p>
+            <p *ngIf="errmaxSizeFile" class="text-file-valid">{{lblErrorMaxSizeFile}}</p>
+            <p *ngIf="errmaxFiles" class="text-file-valid">{{lblErrorMaxFiles}}</p>
+          </div>
+          <mat-progress-bar *ngIf="load" mode="indeterminate"></mat-progress-bar>
+          <div fxFlex="100" class="padd_4" *ngIf="!filesDisabled">
+            <div class="labelsColor">Documento Adjunto</div>
+            <span style="cursor:pointer;" (click)="download(document.path,document.name)"> {{document.name}} <span matPrefix class="material-icons">download</span></span>
+            <span style="cursor:pointer;" (click)="delete()"> <span matPrefix class="material-icons">delete</span></span>
+          </div>
+          <span class="labelsColor">*Campos requeridos</span>
+          <div fxFlex="100" class="newNotif" fxLayout="row" fxLayoutAlign="center center">
+            <button class="btnBrown" mat-button (click)="cancelar()">CANCELAR</button>
+            <button
+              type="submit"
+              class="btnBlue"
+              mat-button
+              [disabled]="myform.pristine || myform.invalid"
+              (click)="alert()">ACEPTAR</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

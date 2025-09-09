@@ -1,0 +1,244 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Notificaciones electrónicas
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form class="example-form" fxLayout="row wrap">
+        <div fxFlex class="marg_r10" fxFlex fxFlex.sm="100" fxFlex.xs="100">
+          <div class="labelsColor">Buscar</div>
+          <mat-form-field class="" appearance="outline" style="width: 100%">
+            <input
+              type="tel"
+              matInput
+              placeholder="Buscar..."
+              name="txtSearch"
+              (keyup.enter)="search()"
+              [(ngModel)]="textSearch"
+              [maxlength]="100"
+            />
+            <mat-icon matSuffix (click)="search()" style="cursor: pointer">search</mat-icon>
+          </mat-form-field>
+        </div>
+        <div fxFlex.sm="100" fxFlex.xs="100">
+          <div class="labelsColor">Filtro</div>
+          <mat-form-field appearance="outline" style="width: 100%">
+            <mat-select
+              name="filter"
+              [(ngModel)]="filterSelected"
+              (selectionChange)="search()"
+            >
+              <mat-option *ngFor="let filtro of filters" [value]="filtro.id">
+                {{ filtro.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+    <ng-container *ngIf="loading; then mostrarLoading; else ocultarLoading"></ng-container>
+    <ng-template #mostrarLoading>
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <div class="icon-loading"></div>
+      </div>
+    </ng-template>
+    <ng-template #ocultarLoading>
+    <div style="float: right;height: 42px;padding: 0 40px 0 0;" *ngIf="notificationData.Items && notificationData.Items.length > 0; else noDataNotifications">
+      <div fxLayout="row" fxHide.xs>
+        <div
+        class="listBtnBox"
+        fxLayout.xs="row"
+        fxLayoutAlign.xs="start center"
+        >
+        <div style="display: table;margin: 0 auto;height: 100%;">
+        <span style="display: table-cell;vertical-align: middle;"><b>Depositado</b></span></div>
+        </div>
+          <div
+          class="listBtnBox"
+          fxLayout.xs="row"
+          fxLayoutAlign.xs="start center"
+        >
+        <div style="display: table;margin: 0 auto;height: 100%;">
+          <span style="display: table-cell;vertical-align: middle;"><b>Recibido</b></span>
+        </div>
+        </div>
+        <div
+          class="listBtnBox"
+          fxLayout.xs="row"
+          fxLayoutAlign.xs="start center"
+        >
+        <div style="display: table;margin: 0 auto;height: 100%;">
+          <span style="display: table-cell;vertical-align: middle;;"><b>Constancia <br>de Notificación</b></span>
+        </div>
+        </div>
+        <div
+          class="listBtnBox"
+          fxLayout.xs="row"
+          fxLayoutAlign.xs="start center"
+        >
+        <div style="display: table;margin: 0 auto;height: 100%;">
+          <span style="display: table-cell;vertical-align: middle;"><b>Acuse de <br>Recibo</b></span>
+        </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="listBoxGeneral" *ngIf="notificationData.Items && notificationData.Items.length > 0">
+      <mat-selection-list [multiple]="false" *ngIf="!loading">
+        <mat-list-option *ngFor="let notification of notificationData.Items">
+          <div
+            fxLayout="row"
+            fxFlex
+            (click)="goNotificationDetail(notification.id)"
+          >
+            <div
+              class="listPhotoBox"
+              fxLayout="column"
+              fxLayoutAlign="center center"
+            >
+              <ng-template [ngIf]="notification.inbox_doc_type=='ruc' || notification.inbox_doc_type=='pr' " [ngIfElse]="loggedOut">
+                <div [ngClass]="getColor(notification.organization_name)" fxLayout="row" fxLayoutAlign="center center">
+                  {{ notification.organization_name.length > 0 ? notification.organization_name.charAt(0) : "O" }}
+                </div>
+              </ng-template>
+              <ng-template #loggedOut>
+                <div [ngClass]="getColor(notification.inbox_name)" fxLayout="row" fxLayoutAlign="center center">
+                  {{ notification.inbox_name.length > 0 ? notification.inbox_name.charAt(0) : "O" }}
+                </div>
+              </ng-template>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" fxFlex>
+              <div
+                class="listSubject"
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+              >
+                <div>
+                  <p class="lSubject" title="{{ notification.expedient }}">
+                    {{ (notification.expedient.length > 60) ? (notification.expedient | slice:0:60) + '...' : notification.expedient }}
+                  </p>
+                  <p class="lGerencia">
+                  </p>
+                  <p class="lNombre">
+                    {{ notification.inbox_doc_type }}: {{ notification.inbox_doc }}</p>
+                  <p class="lNombre" title="{{ notification.organization_name + notification.inbox_name }}">
+                    NOMBRE:
+                    {{ (notification.inbox_name.length > 60) ? (notification.inbox_name | slice:0:60) + '...' : notification.inbox_name }}
+                    {{ (notification.organization_name.length > 60) ? (notification.organization_name | slice:0:60) + '...' : notification.organization_name }}
+                  </p>
+                </div>
+              </div>
+              <div class="listCtrls" fxLayout="row" fxHide.xs>
+                <div
+                  class="listBtnBox"
+                  fxLayout.xs="row"
+                  fxLayoutAlign.xs="start center"
+                >
+                  <div
+                    [ngClass]="{
+                      color_1: !notification.automatic,
+                      color_2: notification.automatic
+                    }"
+                    fxLayout.xs="row"
+                    fxLayoutAlign.xs="start center"
+                  >
+                    <mat-icon *ngIf="notification.automatic">stop_circle</mat-icon>
+                    <mat-icon *ngIf="!notification.automatic">check_circle</mat-icon>
+                  </div>
+                  {{ notification.received_at_formatted }}
+                </div>
+                <div
+                  class="listBtnBox"
+                  fxLayout.xs="row"
+                  fxLayoutAlign.xs="start center"
+                >
+                  <div
+                    [ngClass]="{
+                      color_4: notification.state === 1,
+                      color_3: notification.state === 2,
+                      color_1: notification.state === 3
+                    }"
+                    fxLayout.xs="row"
+                    fxLayoutAlign.xs="start center"
+                  >
+                    <mat-icon *ngIf="notification.state === 1 && notification.read_at_formatted !== ''">check_circle</mat-icon>
+                    <mat-icon *ngIf="notification.state === 1 && notification.read_at_formatted === ''">stop_circle</mat-icon>
+                    <mat-icon *ngIf="notification.state === 3">check_circle</mat-icon>
+                    <mat-icon *ngIf="notification.state === 2">stop_circle</mat-icon>
+                  </div>
+                  {{ notification.read_at_formatted }}
+                </div>
+                <div
+                  class="listBtnBox"
+                  fxLayout.xs="row"
+                  fxLayoutAlign.xs="start center"
+                  (click) = "downloadAcuse(notification.id, notification.expedient)"
+                ><div class="cbox">
+                  <a><img src="../../../../assets/img/pdf-icon-activo.png" alt="" width="40" height="40"/></a>
+                </div></div>
+                <div
+                  class="listBtnBox"
+                  fxLayout.xs="row"
+                  fxLayoutAlign.xs="start center"
+                  (click) = "downloadAcuseRecibido(notification.id, notification.expedient, notification.read_at_formatted)"
+                >
+                  <div class="cbox" *ngIf="notification.read_at_formatted !== ''"><a><img src="../../../../assets/img/pdf-icon-activo.png" alt="" width="40" height="40"/></a></div>
+                  <div class="cbox" *ngIf="notification.read_at_formatted === ''"><a style="cursor: no-drop;"><img src="../../../../assets/img/pdf-icon-inactivo.png" alt="" width="40" height="40"/></a></div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+      <mat-paginator style="margin-right: 30px ;"
+        [length]="notificationData.recordsTotal"
+        [pageIndex]="notificationData.page - 1"
+        [pageSize]="notificationData.count"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="pageChangeEvent($event)" *ngIf="!loading"
+      >
+      </mat-paginator>
+    </div>
+    </ng-template>
+    <ng-template #noDataNotifications>
+      <div class="labelsColor" style="text-align: center; font-size: 15px;">
+        <br>
+        <strong>No se encontraron registros.</strong>
+      </div>
+    </ng-template>
+    <!--<div fxLayout="row" *ngIf="!listReadyCheck" fxLayoutAlign="center center">
+      <div class="icon-loading"></div>
+    </div>-->
+    <table class="table" cellspacing="0" cellpadding="0">
+      <tr>
+        <th>Estado de <br/>recepción</th>
+        <th>Descripción</th>
+        <th>Cantidad</th>
+      </tr>
+      <tr>
+        <td><div class="listBtnBox" style="width: auto;"><mat-icon class="color_1">check_circle</mat-icon></div></td>
+        <td>Recibido y No Vencido</td>
+        <td>{{total | number}}</td>
+      </tr>
+      <tr>
+        <td><div class="listBtnBox" style="width: auto;"><mat-icon class="color_3">stop_circle</mat-icon></div></td>
+        <td>No Recibido y No Vencido</td>
+        <td>{{recibido | number}}</td>
+      </tr>
+      <tr>
+        <td><div class="listBtnBox" style="width: auto;"><mat-icon class="color_4">stop_circle</mat-icon></div></td>
+        <td>No Recibido y Vencido</td>
+        <td>{{noRecibido | number}}</td>
+      </tr>
+      <tr>
+        <td><div class="listBtnBox" style="width: auto;"><mat-icon class="color_4">check_circle</mat-icon></div></td>
+        <td>Recibido y Vencido</td>
+        <td>{{vencido | number}}</td>
+      </tr>
+    </table>
+  </div>
+</section>

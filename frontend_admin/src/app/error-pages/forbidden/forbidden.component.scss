@@ -1,0 +1,125 @@
+:root {
+  --color-primario-azul-oscuro: #0D2C54; /* Azul oscuro para el texto 404 y el borde */
+  --color-primario-azul-claro: #1E88E5;  /* Azul para el mensaje y el enlace */
+  --color-fondo-general: #F0F4F8;     /* Un gris azulado claro para el fondo */
+  --color-fondo-tarjeta: #FFFFFF;
+  --color-texto-general: #333333;
+  --color-sombra-tarjeta: rgba(0, 0, 0, 0.1);
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Poppins', sans-serif; /* Usando Roboto como ejemplo, cámbiala si usas otra */
+  background-color: #F0F4F8;
+  display: flex;
+  justify-content: center;
+  //align-items: center;
+  overflow: hidden; /* Para evitar scroll si la ilustración es muy grande */
+  position: relative; /* Para el fondo con patrón binario */
+  color: #003770;
+}
+
+/* Opcional: Patrón de fondo binario sutil */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  //background-image: url('img/patron-binario.svg'); /* Crea un SVG o PNG con el patrón */
+  background-repeat: repeat;
+  opacity: 0.05; /* Muy sutil */
+  z-index: -1;
+}
+
+
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  max-width: 900px; /* Ajusta según sea necesario */
+  width: 90%;
+  position: relative; /* Para el posicionamiento de la ilustración */
+}
+
+.error-illustration {
+  position: absolute;
+  left: -50px; /* Ajusta para que se solape como en la imagen */
+  bottom: 0px;  /* Ajusta para que se solape como en la imagen */
+  z-index: 1;
+}
+
+.error-illustration img {
+  max-width: 300px; /* Ajusta el tamaño de tu ilustración */
+  height: auto;
+  position: relative;
+}
+
+.error-card {
+  //background-color: #00000019;
+  padding: 40px 60px; /* Aumentar padding */
+  border-radius: 8px;
+  box-shadow: 0 10px 25px var(--color-sombra-tarjeta);
+  text-align: center;
+  border-top: 1px solid #1E88E5;
+  border-left: 12px solid #003770;
+  border-bottom: 12px solid #003770;
+  border-right: 1px solid #1E88E5;
+  width: 700px; /* Ancho fijo para la tarjeta */
+  min-height: 600px; /* Altura mínima para la tarjeta */
+  box-sizing: border-box;
+  z-index: 2; /* Para que esté por encima de la ilustración */
+  position: relative; /* Necesario si la ilustración se posiciona absolutamente respecto a error-container */
+  //margin-left: 100px; /* Empuja la tarjeta para dejar espacio a la ilustración */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra el contenido verticalmente */
+  align-items: center; /* Centra el contenido horizontalmente */
+}
+
+.logo-container {
+  margin-bottom: 30px;
+}
+
+.logo {
+  max-width: 120px; /* Ajusta el tamaño de tu logo */
+  height: auto;
+}
+
+.error-code {
+  font-size: 145px; /* Tamaño grande para el 404 */
+  font-weight: 700; /* Muy grueso */
+  color: #003770;
+  margin-top: 0;
+  margin-bottom: 5px;
+  line-height: 1;
+}
+
+.error-message {
+  font-size: 32px;
+  font-weight: 700; /* Grueso */
+  color: #1E88E5;
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.error-action-link {
+  font-size: 16px;
+  color: #1E88E5;
+  text-decoration: underline;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.error-action-link:hover {
+  text-decoration: underline;
+  color: #1E88E5;
+}

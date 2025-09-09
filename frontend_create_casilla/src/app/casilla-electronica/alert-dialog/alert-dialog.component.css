@@ -1,0 +1,27 @@
+.btnAceptar{
+    border: 1px solid #7e7e7e;
+}
+
+
+.info-style{
+    text-align: center;
+    /*padding-left: 100px;
+    padding-right: 100px;*/
+    font-family: 'Poppins';
+    font-style: normal;
+    margin: 8px;
+  }
+
+
+  .title{
+    text-align: center;
+    color: #0073CF;
+    font-family: 'Poppins';
+    width: 100%;
+    margin: 5px auto;
+    font-size: 26px !important;
+  }
+
+  .interlineado {
+    line-height: 126% !important;
+  }

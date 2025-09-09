@@ -1,0 +1,88 @@
+<form [formGroup]="formGroup" (submit)="$event.preventDefault()">
+  <br>
+  <div class="container foot">
+    <div class="row">
+      <div class="col-sm" >
+        <div>
+          <app-alert type="warn"><p><strong>Instrucciones</strong></p>
+            <ol>
+              <li> La foto se debe tomar de frente, sin lentes, con el rostro descubierto, mostrado su DNI/CE, y de preferencia debe tener fondo claro.</li>
+              <li> La foto no debe tener retoques.</li>
+              <li> La foto debe ser nítida sin sombras.</li>
+              <li> La foto no debe contener imágenes con fines electorales (ejemplo: polo con el número del candidato, nombre de la Organización Política, etc.)</li>
+            </ol>
+          </app-alert>
+          <br/>
+        </div>
+
+      </div>
+      <div class="col-sm" >
+        <div class="imgDni" >
+          <img src="../../../assets/dniFoto.jpg" height="300px" >
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-alert type="info">
+    <p class="camposObligatorios">*Campo obligatorio
+      <br/>
+      En caso de volver a adjuntar un documento, se reemplazará el anterior.
+    </p>
+  </app-alert>
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <file-upload
+      formControlName="files"
+      [multiple]="false"
+      [animation]="true"
+      accept=".png,.jpg,.jpeg"
+      fxFlex="100"
+      [maxsize]="maxsize_"
+      fileslimit=1
+      [maxsize]="maxsize_"
+      [ngStyle]="{
+          'outline-color': filesControl.valid == false ? 'red' : ''
+        }"
+      [ngStyle]="{
+          'background-color': filesControl.valid == false ? '#fdf4f4' : ''
+        }"
+      (drop)="validatorImage()"
+      (change)="validatorImage()"
+    >
+      <ng-template
+        let-isFileDragDropAvailable="isFileDragDropAvailable"
+        #placeholder
+      >
+        <file-upload-drop-zone>
+          <ng-container
+            *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable"
+          >
+            Agregar un archivo (PNG, JPG o JPEG con un peso máximo de 5MB) o dar clic aquí.
+          </ng-container>
+          <ng-template #isNotDragDropAvailable> </ng-template>
+        </file-upload-drop-zone>
+      </ng-template>
+
+      <ng-template
+        let-i="index"
+        let-file="file"
+        let-control="control"
+        #item
+      >
+        <file-upload-list-item
+          [index]="i"
+          class="item-test"
+          [file]="file"
+          [control]="control"
+        >Remover</file-upload-list-item
+        >
+      </ng-template>
+    </file-upload>
+  </div>
+  <br>
+  <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center">
+    <button mat-flat-button type="button" color="primary" (click)="regresar()">REGRESAR</button>
+    <button mat-flat-button type="button" color="warn" [disabled]="formGroup.invalid" (click)="continuar()">CONTINUAR</button>
+  </div>
+
+</form>

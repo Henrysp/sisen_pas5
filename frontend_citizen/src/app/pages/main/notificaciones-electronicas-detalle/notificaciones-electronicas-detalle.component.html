@@ -1,0 +1,133 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Notificaciones electrónicas
+  </div>
+
+  <div id="imp1" class="generalBox">
+    <div class="controlBox inputColor">
+      <div id="no-imp1" class="topLine">
+        <div class="limit50 printLine">
+          <a (click)="back()">
+            <span class="material-icons">arrow_back</span>
+            Regresar
+          </a>
+          <a (click)="print()">
+            <span class="material-icons">print</span>
+            Imprimir
+          </a>
+        </div>
+      </div>
+      <ng-container *ngIf="loading; then mostrarLoading; else ocultarLoading"></ng-container>
+      <ng-template #mostrarLoading>
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="icon-loading"></div>
+        </div>
+      </ng-template>
+      <ng-template #ocultarLoading>
+        <div fxLayout="row" class="limit50 detailHead">
+          <div
+            class="listPhotoBox"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+          >
+            <div
+              [ngClass]="getColor(notifier_area)"
+              fxLayout="row"
+              fxLayoutAlign="center center"
+            >
+              {{ notifier_area | slice: 0:1 }}
+            </div>
+          </div>
+          <div
+            class="listSubject"
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+          >
+            <div fxFlex>
+              <p class="lSubject">
+                {{ this.formulario.controls["n_expediente"].value }}
+              </p>
+              <p class="lGerencia"></p>
+              <p class="lDetalleDate">
+                {{
+                  this.formulario.controls["n_received_at"].value
+                    | date: "dd/MM/yyyy hh:mm a"
+                }}
+              </p>
+            </div>
+            <!--<div>
+              <button mat-stroked-button (click)="downloadAcuse()">
+                Descargar Acuse
+                <span class="material-icons"> download </span>
+              </button>
+            </div>-->
+          </div>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start start"
+          class="formNotif dobleGrey"
+          *ngFor="let adjunto of adjuntos"
+        >
+          <div
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            (click)="viewDocument(adjunto)"
+          >
+            <button mat-stroked-button>
+              <mat-icon matSuffix class="grad45">attach_file</mat-icon>
+              {{ adjunto.name }}
+            </button>
+          </div>
+        </div>
+        <div class="formNotif textBlue" fxLayout="row wrap">
+          <div fxFlex="100" class="padd_4">
+            <p class="parrafo_texto">
+              {{ this.formulario.controls["n_message"].value }}
+            </p>
+          </div>
+        </div>
+        <div class="blueSeed limit50">
+          <img src="../../../../assets/img/onpeblanco.svg" alt="" />
+        </div>
+        <div class="topLine1 limit50"></div>
+        <div class="greyBoxIndicator limit50" fxLayout="row">
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <div class="greyBoxTitle">Estado de la notificación:</div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <div class="listCtrls posRef" fxLayout="row">
+              <div class="listBtnBox2">
+                Notificado
+                <div class="color_1 posUno">
+                  <mat-icon>check_circle</mat-icon>
+                </div>
+                <div class="microInfo">
+                  {{
+                    this.formulario.controls["n_received_at"].value
+                      | date: "dd/MM/yyyy hh:mm a"
+                  }}
+                </div>
+              </div>
+              <div class="listBtnBox2">
+                Recibido
+                <div class="{{ view2 }}">
+                  <mat-icon>{{ icon2 }}</mat-icon>
+                </div>
+                <div class="microInfo">
+                  {{
+                    this.formulario.controls["n_read_at"].value
+                      | date: "dd/MM/yyyy hh:mm a"
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</section>

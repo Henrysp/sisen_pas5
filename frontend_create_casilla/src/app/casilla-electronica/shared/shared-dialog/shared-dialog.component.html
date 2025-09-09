@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="headerdialog">
+    <button class="append-button btnCancel"  type="button"  (click)="cancel(false)" >x</button>
+  </div>
+
+  <div class="col col-md-12">
+    <br>
+    <br>
+    <label class="title"><strong>{{titleForm}}</strong> </label>
+    <br>
+
+    <div class="form-group">
+      <label class="info-style">{{info}}</label>
+
+    </div>
+    <br>
+    <form [formGroup]="formGroup" class="form-inline" class="form-group center">
+      <input style="text-transform: uppercase;" cdkFocusInitial type="text" id="input1"  name="input1" #input1 class="cuadro"  maxlength="1"
+             formControlName="codigo1" (keyup)="(input1.value.length == 1 ) ? input2.focus() :''" tabindex="-1"
+             oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
+      <input style="text-transform: uppercase;" type="text" #input2 class="cuadro"  maxlength="1"
+             formControlName="codigo2" (keyup)="(input2.value.length == 1) ? input3.focus() :''" tabindex="-1"
+             oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
+      <input style="text-transform: uppercase;" type="text" #input3 class="cuadro"  maxlength="1"
+             formControlName="codigo3" (keyup)="(input3.value.length == 1) ? input4.focus() :''" tabindex="-1"
+             oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
+      <input style="text-transform: uppercase;" type="text" #input4 class="cuadro"  maxlength="1"
+             formControlName="codigo4" (keyup)="(input4.value.length == 1) ? input5.focus() :''" tabindex="-1"
+             oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
+      <input style="text-transform: uppercase;" type="text" #input5 class="cuadro"  maxlength="1"
+             formControlName="codigo5" (keyup)="(input5.value.length == 1) ? input6.focus() :''"  tabindex="-1"
+             oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
+      <input style="text-transform: uppercase;" type="text" #input6 class="cuadro"  maxlength="1"
+             formControlName="codigo6" (keyup)="(input6.value.length == 1) ? btn.focus() :''" tabindex="-1"
+             oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
+    </form>
+    <div *ngIf="blockbtnTimmer" align="center">
+      <span class="adviceActivateButton">{{ getFormattedTimeLeft() }} segundos para reenviar</span>
+    </div>
+    <div *ngIf="!blockbtnTimmer" align="center">
+      <a  (click)="reenvio()"  [ngClass]="{ 'disabled': blockbtnTimmer , 'hrefstyle' : !blockbtnTimmer}" tabindex="-1">Reenvíar código de verificación</a>
+    </div>
+    <div mat-dialog-actions align="center">
+      <button  #btn  type="button" class="btn-valid dialog" [class.spinner]="loading" [disabled]="!formGroup.valid"  (click)="valid() || bloquearValidarCorreoPopUp">VALIDAR</button>
+    </div>
+
+  </div>
+</div>

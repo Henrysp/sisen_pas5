@@ -1,0 +1,98 @@
+<section>
+    <div class="allTitles" fxLayout="row">
+        <span class="brownCircle"></span>
+        <span class="greyLine"></span> <ng-template [ngIf]="data.type_user !== 'pj'" [ngIfElse]="pj">Usuarios</ng-template><ng-template #pj>Persona Jurídica</ng-template>
+    </div>
+    <div class="generalBox">
+        <mat-progress-bar *ngIf="load" mode="indeterminate"></mat-progress-bar>
+
+        <div class="controlBox inputColor">
+            <div style="text-align: center;">
+              <div class="centerTitle" style="display: inline-block;" *ngIf="data.status == 'PENDIENTE'">Validación de </div>
+              <div class="centerTitle" style="display: inline-block;">&nbsp;Casilla Electrónica</div>
+            </div>
+            <form>
+
+                <mat-card class="card">
+
+                    <!-- content -->
+                    <mat-card-content>
+                      <div fxLayout="column">
+
+                        <div fxLayout="row" >
+                            <!-- Column-2 Row-1-->
+                            <div fxLayout="column" fxFlex="60" fxFlexFill fxLayoutAlign="space-between strech">
+                              <div fxLayout="row" fxFlex="20px" fxLayoutAlign="center center"></div>
+                              <div *ngIf="data.type_user !== 'pj'; else juridico" fxLayout="row" fxFlex="220px" >
+                                <ol>
+                                    <li>Persona Natural</li>
+                                    <li>Tipo de documento: <b>{{data.doc_type | uppercase}}</b> </li>
+                                    <li>Número de documento: <b>{{data.doc}}</b></li>
+                                    <li>Nombres y Apellidos: <b>{{data.name}} {{data.lastname }} {{data.second_lastname }}</b></li>
+                                    <li>Correo Electrónico: <b>{{data.email}}</b></li>
+                                    <li>Número de Celular: <b>{{data.cellphone}}</b></li>
+                                    <li>Número de Teléfono fijo: <b>{{data.phone}}</b></li>
+                                    <li>Departamento / Provincia / Distrito: <b>{{data.ubigeo}}</b></li>
+                                    <li>Dirección: <b>{{data.address}}</b></li>
+                                    <li *ngIf="data.reason_disapproved !== ''">Motivo de desaprobación: <b>{{data.reason_disapproved}}</b></li>
+                                </ol>
+                              </div>
+
+                              <ng-template #juridico>
+                                <div fxLayout="row" fxFlex="280px" >
+                                  <ol>
+                                      <li>Persona Jurídica</li>
+                                      <li>Tipo de documento: <b>{{data.doc_type_des | uppercase}}</b></li>
+                                      <li>Número de documento: <b>{{data.doc}}</b></li>
+                                      <li>Razón Social: <b>{{data.name}}</b></li>
+                                      <li>Número de Celular: <b>{{data.cellphone}}</b></li>
+                                      <li>Número de Teléfono: <b>{{data.phone}}</b></li>
+                                      <li>Dirección: <b>{{data.address}}</b></li>
+                                      <li>Departamento / Provincia / Distrito: <b>{{data.ubigeo}}</b></li>
+                                      <li>Página Web: <b>{{data.paginaweb}}</b></li>
+                                      <li>Representante:</li>
+                                      <ol  style="margin-left: 20px;">
+                                          <li>Tipo de documento: <b>{{representante.tipoDocumento | uppercase }}</b></li>
+                                          <li>Número de documento: <b>{{representante.numeroDocumento}}</b></li>
+                                          <li>Apellidos y Nombres: <b>{{representante.nombreCompleto}}</b></li>
+                                          <li>Dirección: <b>{{representante.address}}</b></li>
+                                          <li>Departamento / Provincia / Distrito: <b>{{representante.ubigeo}}</b></li>
+                                          <li>Cargo: <b>{{representante.position_name}}</b></li>
+                                          <li>Tipo documento adjunto: <b>{{representante.document_name_attachment}}</b></li>
+                                          <li>Documento:  <div fxFlex="100" class="padd_4">
+                                            <div *ngIf="representante.archivo"  (click)="download(representante.archivo.path,representante.archivo.name)"> {{representante.archivo.name}}</div>
+                                        </div></li>
+                                      </ol>
+                                  </ol>
+                                </div>
+                              </ng-template>
+
+                              <div fxLayout="row" fxFlex="20px" fxLayoutAlign="center center"></div>
+                            </div>
+                            <!-- Column-2 Row-2-->
+                            <div fxLayout="row" fxFlex="40" fxFlexFill style="background-color: #ebebeb" fxLayoutAlign="space-around strech">
+                              <div fxLayoutAlign="center center">
+                              <img style="max-width:450px; max-height:450px" src="{{imageURlss}}"  alt=""></div>
+
+                            </div>
+                          </div>
+                          <div fxLayout="row" fxFlex="50px" style="background-color: #ebebeb" fxLayoutAlign="center center">
+
+                            <div fxLayout="column" fxFlex="60" fxFlexFill fxLayoutAlign="space-between strech"></div>
+                            <div fxLayout="row" fxFlex="40" fxFlexFill fxLayoutAlign="space-around strech">
+                              <div fxFlex="50" fxLayoutAlign="center center">
+                              </div>
+                              <div fxFlex="50" fxLayoutAlign="center center">
+                                <button type="submit" mat-raised-button fxFlex="70" class="btnRed" [class.spinner]="load" (click)="cancelar()">Volver</button>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </mat-card-content>
+
+                  </mat-card>
+            </form>
+            <br />
+        </div>
+    </div>
+</section>

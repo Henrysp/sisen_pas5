@@ -1,0 +1,3 @@
+<mat-card
+  [ngClass]="{ 'alert-success': type === 'success', 'alert-danger': type === 'error' , 'alert-warn': type === 'warn', 'alert-info' :type === 'info' }"
+><ng-content></ng-content></mat-card>

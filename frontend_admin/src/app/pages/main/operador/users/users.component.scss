@@ -1,0 +1,312 @@
+.brownCircle {
+    width: 8px;
+    height: 8px;
+    background: #bd6c15;
+    display: block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 6px 10px 10px 26px;
+}
+
+.greyLine {
+    width: 60px;
+    height: 1px;
+    background: #d1d1d1;
+    margin: 9px 10px 0 0;
+}
+
+.allTitles {
+    color: #bd6c15;
+    font-size: 30px;
+    font-weight: normal;
+    margin-top: 40px;
+}
+
+.generalBox {
+    border-left: #d1d1d1 solid 1px;
+    margin: 8px 30px 0 30px;
+    padding: 15px 15px 0 15px;
+}
+
+.aprobacionBoton{
+    line-height: 34px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    border: 1px solid currentColor;
+    padding: 0 15px;
+    line-height: 34px;
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+.habilitacionBoton{
+  line-height: 34px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  border: 1px solid currentColor;
+  padding: 0 15px;
+  line-height: 34px;
+  border-color: rgba(0, 0, 0, 0.12);
+  width: 130px;
+}
+.disabled-option {
+  pointer-events: unset;
+}
+
+/**** List ****/
+
+.listBoxGeneral .mat-list-base .mat-list-item,
+.listBoxGeneral .mat-list-base .mat-list-option {
+    border-top: #efede8 solid 1px;
+    border-bottom: #efede8 solid 1px;
+    height: 80px;
+}
+
+.listBoxGeneral .mat-list-base .mat-list-item .mat-list-item-content-reverse,
+.listBoxGeneral .mat-list-base .mat-list-option .mat-list-item-content-reverse {
+    height: 80px;
+}
+
+.listPhotoBox {
+    width: 40px;
+}
+
+.listSubject>div {
+    padding-left: 10px;
+}
+
+.listCtrls {
+    width: 120px;
+}
+
+.listCircle {
+    width: 32px;
+    height: 32px;
+    background: grey;
+    text-align: center;
+    color: #ffffff;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+}
+
+
+/**** Random Colors (Ini) ****/
+
+.rdmColor_1 {
+    background: #00c2ff;
+    /* A - B - C */
+}
+
+.rdmColor_2 {
+    background: #9fce20;
+    /* D - E - F */
+}
+
+.rdmColor_3 {
+    background: #da4997;
+    /* G - H - I */
+}
+
+.rdmColor_4 {
+    background: #ff9900;
+    /* J - K - L */
+}
+
+.rdmColor_5 {
+    background: #a120ce;
+    /* M - N - Ñ */
+}
+
+.rdmColor_6 {
+    background: #f3ef0a;
+    /* O - P - Q */
+}
+
+.rdmColor_7 {
+    background: #4d49be;
+    /* R - T - U */
+}
+
+.rdmColor_8 {
+    background: #3e6991;
+    /* V - W - X */
+}
+
+.rdmColor_9 {
+    background: #af9335;
+    /* Y - Z */
+}
+
+
+/**** Random Colors (Fin) ****/
+
+.lSubject {
+    color: #1d3572;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 23px;
+    margin: 0;
+}
+
+.lGerencia {
+    color: #1d3572;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 19px;
+    margin: 0;
+}
+
+.lNombre {
+    color: #1d3572;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 23px;
+    margin: 0;
+    text-transform: uppercase;
+}
+.lNombre2{
+  color: #1d3572;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 23px;
+  margin: 0;
+  text-transform: uppercase;
+}
+.lOrganizacion {
+    color: #959595;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+    margin: 0;
+}
+.lPerfil {
+  color: #000000;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 19px;
+  margin: 0;
+}
+.lDocument {
+    color: #00c2ff;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.listBtnBox {
+    padding: 0 8px;
+    text-align: center;
+    color: #1d3572;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+}
+
+.listBtnBox .color_0 {
+    color: #1d3572;
+}
+
+.listBtnBox .color_1 {
+    color: #23df05;
+}
+
+.listBtnBox .color_2 {
+    color: #c4c4c4;
+}
+
+/*************************************
+Expansion Panel (Ini)
+*************************************/
+.exPnl90{
+    min-height: 90px;
+}
+.exPnlInfo{
+    padding-left: 10px;
+}
+.exPnlBtn{
+    font-size: 10px;
+    margin-left: 10px;
+}
+.exPnlFooter{
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: 0 -24px -16px -24px;
+    padding: 6px 23px;
+    color: #707070;
+}
+.exPnlBlue{
+    color: #1D3572;
+}
+.mat-expansion-panel{
+    background: rgba(255, 255, 255, 0.2);
+}
+.mat-expansion-panel:not([class*=mat-elevation-z]){
+    box-shadow:none;
+    border-top: rgba(0, 0, 0, 0.05) solid 1px;
+}
+/*************************************
+Expansion Panel (Fin)
+*************************************/
+
+
+@media (max-width: 960px) {
+    .generalBox {
+        border-left: none;
+        margin: 8px 0px 0 0px;
+        padding: 15px 15px 15px 15px;
+    }
+    .allTitles {
+        font-size: 18px;
+        margin-top: 30px;
+    }
+    .greyLine {
+        width: 20px;
+    }
+    .centerTitle {
+        font-size: 16px;
+        margin: 10px 0 35px 0;
+    }
+    .lNombre {
+        font-size: 15px;
+        line-height: 18px;
+    }
+    .lOrganizacion {
+        font-size: 14px;
+        line-height: 16px;
+    }
+    .lPerfil {
+      font-size: 14px;
+      line-height: 16px;
+    }
+    .lDocument {
+        font-size: 14px;
+        line-height: 16px;
+    }
+    .marg_r10 {
+        margin-right: 0;
+    }
+}
+
+.btn_add{
+    font-size: 36px;
+    color: #00c2ff;
+}
+
+.hidden_{
+    visibility: hidden;
+}
+.red-button {
+  background-color: darkred;
+  color: white;
+  border-color: darkred;
+}

@@ -1,0 +1,35 @@
+<!--
+    <h1 mat-dialog-title>Filtrar colecciones por fecha</h1>
+-->
+<div fxLayout="row" class="allTitlesPop">
+    <!-- 
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span> -->
+    Filtrar colecciones por fecha
+</div>
+<div mat-dialog-content>
+    <div fxLayout="row" fxLayoutAlign="center center" fxFlex="50">
+        <mat-form-field class="collFilter">
+            <mat-label>Desde</mat-label>
+            <input matInput [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" fxFlex="50">
+        <mat-form-field class="collFilter">
+            <mat-label>Hasta</mat-label>
+            <input matInput [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+</div>
+<div mat-dialog-actions fxLayout="row">
+    <div fxFlex="50" fxLayout="row">
+        <button mat-button class="btnBrown margLR_4" fxFlex>CANCELAR</button>
+    </div>
+    <div fxFlex="50" fxLayout="row">
+        <button mat-button cdkFocusInitial class="btnBlue2 margLR_4" fxFlex>FILTRAR COLECCIONES</button>
+    </div>
+</div>

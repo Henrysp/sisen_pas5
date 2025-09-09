@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Validación de correo electrónico</h1>
+<mat-dialog-content>
+  <div class="main">
+    <p>Ingresa a tu bandeja de entrada principal o bandeja de no deseados, porque hemos enviado un correo electrónico
+      con un código de verificación. Ingrésalo aquí:</p>
+    <div fxLayout="row" fxLayoutGap="10px">
+      <mat-form-field appearance="outline" fxFlex="100">
+        <mat-label>Código de validación</mat-label>
+        <input matInput #codigoValidacion>
+      </mat-form-field>
+    </div>
+    <p class="link">
+      <button mat-button
+              (click)="reenviarCodigo()"
+              [disabled]="enviandoCodigo"
+      >{{enviarCodigoTextoButton}}</button>
+    </p>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="warn"
+          (click)="validarCodigo(codigoValidacion.value)"
+          [disabled]="validandoCodigo"
+  >{{validarCodigoTextoButton}}</button>
+  <button mat-flat-button
+          (click)="cancelarValidacion()"
+          [disabled]="validandoCodigo"
+  >CANCELAR</button>
+</mat-dialog-actions>

@@ -1,0 +1,83 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Deshabilitación de usuarios
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form #myform="ngForm" [formGroup]="Formulario" (keydown.enter)="$event.preventDefault()" autocomplete="on">
+        <div class="formNotif" fxLayout="row wrap">
+          <div fxFlex="100" class="padd_4" *ngIf="filesDisabled">
+            <div class="labelsColor">
+              {{lblFeaturesFile}}
+            </div>
+            <file-upload
+              [(ngModel)]="uploadedFiles"
+              formControlName="files"
+              [multiple]="false"
+              [animation]="true"
+              discard="true" accept=".xlsx,.XLSx"
+              (drop)="validatorFile('files')"
+              (change)="validatorFile('files')"
+            >
+              <ng-template
+                let-isFileDragDropAvailable="isFileDragDropAvailable"
+                #placeholder
+              >
+                <file-upload-drop-zone>
+                  <ng-container *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable">
+                    {{lblAddFiles}}
+                  </ng-container>
+                  <ng-template #isNotDragDropAvailable> </ng-template>
+                </file-upload-drop-zone>
+              </ng-template>
+
+              <ng-template
+                let-i="index"
+                let-file="file"
+                let-control="control"
+                #item
+              >
+                <file-upload-list-item
+                  [index]="i"
+                  class="item-test"
+                  [file]="file"
+                  [control]="control"
+                >Eliminar</file-upload-list-item
+                >
+              </ng-template>
+            </file-upload>
+
+            <p *ngIf="errmaxLengthName" class="text-file-valid">{{lblErrorMaxLengthName}}</p>
+            <p *ngIf="errduplicate" class="text-file-valid">Archivo con nombre duplicado</p>
+            <p *ngIf="errorOnlyFile" class="text-file-valid">{{lblErrorOnlyFile}}</p>
+            <p *ngIf="errminSizeFile" class="text-file-valid">El tamaño del archivo mínimo es 1B</p>
+            <p *ngIf="errmaxSizeFile" class="text-file-valid">{{lblErrorMaxSizeFile}}</p>
+            <p *ngIf="errmaxFiles" class="text-file-valid">{{lblErrorMaxFiles}}</p>
+          </div>
+          <mat-progress-bar *ngIf="load" mode="indeterminate"></mat-progress-bar>
+          <div fxFlex="100" class="padd_4" *ngIf="!filesDisabled">
+            <div class="labelsColor">Documento Adjunto</div>
+            <span style="cursor:pointer;" (click)="download(document.path,document.name)"> {{document.name}} <span matPrefix class="material-icons">download</span></span>
+            <span style="cursor:pointer;" (click)="delete()"> <span matPrefix class="material-icons">delete</span></span>
+          </div>
+          <span class="labelsColor">*Campos requeridos</span>
+          <div
+            fxFlex="100"
+            class="newNotif"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+          >
+            <button
+              type="submit"
+              class="btnBlue"
+              mat-button
+              [disabled]="!(uploadedFiles.length > 0)"
+              (click)="alert()">IMPORTAR</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

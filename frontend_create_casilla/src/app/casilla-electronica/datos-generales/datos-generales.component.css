@@ -1,0 +1,25 @@
+.camposObligatorios{
+    color: rgb(232, 0, 0);
+}
+/* rama feature/create-casilla
+.alert-style{
+   background-color: blue !important;
+}
+
+
+@media only screen and (min-width: 360px) and (max-width: 768px) {
+    .alert-info{
+        height: unset;
+    }
+}*/
+.buttonContinuar{
+    color: white;
+    line-height: 36px;
+    background-color: #f44336;
+    border: none;
+    padding: 0 16px;
+    border-radius: 4px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}

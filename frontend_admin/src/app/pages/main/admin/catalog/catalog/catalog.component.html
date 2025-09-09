@@ -1,0 +1,85 @@
+<section>
+    <div class="allTitles" fxLayout="row">
+        <span class="brownCircle"></span>
+        <span class="greyLine"></span> Procedimiento
+    </div>
+    <div class="generalBox">
+        <div class="controlBox inputColor">
+            <form class="example-form" fxLayout="row wrap">
+              <div class="marg_r10" fxFlex="70" fxFlex.sm="100" fxFlex.xs="100">
+                <div class="labelsColor">Buscar</div>
+                <mat-form-field class="" appearance="outline" style="width: 100%">
+                  <input type="tel" matInput placeholder="Buscar..." [maxlength]="100" name="txtSearch"
+                  (keyup.enter)="searchByQuery()" [(ngModel)]="textSearch" />
+                </mat-form-field>
+              </div>
+              <div class="marg_r10" fxFlex fxFlex.sm="40" fxFlex.xs="40" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10" fxLayoutAlign="center center">
+                <div class="labelsColor hidden_"> </div>
+                <button style="width: 100%; line-height: 31px; margin-top: 4px;" type="submit" class="btnBlue" mat-button
+                        (click)="searchByQuery()">Buscar</button>
+              </div>
+              <div class="marg_r10" fxFlex fxFlex.sm="40" fxFlex.xs="40" fxFlex.md="10" fxFlex.lg="10" fxFlex.gt-lg="10" fxLayoutAlign="center center">
+                <div class="labelsColor hidden_"> </div>
+                <button style="width: 100%; line-height: 30px; margin-top: 4px;" type="submit" mat-raised-button
+                        (click)="cleanSearch()">Limpiar</button>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="center center" class="btnBoxCtrl">
+                <button mat-fab color="primary" (click)="newCatalog()" matTooltip="Agregar"
+                        aria-label="Agregar Procedimiento" fxLayout="row" fxLayoutAlign="center center">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </form>
+        </div>
+        <div class="listBoxGeneral" *ngIf="this.data.items && this.data.items.length > 0 ; else noData">
+            <mat-table style="width: 100%;" mat-table [dataSource]="data.items">
+                <ng-container matColumnDef="codigo">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="item_table"> Código </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="nombre">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="item_table"> Nombre </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.value}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="item_table"> Acciones </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <div class="exPnlBtn" fxLayout="column">
+                            <button (click)="edit(row)"  matTooltip="Editar" color="primary" mat-button>
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            Editar
+                        </div>
+                        <div class="exPnlBtn" fxLayout="column">
+                            <button (click)="remove(row)" matTooltip="Eliminar" color="primary" mat-button>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            Eliminar
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No se encontraron resultados</td>
+                </tr>
+            </mat-table>
+            <mat-paginator [length]="data.recordsTotal" [pageIndex]="data.page-1" [pageSize]="data.count" [pageSizeOptions]="[5, 10, 25, 100]"
+                (page)="pageEvent = $event;pageChangeEvent($event)">
+            </mat-paginator>
+        </div>
+      <ng-template #noData>
+        <div class="labelsColor" style="text-align: center; font-size: 15px;">
+          <br>
+          <strong>No se encontraron registros.</strong>
+        </div>
+      </ng-template>
+      <div fxLayout="row" *ngIf="isLoading" fxLayoutAlign="center center">
+        <div class="icon-loading"></div>
+      </div>
+    </div>
+</section>

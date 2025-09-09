@@ -1,0 +1,13 @@
+<div class="upload-file">
+  <div class="label">{{label}}</div>
+  <mat-card fxFlex="100" class="card-upload" appDnd (fileDropped)="onFileDropped($event)">
+    <input type="file" #fileDropRef id="fileDropRef" (change)="fileBrowseHandler($event)" />
+    <span><strong>{{title}}</strong></span>
+    <br>
+    <span>{{description}}</span>
+    <br>
+    <span class="default-message"><small>{{message}}</small></span>
+    <span class="try-load-message"><small>Soltar archivo para cargar</small></span>
+  </mat-card>
+  <br>
+</div>

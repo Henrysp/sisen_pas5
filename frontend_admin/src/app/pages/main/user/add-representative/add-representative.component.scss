@@ -1,0 +1,49 @@
+@media (max-width: 1680px) {
+  .formNotif {
+    max-width: 60%;
+  }
+}
+@media (max-width: 1480px) {
+  .formNotif {
+    max-width: 80%;
+  }
+}
+@media (max-width: 1280px) {
+  .formNotif {
+    max-width: 90%;
+  }
+}
+@media (max-width: 960px) {
+  .generalBox {
+    border-left: none;
+    margin: 8px 0px 0 0px;
+    padding: 15px 15px 15px 15px;
+  }
+  .allTitles {
+    font-size: 18px;
+    margin-top: 30px;
+  }
+  .greyLine {
+    width: 20px;
+  }
+  .centerTitle {
+    font-size: 16px;
+    margin: 10px 0 35px 0;
+  }
+}
+.formNotif {
+  max-width: 50%;
+  margin: 0 auto;
+}
+.lowercase {
+  text-transform: lowercase;
+}
+.lowercase::placeholder {
+  text-transform: none;
+}
+.input_text {
+  text-transform: uppercase;
+}
+.input_text::placeholder {
+  text-transform: none;
+}

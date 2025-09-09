@@ -1,0 +1,302 @@
+<app-alert type="warn">Valide sus datos si todo esta conforme, haga clic en el botón "ENVIAR". De lo contrario haga clic en "REGRESAR"<br />
+</app-alert>
+<br> <br>
+
+
+
+<div class="container wrapper">
+  <div class="row">
+    <div class="col-sm" >
+
+
+      <div >
+        <!-- <ol *ngIf="requestSave.TipoPersona === 'n'; else juridica" >
+          <li>Persona Natural</li>
+          <li>Tipo de documento: <b>{{requestSave.tipoDocumento}}</b> </li>
+          <li>Número de documento: <b>{{requestSave.numeroDocumento}}</b></li>
+          <li>Apellidos y Nombres: <b>{{requestSave.apePaterno }}  {{requestSave.apeMaterno }} {{requestSave.nombres}}</b></li>
+          <li>Correo Electrónico: <b>{{requestSave.correoElectronico}}</b></li>
+          <li>Número de Celular: <b>{{requestSave.numeroCelular}}</b></li>
+          <li>Departamento / Provincia / Distrito: <b>{{requestSave.departamento}} / {{requestSave.provincia}} / {{requestSave.distrito}} </b></li>
+          <li>Dirección: <b>{{requestSave.domicilioFisico}}</b></li>
+        </ol> -->
+        <ng-container *ngIf="requestSave.TipoPersona === 'n'; else juridica">
+          <h1 class="h1Persona">Datos del ciudadano:</h1>
+          <ol>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Condición: &nbsp;</div>
+                <div class="detailList"><b>{{'Persona natural'}}</b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Tipo de documento: &nbsp;</div>
+                <div class="detailList"><b>{{requestSave.tipoDocumento}}</b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Número de documento: &nbsp;</div>
+                <div class="detailList"><b>{{requestSave.numeroDocumento}}</b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Nombres y apellidos: &nbsp;</div>
+                <div class="detailList"><b>{{requestSave.nombres}} {{requestSave.apePaterno }}  {{requestSave.apeMaterno }}</b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Correo electrónico: &nbsp;</div>
+                <div class="detailList"> <b>{{requestSave.correoElectronico}}</b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Número de celular:&nbsp;</div>
+                <div class="detailList"><b>{{requestSave.numeroCelular}}</b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Número de telefóno fijo:&nbsp; </div>
+                <div class="detailList"><b>{{requestSave.telefono || 'No se registró información'}}</b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Departamento / Provincia / Distrito:&nbsp;</div>
+                <div class="detailList"><b>{{requestSave.departamento}} / {{requestSave.provincia}} / {{requestSave.distrito}} </b></div>
+              </div>
+            </li>
+            <li>
+              <div class="wrapper">
+                <div class="labelList">Dirección:&nbsp;</div>
+                <div class="detailList" style="word-wrap: break-word;"><b>{{requestSave.domicilioFisico}}</b></div>
+              </div>
+            </li>
+
+            <li>
+              <div class="wrapper">
+                <div class="labelList">¿Es usted candidato a un proceso electoral?:&nbsp;</div>
+                <div class="detailList" style="word-wrap: break-word;"><b>{{requestSave.statusCandidateElectoralProcess}}</b></div>
+              </div>
+            </li>
+
+            <li *ngIf="requestSave.statusCandidateElectoralProcess === 'Sí'">
+              <div class="wrapper">
+                <div class="labelList">Proceso electoral:&nbsp;</div>
+                <div class="detailList" style="word-wrap: break-word;"><b>{{requestSave.electoralProcess?.name}}</b></div>
+              </div>
+            </li>
+          </ol>
+        </ng-container>
+
+        <ng-template #juridica>
+          <h1 class="h1Persona">Datos de la entidad:</h1>
+          <ol >
+            <li>Condición: &nbsp;<b>{{'Persona jurídica'}}</b></li>
+            <li>Tipo de documento: &nbsp;<b>{{requestSave.tipoDocumentoDes}}</b></li>
+            <li *ngIf="requestSave.tipoDocumento !== 'PR'">Número de documento: &nbsp;<b>{{requestSave.numeroDocumento}}</b> </li>
+            <li *ngIf="requestSave.tipoDocumento === 'PR'">N° de partida registral: &nbsp;<b>{{requestSave.numeroDocumento}}</b> </li>
+            <li>Razón social:&nbsp; <b>{{requestSave.razonSocial}}</b></li>
+            <li *ngIf="requestSave.tipoDocumento !== 'PR'">N° de partida registral:&nbsp; <b>{{requestSave.numeroPartida}}</b></li>
+            <li>Asiento registral:&nbsp; <b>{{requestSave.asientoRegistral}}</b></li>
+            <li>Correo electrónico:&nbsp; <b>{{requestSave.correoElectronico}}</b></li>
+            <li>Número de celular:&nbsp; <b>{{requestSave.numeroCelular}}</b> </li>
+            <li>Número de teléfono fijo:&nbsp; <b>{{requestSave.telefono || 'No se registró información'}}</b> </li>
+            <li>Departamento / Provincia / Distrito: &nbsp;<b>{{requestSave.departamento}} / {{requestSave.provincia}} / {{requestSave.distrito}} </b></li>
+            <li>Dirección:&nbsp; <b>{{requestSave.domicilioFisico}}</b> </li>
+            <li>Página web:&nbsp; <b>{{requestSave.paginaWeb || 'No se registró información'}}</b></li>
+            <li *ngIf="requestSave.fileDocumentPJ">Documento adjunto de la persona jurídica:</li>
+            <a class="documentos" href="#" (click)="downloadPDF(files)" *ngFor="let files of requestSave.fileDocumentPJ"> {{files.name}}</a>
+
+          </ol>
+
+          <h1 class="h1Persona">Datos del representante:</h1>
+          <ol>
+            <li>¿Somos una organización política?:&nbsp;<b>{{requestSave?.orgPol === '1' ? 'Sí' : 'No' }}</b></li>
+            <li>Cargo:&nbsp; <b>{{requestSave?.representante!.positionName}}</b></li>
+            <li *ngIf="requestSave?.representante!.asientoRegistralRep">Asiento registral:&nbsp; <b>{{requestSave?.representante!.asientoRegistralRep}}</b></li>
+            <li *ngIf="requestSave?.orgPol === '1'">¿Soy el Personero Legal Alterno?:&nbsp; <b>{{requestSave?.representante!.alterno ? 'Sí' : 'No'}}</b></li>
+            <li>Tipo de documento: &nbsp;<b>{{requestSave?.representante!.docType}}</b></li>
+            <li>Número de documento: &nbsp;<b>{{requestSave?.representante!.doc}}</b> </li>
+            <li>Nombres y apellidos:&nbsp; <b>{{requestSave?.representante!.names}} {{requestSave?.representante!.lastname}} {{requestSave?.representante!.second_lastname}}</b></li>
+            <li>Correo electrónico:&nbsp; <b>{{requestSave?.representante!.email}}</b></li>
+            <li>Número de celular:&nbsp; <b>{{requestSave?.representante!.cellphone}}</b></li>
+            <li>Número de teléfono fijo:&nbsp; <b>{{requestSave?.representante!.phone || 'No se registró información'}}</b></li>
+            <!--              <li>Tipo de documento adjunto:&nbsp; <b>{{requestSave?.representante!.documentNameAttachment}}</b></li>-->
+            <li *ngIf="requestSave.fileDocument">Documento adjunto del representante legal:&nbsp;</li>
+            <a class="documentos" href="#" (click)="downloadPDF(files)" *ngFor="let files of requestSave.fileDocument"> {{files.name}}</a>
+
+
+          </ol>
+
+        </ng-template>
+
+
+
+      </div>
+    </div>
+    <div class="col-sm" >
+      <div><img class="center img-custom-dimensions" [src]="imageSrc" *ngIf="imageSrc" ></div>
+    </div>
+  </div>
+  <div class="row" *ngIf="requestSave?.representante!.position === '2'">
+    <div class="col-sm-12">
+      <h1 class="h1Persona">Otros funcionarios:</h1>
+      <br>
+      <br>
+      <table>
+        <tr>
+          <th>Cargo</th>
+          <th>Tipo doc</th>
+          <th>Nro doc</th>
+          <th>Nombres y apellidos</th>
+          <th>Correo</th>
+          <th>Celular</th>
+        </tr>
+        <tr *ngIf="requestSave?.tesorero?.positionName">
+          <td>{{requestSave?.tesorero!.positionName}}</td>
+          <td>{{requestSave?.tesorero!.docType}}</td>
+          <td>{{requestSave?.tesorero!.doc}}</td>
+          <td>{{requestSave?.tesorero!.names}} {{requestSave?.tesorero!.lastname}} {{requestSave?.tesorero!.second_lastname}}</td>
+          <td>{{requestSave?.tesorero!.email}}</td>
+          <td>{{requestSave?.tesorero!.cellphone}}</td>
+        </tr>
+        <tr *ngIf="requestSave?.repre?.positionName && requestSave?.repre!.docType">
+          <td>{{requestSave?.repre!.positionName}}</td>
+          <td>{{requestSave?.repre!.docType}}</td>
+          <td>{{requestSave?.repre!.doc}}</td>
+          <td>{{requestSave?.repre!.names}} {{requestSave?.repre!.lastname}} {{requestSave?.repre!.second_lastname}}</td>
+          <td>{{requestSave?.repre!.email}}</td>
+          <td>{{requestSave?.repre!.cellphone}}</td>
+        </tr>
+        <tr *ngIf="requestSave?.presidente?.positionName">
+          <td>{{requestSave?.presidente!.positionName}}</td>
+          <td>{{requestSave?.presidente!.docType}}</td>
+          <td>{{requestSave?.presidente!.doc}}</td>
+          <td>{{requestSave?.presidente!.names}} {{requestSave?.presidente!.lastname}} {{requestSave?.presidente!.second_lastname}}</td>
+          <td>{{requestSave?.presidente!.email}}</td>
+          <td>{{requestSave?.presidente!.cellphone}}</td>
+        </tr>
+        <tr *ngIf="requestSave?.perfilOP?.positionName">
+          <td>{{requestSave?.perfilOP!.positionName}}</td>
+          <td>{{requestSave?.perfilOP!.docType}}</td>
+          <td>{{requestSave?.perfilOP!.doc}}</td>
+          <td>{{requestSave?.perfilOP!.names}} {{requestSave?.perfilOP!.lastname}} {{requestSave?.perfilOP!.second_lastname}}</td>
+          <td>{{requestSave?.perfilOP!.email}}</td>
+          <td>{{requestSave?.perfilOP!.cellphone}}</td>
+        </tr>
+      </table>
+      <br>
+      <br>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="wrapper">
+<div>
+
+
+  <ol *ngIf="requestSave.TipoPersona === 'n'; else juridica" >
+    <li>
+      <div class="wrapper">
+        <div class="labelList">Tipo de documento: </div>
+        <div class="detailList"><b>{{requestSave.tipoDocumento}}</b></div>
+      </div>
+    </li>
+    <li>
+      <div class="wrapper">
+        <div class="labelList">Número de documento: </div>
+        <div class="detailList"><b>{{requestSave.numeroDocumento}}</b></div>
+      </div>
+    </li>
+    <li>
+      <div class="wrapper">
+        <div class="labelList">Apellidos y Nombres:</div>
+        <div class="detailList"><b>{{requestSave.apePaterno }}  {{requestSave.apeMaterno }} {{requestSave.nombres}}</b></div>
+      </div>
+    </li>
+    <li>
+      <div class="wrapper">
+        <div class="labelList">Correo Electrónico: </div>
+        <div class="detailList"> <b>{{requestSave.correoElectronico}}</b></div>
+      </div>
+    </li>
+    <li>
+      <div class="wrapper">
+        <div class="labelList">Número de Celular:</div>
+        <div class="detailList"><b>{{requestSave.numeroCelular}}</b></div>
+      </div>
+    </li>
+    <li>
+      <div class="wrapper">
+        <div class="labelList">Departamento / Provincia / Distrito:</div>
+        <div class="detailList"><b>{{requestSave.departamento}}, {{requestSave.provincia}}, {{requestSave.distrito}} </b></div>
+      </div>
+    </li>
+    <li>
+      <div class="wrapper">
+        <div class="labelList">Dirección:</div>
+        <div class="detailList"><b>{{requestSave.domicilioFisico}}</b></div>
+      </div>
+    </li>
+  </ol>
+
+
+
+  <ng-template #juridica>
+    <h1 class="h1Persona">Datos de la Entidad:</h1>
+    <ol >
+      <li>Persona Jurídica</li>
+      <li>RUC: <b>{{requestSave.numeroDocumento}}</b></li>
+      <li>Razón Social: <b>{{requestSave.razonSocial}}</b></li>
+      <li>Correo Electrónico: <b>{{requestSave.correoElectronico}}</b></li>
+      <li>Número de teléfono: <b>{{requestSave.telefono}}</b> </li>
+      <li>Departamento / Provincia / Distrito: <b>{{requestSave.departamento}} / {{requestSave.provincia}} / {{requestSave.distrito}} </b></li>
+      <li>Dirección: <b>{{requestSave.domicilioFisico}}</b> </li>
+      <li>Página Web: <b>{{requestSave.paginaWeb}}</b></li>
+    </ol>
+
+    <h1 class="h1Persona">Representante:</h1>
+    <ol style="margin-left: 20px;">
+      <li>Tipo de documento: <b>{{requestSave?.representante!.tipoDocumento}}</b></li>
+      <li>Número de documento: <b>{{requestSave?.representante!.numeroDocumento}}</b> </li>
+      <li>Apellidos y Nombres: <b>{{requestSave?.representante!.nombreCompleto}}</b></li>
+    </ol>
+  </ng-template>
+
+</div>
+<div><img class="center" [src]="imageSrc" *ngIf="imageSrc" ></div>
+</div> -->
+
+
+
+
+
+
+<br/>
+<app-alert type="warn">Una vez enviada la información, se le notificará el resultado de su solicitud a través del correo electrónico y el número de celular registrados.<br />
+</app-alert>
+<br/>
+<!-- <div class="container">
+  <div class="row" style="text-align: center;" >
+
+    <div class="col-sm mb-3">
+      <button mat-flat-button type="button" color="primary" [disabled]="deshabilitado" (click)="regresar()">REGRESAR</button>
+    </div>
+    <br>
+    <div class="col-sm">
+      <button mat-flat-button type="button" color="warn" [disabled]="deshabilitado" (click)="continuar()">CONTINUAR</button>
+    </div>
+  </div>
+</div> -->
+
+
+<div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center">
+  <button mat-flat-button type="button" color="primary" [disabled]="deshabilitado" (click)="regresar()">REGRESAR</button>
+  <button mat-flat-button type="button" color="warn" [disabled]="deshabilitado" (click)="continuar()">ENVIAR</button>
+</div>

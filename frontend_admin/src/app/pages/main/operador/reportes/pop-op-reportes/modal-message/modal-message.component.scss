@@ -1,0 +1,65 @@
+@media only screen and (max-width: 900px) {
+    .principal {
+      background-color: red;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-valid , .btn-back{
+        width: 100% !important;
+    }
+
+    
+  }
+
+.btnAceptar{
+    border: 1px solid #7e7e7e;
+}
+
+
+.info-style{
+    text-align: center;
+    /*padding-left: 100px;
+    padding-right: 100px;*/
+    font-family: 'Poppins';
+    font-style: normal;
+    margin: 8px;
+  }
+
+
+  .title{
+    text-align: center;
+    color: #0073CF;
+    font-family: 'Poppins';
+    width: 100%;
+    margin: 5px auto;
+    font-size: 26px !important;
+  }
+
+  .interlineado {
+    line-height: 126% !important;
+  }
+
+  .btn-valid{
+    color: white;
+    line-height: 36px;
+    background-color: #f44336;
+    border: none;
+    padding: 0 16px;
+    border-radius: 4px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .btn-back{
+    color: white;
+    line-height: 36px;
+    background: #0A7DCF;
+    border: none;
+    padding: 0 16px;
+    border-radius: 4px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }

@@ -1,0 +1,188 @@
+<section>
+  <div class="allTitles" fxLayout="row">
+    <span class="brownCircle"></span>
+    <span class="greyLine"></span>
+    Nueva notificación electrónica
+  </div>
+  <div class="generalBox">
+    <div class="controlBox inputColor">
+      <form #myform="ngForm" [formGroup]="Formulario" (keydown.enter)="$event.preventDefault()">
+        <div *ngIf="sectionOne" class="formNotif" fxLayout="row wrap">
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="50" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Tipo de documento*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select name="typeDoc" name="fm_optiontipo"
+                formControlName="fm_optiontipo" (selectionChange)="changeTypeDocument()">
+                <mat-option *ngFor="let doc of typeDocument" [value]="doc.id">
+                  {{ doc.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_optiontipo.invalid">{{
+                eShowError("fm_optiontipo", Formulario.controls.fm_optiontipo.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="50" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Número de documento del administrado*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="tel" formControlName="fm_numerodoc" [minlength]="getMin" [maxlength]="maxlengthNumDoc" matInput placeholder="{{ placeHolder }}"
+                (keyup.enter)="ConsultPerson()" name="doc" (keypress)="validar_campo($event)" (change)="activar_campos()"
+                 value="" [readonly]="Formulario.controls.fm_optiontipo.value == ''" (blur)="ConsultPerson()"/>
+              <mat-icon style="cursor: pointer;" (click)="ConsultPerson()" matSuffix>search</mat-icon>
+              <mat-error *ngIf="Formulario.controls.fm_numerodoc.invalid">{{
+                eShowError("fm_numerodoc", Formulario.controls.fm_numerodoc.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" class="padd_4">
+            <div class="labelsColor">Administrado*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="tel" formControlName="fm_destinatario" matInput placeholder="Nombre del destinatario" name="addressee" />
+            </mat-form-field>
+            <mat-error *ngIf="Formulario.controls.fm_destinatario.invalid">{{
+              eShowError("fm_destinatario", Formulario.controls.fm_destinatario.errors)
+            }}</mat-error>
+          </div>
+          <div fxFlex="100" class="padd_4">
+            <div class="labelsColor">Número de expediente</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="tel" formControlName="fm_n_expediente" matInput placeholder="Ingrese número de expediente" name="nexpedient" maxlength="100"/>
+              <mat-error *ngIf="Formulario.controls.fm_n_expediente.invalid"
+                         [ngClass]="{'pattern-error': Formulario.controls.fm_n_expediente.errors?.pattern}">
+                {{eShowError("fm_n_expediente", Formulario.controls.fm_n_expediente.errors) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" class="padd_4">
+            <div class="labelsColor">Nomenclatura del documento*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <input type="tel" id="expediente" formControlName="fm_expediente" matInput placeholder="Ingrese nomenclatura del documento" name="expedient"
+                     maxlength="100" />
+              <mat-error *ngIf="Formulario.controls.fm_expediente.errors"
+                         [ngClass]="{'pattern-error': Formulario.controls.fm_expediente.errors?.pattern}">
+                {{ eShowError("fm_expediente", Formulario.controls.fm_expediente.errors) }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="50" fxFlex.xs="100" class="padd_4">
+            <div class="labelsColor">Procedimiento/Proceso*</div>
+            <mat-form-field appearance="outline" style="width: 100%">
+              <mat-select placeholder="Seleccione procedimiento" name="procedure" formControlName="fm_optionproc" (selectionChange)="changeProcedure($event)">
+                <mat-form-field style="width:90%;padding:0px 10px;">
+                  <input type="text" id="input_fm_optionproc" formControlName="input_fm_optionproc" placeholder="Buscar..."  matInput (keyup)="onKey($event.target.value)" (keydown)="$event.stopPropagation()" (blur)="verificarSiVacio()" >
+                </mat-form-field>
+                <mat-option *ngFor="let pro of selectedStates" [value]="pro.value">
+                  {{ pro.value }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="Formulario.controls.fm_optionproc.invalid">{{
+                eShowError("fm_optionproc", Formulario.controls.fm_optionproc.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+<!--          <div fxFlex="50" fxFlex.md="50" fxFlex.sm="50" fxFlex.xs="100" class="padd_4">-->
+<!--            <div class="labelsColor">Otros*</div>-->
+<!--            <mat-form-field class="" appearance="outline" style="width: 100%">-->
+<!--              <input type="tel" formControlName="fm_otros" matInput name="doc" placeholder="Otros"-->
+<!--                     value=""/>-->
+<!--              <mat-error *ngIf="Formulario.controls.fm_otros.invalid">{{-->
+<!--                  eShowError("fm_otros", Formulario.controls.fm_otros.errors)-->
+<!--                }}-->
+<!--              </mat-error>-->
+<!--            </mat-form-field>-->
+<!--          </div>-->
+          <div fxFlex="100" class="padd_4">
+            <div class="labelsColor">Asunto*</div>
+            <mat-form-field class="" appearance="outline" style="width: 100%">
+              <textarea matInput id="mensaje" formControlName="fm_message" placeholder="Ingrese asunto" appTrim name="menssage"
+                fileslimit="1" [value]="notification.message"
+                (keydown)="onKeydown($event)" matTextareaAutosize matAutosizeMinRows="5" matAutosizeMaxRows="20"
+                maxlength="1000" #textinput>
+              </textarea>
+              <mat-hint align="end">{{ textinput.value.length }} / 1000</mat-hint>
+              <mat-error *ngIf="Formulario.controls.fm_message.invalid">{{
+                eShowError("fm_message", Formulario.controls.fm_message.errors)
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="100" class="padd_4">
+            <div class="labelsColor">
+              {{lblFeaturesFiles}}
+            </div>
+            <file-upload [(ngModel)]="uploadedFiles" (drop)="validatorFile('files')" (change)="validatorFile('files')" formControlName="files" [multiple]="true" [animation]="true" discard="true" accept=".pdf,.jpg,.jpeg,.png,.bmp,.mp4,.mov,.wmv,.avi,.avchd,.flv,.f4v,.swf,.mp3,.zip,.rar,.7z">
+              <ng-template let-isFileDragDropAvailable="isFileDragDropAvailable" #placeholder>
+                <file-upload-drop-zone>
+                  <ng-container *ngIf="isFileDragDropAvailable; else isNotDragDropAvailable">
+                    {{lblAddFiles}}
+                  </ng-container>
+                  <ng-template #isNotDragDropAvailable> </ng-template>
+                </file-upload-drop-zone>
+              </ng-template>
+              <ng-template let-i="index" let-file="file" let-control="control" #item>
+                <!--                <file-upload-list-item [index]="i" [file]="file" [control]="control">Eliminar</file-upload-list-item>-->
+                <file-upload-list-item [index]="i" [file]="file"  [control]="control">
+                  <mat-icon
+                    class="icon-view"
+                    type="button"
+                    (click)="previewPDF(file, $event)"
+                    title="Vista previa">
+                    pageview
+                  </mat-icon>
+                </file-upload-list-item>
+              </ng-template>
+            </file-upload>
+
+            <p *ngIf="errmaxLengthName" class="text-file-valid">{{lblErrorMaxLengthName}}</p>
+            <p *ngIf="errduplicate" class="text-file-valid">Archivo con nombre duplicado</p>
+            <p *ngIf="errorOnlyFile" class="text-file-valid">{{lblErrorOnlyFile}}</p>
+            <p *ngIf="errminSizeFile" class="text-file-valid">El tamaño del archivo mínimo es 1B</p>
+            <p *ngIf="errmaxSizeFile" class="text-file-valid">{{lblErrorMaxSizeFile}}</p>
+            <p *ngIf="errmaxFiles" class="text-file-valid">{{lblErrorMaxFiles}}</p>
+          </div>
+        </div>
+      </form>
+      <div *ngIf="sectionTree" class="formNotif textBlue" fxLayout="row wrap">
+        <div fxFlex="100" class="padd_4">
+          <div class="labelsColor">Administrado:</div>
+          <p>{{ Formulario.controls['fm_destinatario'].value }}</p>
+        </div>
+        <div fxFlex="100" class="padd_4">
+          <div class="labelsColor">Número de expediente:</div>
+          <p [ngClass]="{ 'italic': !Formulario.controls['fm_n_expediente'].value }">
+            {{ Formulario.controls['fm_n_expediente'].value || 'No se registró información' }}
+          </p>
+        </div>
+        <div fxFlex="100" class="padd_4">
+          <div class="labelsColor">Nomenclatura del documento:</div>
+          <p>{{ Formulario.controls['fm_expediente'].value }}</p>
+        </div>
+        <div fxFlex="100" class="padd_4">
+          <div class="labelsColor">Procedimiento/Proceso:</div>
+          <p>
+            {{ procedureSelectedValue }}
+          </p>
+        </div>
+        <div fxFlex="100" class="padd_4">
+          <div class="labelsColor">Asunto:</div>
+          <p class="parrafo_texto">{{ Formulario.controls['fm_message'].value }}</p>
+        </div>
+      </div>
+
+      <div class="formNotif" fxLayout="row wrap">
+        <span *ngIf="buttonNext" class="labelsColor">*Campos requeridos</span>
+        <div fxFlex="100" class="newNotif" fxLayout="row" fxLayoutAlign="center center">
+          <button class="btnBrown" [disabled]="disabledVal" mat-button (click)="cancel()">
+            CANCELAR
+          </button>
+          <button *ngIf="buttonNext" class="btnBlue" mat-button [disabled]="Formulario.invalid" (click)="next()">
+            CONTINUAR
+          </button>
+          <button *ngIf="buttonSend" class="btnBlue" [disabled]="loading || disabledVal" mat-button (click)="NotificationSign()">
+            ENVIAR
+          </button>
+        </div>
+      </div>
+      <br />
+    </div>
+  </div>
+</section>
