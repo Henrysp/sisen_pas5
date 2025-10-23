@@ -1,15 +1,15 @@
 json
-SISEN-back-createcasilla-1190-05
+SISEN-back-createcasilla-1190-05 ****
 
-SISEN-front-admin-1190-05
+SISEN-front-admin-1190-05 *****
 
-SISEN-front-citizen-1190-05
+SISEN-front-citizen-1190-05 *****
 
-SISEN-front-createcasilla-1190-05
+SISEN-front-createcasilla-1190-05 *****
 
-SISEN-webservice-admin-1190-05
+SISEN-webservice-admin-1190-05 *******
 
-SISEN-webservice-citizen-1190-05
+SISEN-webservice-citizen-1190-05 ******
 
 ********************************************************
 
@@ -19,3 +19,16 @@ SISEN-webservice-citizen-1190-05
 PASCC-05-1190_05092025
 
 ********************************************************
+
+sonar-scanner.bat -D"sonar.projectKey=SISEN-back-createcasilla-1190-05" -D"sonar.sources=." -D"sonar.host.url=http://192.168.48.186:9000" -D"sonar.token=sqp_b32f5dddaff6059fa01e11ec623ba384071bd25c"
+
+sonar-scanner.bat -D"sonar.projectKey=SISEN-front-admin-1190-05" -D"sonar.sources=." -D"sonar.host.url=http://192.168.48.186:9000" -D"sonar.token=sqp_3353bf0d2efb75a67efd1124d5da7f3069d61c85"
+
+sonar-scanner.bat -D"sonar.projectKey=SISEN-front-citizen-1190-05" -D"sonar.sources=." -D"sonar.host.url=http://192.168.48.186:9000" -D"sonar.token=sqp_073b63b00630dcca319594b51b8fb4fdcb043080"
+
+sonar-scanner.bat -D"sonar.projectKey=SISEN-front-createcasilla-1190-05" -D"sonar.sources=." -D"sonar.host.url=http://192.168.48.186:9000" -D"sonar.token=sqp_acbc92c8c694c4a65c3f13fb5faa32734574eecd"
+
+sonar-scanner.bat -D"sonar.projectKey=SISEN-webservice-admin-1190-05" -D"sonar.sources=." -D"sonar.host.url=http://192.168.48.186:9000" -D"sonar.token=sqp_d87b1c8fb14d2d7e55686118fcc93fa27d43714f"
+
+
+sonar-scanner.bat -D"sonar.projectKey=SISEN-webservice-citizen-1190-05" -D"sonar.sources=." -D"sonar.host.url=http://192.168.48.186:9000" -D"sonar.token=sqp_f0538908a32be6f0e6999ae12d22def8040c56ba"
