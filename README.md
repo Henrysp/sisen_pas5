@@ -5,7 +5,6 @@
 ![Semgrep](https://github.com/Henrysp/sisen_pas5/actions/workflows/semgrep.yml/badge.svg)
 
 
-
 # sisen_pas5
 //PARA AGRAGAR ARCHIVO DE SEGURIDAD
 //Crear la estructura
