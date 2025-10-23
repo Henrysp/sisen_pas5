@@ -1,0 +1,89 @@
+name: Security Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * 1' # corre cada lunes 3AM
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+
+  # --- CodeQL ---
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'java' ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  # --- Dependency Review (GitHub nativo) ---
+  dependency-review:
+    name: Dependency Review (Vulnerabilidades)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+
+  # --- Secret Scanning Review ---
+  secret-scan:
+    name: Secret Scanning Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: trufflesecurity/trufflehog@v3
+        with:
+          directory: .
+
+  # --- OWASP Dependency-Check para Java ---
+  owasp:
+    name: OWASP Dependency Check (Java)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: "Java Security Scan"
+          path: "./"
+          format: "SARIF"
+
+      - name: Upload results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ./reports/dependency-check-report.sarif
+
+  # --- npm audit para NodeJS ---
+  node-audit:
+    name: NodeJS Audit
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Audit Node Vulnerabilities
+        run: npm audit --audit-level=moderate --json > npm-audit.json
