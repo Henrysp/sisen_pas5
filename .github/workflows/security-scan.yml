@@ -1,4 +1,4 @@
-name: Security Scan
+name: CodeQL Security Scan
 
 on:
   push:
@@ -6,12 +6,13 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 3 * * 1' # Ejecutar lunes a las 3AM
+    - cron: '0 3 * * 1' # Ejecuta todos los lunes a las 3AM
 
 jobs:
   analyze:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
+
     permissions:
       actions: read
       contents: read
@@ -20,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ] # Ajustar si usas otro lenguaje
+        language: [ 'javascript', 'typescript', 'java' ]
 
     steps:
       - name: Checkout repository
@@ -30,6 +31,10 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+
+      # Construir proyectos para análisis más profundo
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
